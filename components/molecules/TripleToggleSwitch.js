@@ -9,6 +9,7 @@ const TripleToggleSwitchContainer = styled.div`
     padding: 7px;
     display: flex;
     position: absolute;
+    margin-top: 85px;
 `
 
 

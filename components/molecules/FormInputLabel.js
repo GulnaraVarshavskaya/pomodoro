@@ -5,12 +5,7 @@ import React, {useState} from 'react'
 
 const FormContainer = styled.div`
     width: 140px;
-    /* display: flex; */
-    /* position: absolute; */
-    /* flex-direction: column; */
-    justify-content: center;
-    /* align-items: left; */
-    margin-top: 22px;
+    margin-top: 24px;
 `
 
 const NumberWrapper = styled.div`
@@ -33,16 +28,6 @@ const DownArrow = styled.img`
 `
 
 export default function FormInputLabel (props) {
-    const [number, setNumber] = useState(0)
-    const handleClickUp = () => {    
-        setNumber(number + 1)
-        console.log("number", number)
-    }
-    const handleClickDown = () => { 
-        if(number > 0) {   
-        setNumber(number - 1)
-        }
-    }
 
 
  return <FormContainer>
@@ -52,16 +37,18 @@ export default function FormInputLabel (props) {
             <NumberWrapper>
                 <UpArrow 
                 src="assets/icon-arrow-up.svg"
-                onClick={handleClickUp}
+                onClick={props.handleClickUp}
                 />
                 <DownArrow
                 src="assets/icon-arrow-down.svg"
-                onClick={handleClickDown}   
+                onClick={props.handleClickDown}   
                 />
                 
                 <InputCounter
-                placeholder="1"
-                value={number}
+                placeholder="0"
+                type="number"
+                value={Number(props.number).toString()}
+                onChange={props.handleNumber}
                 />
                 </NumberWrapper> 
         </FormContainer>

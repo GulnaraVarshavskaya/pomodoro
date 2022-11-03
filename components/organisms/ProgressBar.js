@@ -10,6 +10,8 @@ const WrapperSvg = styled.div`
   align-items: center;
   justify-content: center;
   display: flex;
+  margin-top: 200px;
+  margin-bottom: 63px;
 `
 
 const ProgressCircleSvg = styled.svg`
@@ -46,6 +48,7 @@ const TimeCountdown = styled.text`
   letter-spacing: -5px;
   color: white;
   text-anchor: middle;
+  dominant-baseline: middle;
   fill: white;
 `
 
@@ -57,6 +60,7 @@ const ForeignObjectDivForButton = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-top: 20px;
 `
 
 const ActionButton = styled.button`
@@ -69,7 +73,7 @@ const ActionButton = styled.button`
   text-transform: uppercase;
   color: white;
   background-color: transparent;
-  margin-top: 20px;
+  margin-top: 40px;
   &:focus {
     outline: 0;
   }
@@ -116,9 +120,10 @@ export default function ProgressBar(props) {
           strokeDashoffset={dashOffset}
         />
         <TimeCountdown
+          height="100"
           x={center}
           y={center}
-          onClick={() => alert('You have clicked the circle.')}
+          // onClick={() => alert('You have clicked the circle.')}
           >
           {minutes < 10 ? '0' + minutes : minutes}:{seconds < 10 ? '0' + seconds : seconds}
         </TimeCountdown>

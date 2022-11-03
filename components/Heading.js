@@ -39,6 +39,7 @@ const fontFamily = {
 
 
 const Heading = styled.h1`
+    margin: 0;
     font-family: ${(props) => fontFamily[props.font]};
     font-size: ${(props) => sizesMobile[props.size]};
     font-weight: bold;
