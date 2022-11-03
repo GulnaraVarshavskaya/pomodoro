@@ -23,6 +23,12 @@ const SPACE_MONO = 'spaceMono'
 
 const fontOptions = [KUMBH_SANS, ROBOTO_SLAB, SPACE_MONO];
 
+const colors = {
+  red: "rgba(248, 112, 112, 1)",
+  blue: "rgba(112, 243, 248, 1)",
+  violet: "rgba(216, 129, 248, 1)"
+}
+
 const red = "red"
 const blue = "blue"  
 const violet = "violet"
@@ -65,10 +71,12 @@ const handleClickDownLongBreak = () => {
   }
 }
 
-  const [selectedFont, setSelectedFont] = useState(false)
+  const [selectedFont, setSelectedFont] = useState(SPACE_MONO)
   const [selectedColor, setSelectedColor] = useState(red)
 
-  const onFontSelection = ((e) => setSelectedFont(e.target.value));
+  const onFontSelection = ((font) => {
+    console.log("Is this function call", font)
+    setSelectedFont(font)});
 
   const onColorSelection = ((e) => {
     setSelectedColor(e)
@@ -118,8 +126,12 @@ const handleClickDownLongBreak = () => {
       size="headingXl"
       font="kumbhSans"
       >pomodoro</Heading></DIV>
-      <TripleToggleSwitch />
+      <TripleToggleSwitch
+      selectedColor={selectedColor}
+      />
       <ProgressBar
+      selectedColor={selectedColor}
+      selectedFont={selectedFont}
       seconds={remainingSeconds}
       minutes={minutes}
       progress={progress}

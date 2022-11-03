@@ -56,13 +56,17 @@ const RadioInputText = styled.span`
 `
 
 export default function RadioLabel(props) {
+  console.log("props inside Radio Label", props)
   return (
         <RadioLabelContainer>
             <RadioInput
+            onClick={props.onClick}
             name="mode"
             />
             <RadioInputText
             font={props.font}
+            // selectedFont={props.selectedFont}
+            
             >{props.span}</RadioInputText>
         </RadioLabelContainer>
   )

@@ -1,6 +1,13 @@
 import React from 'react'
 import styled from 'styled-components'
 
+const colors = {
+  red: "rgba(248, 112, 112, 1)",
+  blue: "rgba(112, 243, 248, 1)",
+  violet: "rgba(216, 129, 248, 1)"
+}
+
+
 
 const RadioInput = styled.input.attrs({type: "radio"})`
   -webkit-appearance: none; 
@@ -12,12 +19,13 @@ const RadioInput = styled.input.attrs({type: "radio"})`
   &:checked ~ span:first-of-type {
   transition: 0.15s ease-out;
   color: rgba(30, 33, 63, 1);
-  background-color: rgba(248, 112, 112, 1);
+  background-color: ${(props) => colors[props.selectedColor]};
+  /* background-color: rgba(248, 112, 112, 1); */
 }
 `
 const ToggleLabelContainer = styled.label`
   display: flex;
-  background-color: rgba(22, 25, 50, 1);
+  /* background-color: ${(props) => colors[props.selectedColor]}; */
   border-radius: 26.5px;
   cursor: pointer;
 `
@@ -40,12 +48,15 @@ const RadioInputText = styled.span`
 `
 
 export default function ToggleLabel(props) {
+  // console.log("props inside Toggle label", props)
   return (
         <ToggleLabelContainer>
             <RadioInput
             name="mode"
+            selectedColor={props.selectedColor}
             />
             <RadioInputText
+            
             font="kumbhSans"
             >{props.span}</RadioInputText>
         </ToggleLabelContainer>

@@ -1,6 +1,18 @@
 import styled from 'styled-components'
 import React, {useState, useEffect} from 'react'
 
+const colors = {
+  red: "rgba(248, 112, 112, 1)",
+  blue: "rgba(112, 243, 248, 1)",
+  violet: "rgba(216, 129, 248, 1)"
+}
+
+const fonts = {
+  kumbhSans: "'Kumbh Sans', sans-serif;",
+  robotoSlab: "'Roboto Slab', serif",
+  spaceMono: "'Space Mono', monospace",
+}
+
 const WrapperSvg = styled.div`
   width: 410px;
   height: 410px;
@@ -33,7 +45,7 @@ const ProgressCircleTrack = styled.circle`
 
 const ProgressCircleIndicator = styled.circle`
   stroke-width: 11px;
-  stroke: rgba(248, 112, 112, 1);
+  stroke: ${(props) => colors[props.selectedColor]};
   stroke-linecap: round;
   fill: transparent;
   transform: rotate(-90deg);
@@ -42,7 +54,7 @@ const ProgressCircleIndicator = styled.circle`
 
 const TimeCountdown = styled.text`
   font-size: 100px;
-  font-family: 'Kumbh Sans';
+  font-family: ${(props) => fonts[props.selectedFont]};
   font-weight: bold;
   line-height: 101px;
   letter-spacing: -5px;
@@ -102,6 +114,8 @@ export default function ProgressBar(props) {
  
   const dashOffset = dashArray * (progress / 100)
 
+  // console.log("props inside Progress bar", props)
+  
   return (
     <WrapperSvg>
       <ProgressCircleSvg>
@@ -118,11 +132,13 @@ export default function ProgressBar(props) {
           r={radius}
           strokeDasharray={dashArray}
           strokeDashoffset={dashOffset}
+          selectedColor={props.selectedColor}
         />
         <TimeCountdown
           height="100"
           x={center}
           y={center}
+          selectedFont={props.selectedFont}
           // onClick={() => alert('You have clicked the circle.')}
           >
           {minutes < 10 ? '0' + minutes : minutes}:{seconds < 10 ? '0' + seconds : seconds}

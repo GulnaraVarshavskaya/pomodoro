@@ -93,7 +93,7 @@ const FontRadioLabel = styled(RadioLabel)`
     span {
         font-size: 15px;
         font-weight: 400px;
-        font-family: ${(props) => fontFamily[props.font]};
+        /* font-family: ${(props) => fontFamily[props.font]}; */
         background-color: ${(props) => colorBg[props.backgroundColor]};
         color: ${(props) => colorFont[props.color]};        
     }
@@ -109,6 +109,8 @@ const HeadingInputWrapper = styled.div`
 function SettingsModal(props) {
 
 const {showModal, closeModal} = props
+
+// console.log("props inside SettingsModal", props)
   return (
     <>
     {showModal ? (<SettingsModalContainer showModal={showModal}>
@@ -166,12 +168,14 @@ const {showModal, closeModal} = props
                 >
                     FONT
                 </Heading>
-                <RadioGroup onChange={props.onFontSelection}>
+                <RadioGroup>
                     {props.fontOptions.map((font) => {
                         return <FontRadioLabel
                         key={font}
                         font={font}
                         span="Aa"
+                        selected={font === props.selectedFont}
+                        onClick={() => props.onFontSelection(font)}
                         >
                         </FontRadioLabel> 
                     })}
