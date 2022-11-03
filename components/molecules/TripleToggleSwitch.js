@@ -14,18 +14,21 @@ const TripleToggleSwitchContainer = styled.div`
 
 
 export default function TripleToggleSwitch (props) {
-    console.log("props inside Tripple Toggle Switch", props)
+    
     return <TripleToggleSwitchContainer>
         <ToggleLabel
         selectedColor={props.selectedColor}
+        selectedFont={props.selectedFont}
         span="pomodoro"       
         />
         <ToggleLabel
         selectedColor={props.selectedColor}
+        selectedFont={props.selectedFont}
         span="short break"
         />
         <ToggleLabel
         selectedColor={props.selectedColor}
+        selectedFont={props.selectedFont}
         span="long break"
         />
         </TripleToggleSwitchContainer>

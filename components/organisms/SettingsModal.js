@@ -110,7 +110,6 @@ function SettingsModal(props) {
 
 const {showModal, closeModal} = props
 
-// console.log("props inside SettingsModal", props)
   return (
     <>
     {showModal ? (<SettingsModalContainer showModal={showModal}>

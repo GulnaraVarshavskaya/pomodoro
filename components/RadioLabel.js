@@ -56,7 +56,7 @@ const RadioInputText = styled.span`
 `
 
 export default function RadioLabel(props) {
-  console.log("props inside Radio Label", props)
+  
   return (
         <RadioLabelContainer>
             <RadioInput

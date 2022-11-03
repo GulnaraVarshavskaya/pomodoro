@@ -79,7 +79,7 @@ const ActionButton = styled.button`
   border: none;
   letter-spacing: 15px;
   font-size: 16px;
-  font-family: 'Kumbh Sans';
+  font-family: ${(props) => fonts[props.selectedFont]};
   font-weight: 700px;
   line-height: 16.09px;
   text-transform: uppercase;
@@ -107,14 +107,11 @@ export default function ProgressBar(props) {
 
   const center = size / 2
   const radius = center - addToRadius - (trackWidth > indicatorWidth ? trackWidth : indicatorWidth)
-  console.log(radius)
   const dashArray = 2 * Math.PI * radius  
   // const offsetRadius = (100 - progress) * (radius / 100)
   // const dashOffset = 2 * Math.PI * offsetRadius
  
   const dashOffset = dashArray * (progress / 100)
-
-  // console.log("props inside Progress bar", props)
   
   return (
     <WrapperSvg>
@@ -139,7 +136,6 @@ export default function ProgressBar(props) {
           x={center}
           y={center}
           selectedFont={props.selectedFont}
-          // onClick={() => alert('You have clicked the circle.')}
           >
           {minutes < 10 ? '0' + minutes : minutes}:{seconds < 10 ? '0' + seconds : seconds}
         </TimeCountdown>
@@ -150,7 +146,7 @@ export default function ProgressBar(props) {
             <body xmlns="http://www.w3.org/1999/xhtml">
               <ForeignObjectDivForButton>
                 <ActionButton
-                
+                selectedFont={props.selectedFont}
                 onClick={toggleAction}>
                   {actionName}
                 </ActionButton>

@@ -75,7 +75,6 @@ const handleClickDownLongBreak = () => {
   const [selectedColor, setSelectedColor] = useState(red)
 
   const onFontSelection = ((font) => {
-    console.log("Is this function call", font)
     setSelectedFont(font)});
 
   const onColorSelection = ((e) => {
@@ -128,6 +127,7 @@ const handleClickDownLongBreak = () => {
       >pomodoro</Heading></DIV>
       <TripleToggleSwitch
       selectedColor={selectedColor}
+      selectedFont={selectedFont}
       />
       <ProgressBar
       selectedColor={selectedColor}

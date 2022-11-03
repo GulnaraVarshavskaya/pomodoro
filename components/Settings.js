@@ -33,13 +33,10 @@ function Settings(props) {
     const [showModal, setShowModal] = useState(false)
 
     const openModal = () => {
-        console.log("open modal")
         setShowModal(true)};
     const closeModal = () => {
-        console.log("close modal")
         setShowModal(false)};
-        console.log("show modal in settings", showModal)
-        // console.log("props inside Settings", props)
+
     return (
         <SettingsContainer>
             <SettingsButton

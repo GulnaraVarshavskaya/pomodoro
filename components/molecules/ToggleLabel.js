@@ -7,6 +7,11 @@ const colors = {
   violet: "rgba(216, 129, 248, 1)"
 }
 
+const fonts = {
+  kumbhSans: "'Kumbh Sans', sans-serif;",
+  robotoSlab: "'Roboto Slab', serif",
+  spaceMono: "'Space Mono', monospace",
+}
 
 
 const RadioInput = styled.input.attrs({type: "radio"})`
@@ -20,7 +25,6 @@ const RadioInput = styled.input.attrs({type: "radio"})`
   transition: 0.15s ease-out;
   color: rgba(30, 33, 63, 1);
   background-color: ${(props) => colors[props.selectedColor]};
-  /* background-color: rgba(248, 112, 112, 1); */
 }
 `
 const ToggleLabelContainer = styled.label`
@@ -39,7 +43,7 @@ const fontFamily = {
 const RadioInputText = styled.span`
   padding: 17px 26px;
   border-radius: 26.5px;
-  font-family: ${(props) => fontFamily[props.font]};
+  font-family: ${(props) => fonts[props.selectedFont]};
   color: rgba(215, 224, 255, 0.4);
   font-size: 14px;
   line-height: 14px;
@@ -48,15 +52,16 @@ const RadioInputText = styled.span`
 `
 
 export default function ToggleLabel(props) {
-  // console.log("props inside Toggle label", props)
+  
   return (
         <ToggleLabelContainer>
             <RadioInput
             name="mode"
             selectedColor={props.selectedColor}
+            selectedFont={props.selectedFont}
             />
             <RadioInputText
-            
+            selectedFont={props.selectedFont}
             font="kumbhSans"
             >{props.span}</RadioInputText>
         </ToggleLabelContainer>
