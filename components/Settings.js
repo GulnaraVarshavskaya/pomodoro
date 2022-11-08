@@ -3,11 +3,15 @@ import styled from 'styled-components'
 import SettingsModal     from './organisms/SettingsModal'
 
 const SettingsContainer = styled.div`
-    /* display: flex; */
-    /* justify-content: center; */
-    /* align-items: flex-end; */
+    display: flex;
+    justify-content: center;
     position: absolute;
-    margin-top: 650px;
+`
+
+const SettingsButtonGroup = styled.div`
+    /* position: absolute; */
+    /* bottom: -60px; */
+    /* justify-content: center; */
 `
 
 const SettingsButton = styled.button`
@@ -39,32 +43,18 @@ function Settings(props) {
 
     return (
         <SettingsContainer>
+            <SettingsButtonGroup>
             <SettingsButton
             onClick={openModal}
             >
                 <SettingsSvg />                
             </SettingsButton>
+            </SettingsButtonGroup>
             <SettingsModal 
             closeModal={closeModal} 
             showModal={showModal}
             colorOptions={props.colorOptions}
-            selectedColor={props.selectedColor}
-            onColorSelection={props.onColorSelection}
             fontOptions={props.fontOptions}
-            selectedFont={props.selectedFont}
-            onFontSelection={props.onFontSelection}
-            numberPomodoro={props.numberPomodoro}
-            numberShortBreak={props.numberShortBreak}
-            numberLongBreak={props.numberLongBreak}
-            handleClickUpPomodoro={props.handleClickUpPomodoro}
-            handleClickUpShortBreak={props.handleClickUpShortBreak}
-            handleClickUpLongBreak={props.handleClickUpLongBreak}
-            handleClickDownPomodoro={props.handleClickDownPomodoro}
-            handleClickDownShortBreak={props.handleClickDownShortBreak}
-            handleClickDownLongBreak={props.handleClickDownLongBreak}
-            handleNumberPomodoro={props.handleNumberPomodoro}
-            handleNumberShortBreak={props.handleNumberShortBreak}
-            handleNumberLongBreak={props.handleNumberLongBreak}
             />
         </SettingsContainer>
     )

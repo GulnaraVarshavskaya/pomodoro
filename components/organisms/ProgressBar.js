@@ -23,7 +23,7 @@ const WrapperSvg = styled.div`
   justify-content: center;
   display: flex;
   margin-top: 200px;
-  margin-bottom: 63px;
+  margin-bottom: 63px;  
 `
 
 const ProgressCircleSvg = styled.svg`
@@ -35,6 +35,8 @@ const ProgressCircleSvg = styled.svg`
   justify-content: center;
   display: flex;
   text-align: center;
+  /* text-anchor: middle;
+  dominant-baseline: middle; */
 `
 
 const ProgressCircleTrack = styled.circle`
@@ -81,11 +83,12 @@ const ActionButton = styled.button`
   font-size: 16px;
   font-family: ${(props) => fonts[props.selectedFont]};
   font-weight: 700px;
-  line-height: 16.09px;
+  line-height: 16px;
   text-transform: uppercase;
   color: white;
   background-color: transparent;
   margin-top: 40px;
+  margin-right: -15px;
   &:focus {
     outline: 0;
   }

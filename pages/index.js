@@ -1,8 +1,7 @@
-import styles from '../styles/Home.module.css'
 import Heading from '../components/Heading'
 import TripleToggleSwitch from '../components/molecules/TripleToggleSwitch'
 import ProgressBar from '../components/organisms/ProgressBar'
-import react, {useState, useEffect} from 'react'
+import {useState, useEffect, createContext} from 'react'
 import Settings from '../components/Settings'
 import styled from 'styled-components'
 
@@ -23,19 +22,23 @@ const SPACE_MONO = 'spaceMono'
 
 const fontOptions = [KUMBH_SANS, ROBOTO_SLAB, SPACE_MONO];
 
-const colors = {
-  red: "rgba(248, 112, 112, 1)",
-  blue: "rgba(112, 243, 248, 1)",
-  violet: "rgba(216, 129, 248, 1)"
-}
-
 const red = "red"
 const blue = "blue"  
 const violet = "violet"
 
 const colorOptions = [red, blue, violet];
 
+export const settingsContext = createContext({});
+
 export default function Home() {
+
+  // const [applyChanges, setApplyChanges] = useState(true)
+
+  // const handleChanges = (e) => {
+  //   e.preventDefault()
+  //   setApplyChanges()
+  // }
+  
 
   const [numberPomodoro, setNumberPomodoro] = useState(0)
   const [numberShortBreak, setNumberShortBreak] = useState(0)
@@ -79,6 +82,7 @@ const handleClickDownLongBreak = () => {
 
   const onColorSelection = ((e) => {
     setSelectedColor(e)
+    
 });
 
   const [totalTime, setTotalTime] = useState(25*60)
@@ -118,48 +122,33 @@ const handleClickDownLongBreak = () => {
 
 
   return (
-    <Container>
-      <DIV>
-      <Heading
-      color="light"
-      size="headingXl"
-      font="kumbhSans"
-      >pomodoro</Heading></DIV>
-      <TripleToggleSwitch
-      selectedColor={selectedColor}
-      selectedFont={selectedFont}
-      />
-      <ProgressBar
-      selectedColor={selectedColor}
-      selectedFont={selectedFont}
-      seconds={remainingSeconds}
-      minutes={minutes}
-      progress={progress}
-      toggleAction={toggleAction}
-      actionName={isActive}
-      />
-      <Settings 
-      colorOptions={colorOptions}
-      selectedColor={selectedColor}
-      onColorSelection={onColorSelection}
-      fontOptions={fontOptions}
-      selectedFont={selectedFont}
-      onFontSelection={onFontSelection}
-      numberPomodoro={numberPomodoro}
-      numberShortBreak={numberShortBreak}
-      numberLongBreak={numberLongBreak}
-      handleClickUpPomodoro={handleClickUpPomodoro}
-      handleClickUpShortBreak={handleClickUpShortBreak}
-      handleClickUpLongBreak={handleClickUpLongBreak}
-      handleClickDownPomodoro={handleClickDownPomodoro}
-      handleClickDownShortBreak={handleClickDownShortBreak}
-      handleClickDownLongBreak={handleClickDownLongBreak}
-      handleNumberPomodoro={handleNumberPomodoro}
-      handleNumberShortBreak={handleNumberShortBreak}
-      handleNumberLongBreak={handleNumberLongBreak}
-      
-      />
+    <settingsContext.Provider value={{ selectedColor: selectedColor, setSelectedColor: setSelectedColor, onColorSelection: onColorSelection, selectedFont: selectedFont, onFontSelection: onFontSelection, numberPomodoro: numberPomodoro, handleNumberPomodoro: handleNumberPomodoro, handleClickUpPomodoro: handleClickUpPomodoro, handleClickDownPomodoro: handleClickDownPomodoro, numberShortBreak: numberShortBreak, handleNumberShortBreak: handleNumberShortBreak, handleClickUpShortBreak: handleClickUpShortBreak, handleClickDownShortBreak: handleClickDownShortBreak, numberLongBreak: numberLongBreak, handleNumberLongBreak: handleNumberLongBreak, handleClickUpLongBreak: handleClickUpLongBreak, handleClickDownLongBreak: handleClickDownLongBreak }}>
+      <Container>
+        <DIV>
+        <Heading
+        color="light"
+        size="headingXl"
+        font="kumbhSans"
+        >pomodoro</Heading></DIV>
+        <TripleToggleSwitch
+        selectedColor={selectedColor}
+        selectedFont={selectedFont}
+        />
+        <ProgressBar
+        selectedColor={selectedColor}
+        selectedFont={selectedFont}
+        seconds={remainingSeconds}
+        minutes={minutes}
+        progress={progress}
+        toggleAction={toggleAction}
+        actionName={isActive}
+        />
+        <Settings 
+        colorOptions={colorOptions}
+        fontOptions={fontOptions}
+        />
 
-    </Container>
+      </Container>
+    </settingsContext.Provider>
   )
 }

@@ -63,10 +63,7 @@ export default function RadioLabel(props) {
             onClick={props.onClick}
             name="mode"
             />
-            <RadioInputText
-            font={props.font}
-            // selectedFont={props.selectedFont}
-            
+            <RadioInputText           
             >{props.span}</RadioInputText>
         </RadioLabelContainer>
   )

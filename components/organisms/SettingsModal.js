@@ -1,10 +1,11 @@
-import React, { useState } from 'react'
+import React, { useContext } from 'react'
 import styled from 'styled-components'
 import Button from '../Button'
 import RadioLabel from '../RadioLabel'
 import FormInputLabel from '../molecules/FormInputLabel'
 import Heading from '../Heading'
 import ColorRadioLabel from '../ColorRadioLabel'
+import { settingsContext } from '../../pages'
 
 
 
@@ -31,12 +32,11 @@ const colorBg = {
 
 
 const SettingsModalContainer = styled.div`
-    display: flex;
-    position: relative;
+    position: absolute;
     width: 540px;
     height: 464px;
     flex-direction: column;
-    margin-top: 155px;
+    margin-top: 100px;
     border-radius: 25px;
     background-color: white;
     z-index: 5;
@@ -109,7 +109,7 @@ const HeadingInputWrapper = styled.div`
 function SettingsModal(props) {
 
 const {showModal, closeModal} = props
-
+const { selectedColor, onColorSelection, selectedFont, onFontSelection, numberPomodoro, handleNumberPomodoro, handleClickUpPomodoro, handleClickDownPomodoro, numberShortBreak, handleNumberShortBreak, handleClickUpShortBreak, handleClickDownShortBreak, numberLongBreak, handleNumberLongBreak, handleClickUpLongBreak, handleClickDownLongBreak } = useContext(settingsContext)
   return (
     <>
     {showModal ? (<SettingsModalContainer showModal={showModal}>
@@ -136,24 +136,24 @@ const {showModal, closeModal} = props
                     </Heading>
                     <ModalInputLabelWrapper>
                         <FormInputLabel
-                        number={props.numberPomodoro}
-                        handleClickUp={props.handleClickUpPomodoro}
-                        handleClickDown={props.handleClickDownPomodoro}
-                        handleNumber={props.handleNumberPomodoro}
+                        number={numberPomodoro}
+                        handleClickUp={handleClickUpPomodoro}
+                        handleClickDown={handleClickDownPomodoro}
+                        handleNumber={handleNumberPomodoro}
                         label="pomodoro"
                         />
                         <FormInputLabel
-                        number={props.numberShortBreak}
-                        handleClickUp={props.handleClickUpShortBreak}
-                        handleClickDown={props.handleClickDownShortBreak}
-                        handleNumber={props.handleNumberShortBreak}
+                        number={numberShortBreak}
+                        handleClickUp={handleClickUpShortBreak}
+                        handleClickDown={handleClickDownShortBreak}
+                        handleNumber={handleNumberShortBreak}
                         label="short break"
                         />
                         <FormInputLabel
-                        number={props.numberLongBreak}
-                        handleClickUp={props.handleClickUpLongBreak}
-                        handleClickDown={props.handleClickDownLongBreak}
-                        handleNumber={props.handleNumberLongBreak}
+                        number={numberLongBreak}
+                        handleClickUp={handleClickUpLongBreak}
+                        handleClickDown={handleClickDownLongBreak}
+                        handleNumber={handleNumberLongBreak}
                         label="long break"
                         />
                     </ModalInputLabelWrapper>
@@ -173,8 +173,8 @@ const {showModal, closeModal} = props
                         key={font}
                         font={font}
                         span="Aa"
-                        selected={font === props.selectedFont}
-                        onClick={() => props.onFontSelection(font)}
+                        selected={font === selectedFont}
+                        onClick={() => onFontSelection(font)}
                         >
                         </FontRadioLabel> 
                     })}
@@ -193,8 +193,8 @@ const {showModal, closeModal} = props
                         return <ColorRadioLabel
                         key={color}
                         backgroundColor={color}
-                        selected={color === props.selectedColor}
-                        onClick={(e) => props.onColorSelection(color)}
+                        selected={color === selectedColor}
+                        onClick={() => onColorSelection(color)}
                         >                           
                         </ColorRadioLabel>
                     })}
