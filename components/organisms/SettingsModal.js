@@ -109,7 +109,7 @@ const HeadingInputWrapper = styled.div`
 function SettingsModal(props) {
 
 const {showModal, closeModal} = props
-const { selectedColor, onColorSelection, selectedFont, onFontSelection, numberPomodoro, handleNumberPomodoro, handleClickUpPomodoro, handleClickDownPomodoro, numberShortBreak, handleNumberShortBreak, handleClickUpShortBreak, handleClickDownShortBreak, numberLongBreak, handleNumberLongBreak, handleClickUpLongBreak, handleClickDownLongBreak } = useContext(settingsContext)
+const { selectedColor, onColorSelection, selectedFont, onFontSelection,  timeInputs, updateTimeInputs, updateTimeInputsUp, updateTimeInputsDown } = useContext(settingsContext)
   return (
     <>
     {showModal ? (<SettingsModalContainer showModal={showModal}>
@@ -136,24 +136,27 @@ const { selectedColor, onColorSelection, selectedFont, onFontSelection, numberPo
                     </Heading>
                     <ModalInputLabelWrapper>
                         <FormInputLabel
-                        number={numberPomodoro}
-                        handleClickUp={handleClickUpPomodoro}
-                        handleClickDown={handleClickDownPomodoro}
-                        handleNumber={handleNumberPomodoro}
+                        name="pomodoro"
+                        number={timeInputs.pomodoro}
+                        onChange={updateTimeInputs}
+                        handleClickUp={updateTimeInputsUp}
+                        handleClickDown={updateTimeInputsDown}
                         label="pomodoro"
                         />
                         <FormInputLabel
-                        number={numberShortBreak}
-                        handleClickUp={handleClickUpShortBreak}
-                        handleClickDown={handleClickDownShortBreak}
-                        handleNumber={handleNumberShortBreak}
+                        name="shortBreak"
+                        number={timeInputs.shortBreak}
+                        onChange={updateTimeInputs}
+                        handleClickUp={updateTimeInputsUp}
+                        handleClickDown={updateTimeInputsDown}
                         label="short break"
                         />
                         <FormInputLabel
-                        number={numberLongBreak}
-                        handleClickUp={handleClickUpLongBreak}
-                        handleClickDown={handleClickDownLongBreak}
-                        handleNumber={handleNumberLongBreak}
+                        name="longBreak"
+                        number={timeInputs.longBreak}
+                        onChange={updateTimeInputs}
+                        handleClickUp={updateTimeInputsUp}
+                        handleClickDown={updateTimeInputsDown}
                         label="long break"
                         />
                     </ModalInputLabelWrapper>

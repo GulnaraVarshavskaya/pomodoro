@@ -38,41 +38,31 @@ export default function Home() {
   //   e.preventDefault()
   //   setApplyChanges()
   // }
-  
 
-  const [numberPomodoro, setNumberPomodoro] = useState(0)
-  const [numberShortBreak, setNumberShortBreak] = useState(0)
-  const [numberLongBreak, setNumberLongBreak] = useState(0)
+  const [timeInputs, setTimeInputs] = useState({
+    pomodoro: 25,
+    shortBreak: 5,
+    longBreak: 15,
+  });
 
-  const handleNumberPomodoro = (e) => {setNumberPomodoro(e.target.value)}
-  const handleNumberShortBreak = (e) => {setNumberShortBreak(e.target.value)}
-  const handleNumberLongBreak = (e) => {setNumberLongBreak(e.target.value)}
-
-  const handleClickUpPomodoro = () => {    
-    setNumberPomodoro(numberPomodoro + 1)
-  }
-  const handleClickUpShortBreak = () => {    
-    setNumberShortBreak(numberShortBreak + 1)
-  }
-  const handleClickUpLongBreak = () => {    
-    setNumberLongBreak(numberLongBreak + 1)
+  const updateTimeInputs = (e) => {
+    console.log("NEW VALUE:", e.target.value);
+    console.log("WHICH TIMER?:", e.target.name);
+    const max = 60
+    // const limitedVal = e.target.value < max ? e.target.value : max;
+    const limitedVal = Math.min( e.target.value, max )
+    setTimeInputs({ ...timeInputs, [e.target.name]: limitedVal})
   }
 
-  const handleClickDownPomodoro = () => { 
-      if(numberPomodoro > 0) {   
-      setNumberPomodoro(numberPomodoro - 1)
-      }
+  const updateTimeInputsUp = (e) => {
+    console.log("show us what is e.target?", e.target.name, timeInputs[e.target.name], timeInputs[e.target.name] + 1)
+    setTimeInputs({ ...timeInputs, [e.target.name]: limitedVal[e.target.name] + 1 })
   }
-  const handleClickDownShortBreak = () => { 
-    if(numberShortBreak > 0) {   
-    setNumberShortBreak(numberShortBreak - 1)
-    }
-}
-const handleClickDownLongBreak = () => { 
-  if(numberLongBreak > 0) {   
-  setNumberLongBreak(numberLongBreak - 1)
+
+  const updateTimeInputsDown = (e) => {
+    if (timeInputs[e.target.name] > 0) {
+    setTimeInputs({ ...timeInputs, [e.target.name]: timeInputs[e.target.name] - 1 })}
   }
-}
 
   const [selectedFont, setSelectedFont] = useState(SPACE_MONO)
   const [selectedColor, setSelectedColor] = useState(red)
@@ -122,7 +112,7 @@ const handleClickDownLongBreak = () => {
 
 
   return (
-    <settingsContext.Provider value={{ selectedColor: selectedColor, setSelectedColor: setSelectedColor, onColorSelection: onColorSelection, selectedFont: selectedFont, onFontSelection: onFontSelection, numberPomodoro: numberPomodoro, handleNumberPomodoro: handleNumberPomodoro, handleClickUpPomodoro: handleClickUpPomodoro, handleClickDownPomodoro: handleClickDownPomodoro, numberShortBreak: numberShortBreak, handleNumberShortBreak: handleNumberShortBreak, handleClickUpShortBreak: handleClickUpShortBreak, handleClickDownShortBreak: handleClickDownShortBreak, numberLongBreak: numberLongBreak, handleNumberLongBreak: handleNumberLongBreak, handleClickUpLongBreak: handleClickUpLongBreak, handleClickDownLongBreak: handleClickDownLongBreak }}>
+    <settingsContext.Provider value={{ selectedColor: selectedColor, setSelectedColor: setSelectedColor, onColorSelection: onColorSelection, selectedFont: selectedFont, onFontSelection: onFontSelection, timeInputs: timeInputs, updateTimeInputs: updateTimeInputs, updateTimeInputsUp: updateTimeInputsUp, updateTimeInputsDown: updateTimeInputsDown }}>
       <Container>
         <DIV>
         <Heading

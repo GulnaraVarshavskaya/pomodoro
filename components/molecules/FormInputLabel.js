@@ -17,6 +17,7 @@ const UpArrow = styled.img`
     position: absolute;
     right: 16px;
     top: 16px;
+    cursor: pointer;
     /* pointer-events: none; */
 `
 
@@ -24,6 +25,7 @@ const DownArrow = styled.img`
     position: absolute;
     right: 16px;
     bottom: 16px;
+    cursor: pointer;
     /* pointer-events: none; */
 `
 
@@ -37,18 +39,21 @@ export default function FormInputLabel (props) {
             <NumberWrapper>
                 <UpArrow 
                 src="assets/icon-arrow-up.svg"
+                name={props.name}
                 onClick={props.handleClickUp}
                 />
                 <DownArrow
                 src="assets/icon-arrow-down.svg"
+                name={props.name}
                 onClick={props.handleClickDown}   
                 />
                 
                 <InputCounter
                 placeholder="0"
                 type="number"
+                name={props.name}
                 value={Number(props.number).toString()}
-                onChange={props.handleNumber}
+                onChange={props.onChange}
                 />
                 </NumberWrapper> 
         </FormContainer>
