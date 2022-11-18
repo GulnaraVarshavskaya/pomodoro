@@ -6,7 +6,9 @@ import Settings from '../components/Settings'
 import styled from 'styled-components'
 
 const Container = styled.div`
-  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   padding: 50px 0;
   margin: 0 auto;
   justify-content: center;

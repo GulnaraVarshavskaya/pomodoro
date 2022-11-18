@@ -23,15 +23,14 @@ const colorBg = {
 
 const ModalContainer = styled.div`
     display: flex;
-    justify-content: center;
+    /* justify-content: center; */
     align-items: center;
 `
 
 
 const SettingsModalContainer = styled.div`
     position: fixed;
-    height: 464px;
-    margin-top: -790px;
+    inset: calc((100vh - 464px)/2) calc((100vw - 540px)/2);
     border-radius: 25px;
     background-color: white;
     z-index: 100;
