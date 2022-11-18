@@ -14,10 +14,6 @@ const fonts = {
   spaceMono: "'Space Mono', monospace",
 }
 
-const TimerContainer = styled.div`
-
-`
-
 const WrapperSvg = styled.div`
   width: 410px;
   height: 410px;
@@ -40,8 +36,6 @@ const ProgressCircleSvg = styled.svg`
   justify-content: center;
   display: flex;
   text-align: center;
-  /* text-anchor: middle;
-  dominant-baseline: middle; */
 `
 
 const ProgressCircleTrack = styled.circle`
@@ -115,15 +109,13 @@ export default function ProgressBar(props) {
   const center = size / 2
   const radius = center - addToRadius - (trackWidth > indicatorWidth ? trackWidth : indicatorWidth)
   const dashArray = 2 * Math.PI * radius  
-  // const offsetRadius = (100 - progress) * (radius / 100)
-  // const dashOffset = 2 * Math.PI * offsetRadius
  
   const dashOffset = dashArray * (progress / 100)
 
   const {toggleAction, selectedFont, selectedColor} = useContext(settingsContext)
   
   return (
-    <TimerContainer>
+
     <WrapperSvg>
       <ProgressCircleSvg>
         <ProgressCircleTrack
@@ -164,6 +156,6 @@ export default function ProgressBar(props) {
             </body>
         </ForeignObject>
       </ProgressCircleSvg>
-    </WrapperSvg></TimerContainer>
+    </WrapperSvg>
   )
 }

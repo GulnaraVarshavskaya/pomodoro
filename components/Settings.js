@@ -1,12 +1,11 @@
-import React, { useState, useContext } from 'react'
+import React, { useContext } from 'react'
 import styled from 'styled-components'
 import { settingsContext } from '../pages'
-import SettingsModal     from './organisms/SettingsModal'
+import SettingsModal from './organisms/SettingsModal'
 
 const SettingsContainer = styled.div`
     display: flex;
     justify-content: center;
-    /* position: absolute; */
 `
 
 const SettingsButton = styled.button`
@@ -27,9 +26,9 @@ const SettingsSvg = () => (
     </svg>
 )
 
-function Settings(props) {
+function Settings() {
 
-    const { openModal, showModal, closeModal } = useContext(settingsContext)
+    const { openModal, showModal, closeModal, colorOptions, fontOptions } = useContext(settingsContext)
 
     return (
         <SettingsContainer>           
@@ -41,8 +40,8 @@ function Settings(props) {
             { showModal ? <SettingsModal 
             closeModal={closeModal} 
             showModal={showModal}
-            colorOptions={props.colorOptions}
-            fontOptions={props.fontOptions}
+            colorOptions={colorOptions}
+            fontOptions={fontOptions}
             /> : null }
         </SettingsContainer>
     )

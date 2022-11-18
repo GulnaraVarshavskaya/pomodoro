@@ -6,7 +6,6 @@ import Settings from '../components/Settings'
 import styled from 'styled-components'
 
 const Container = styled.div`
-  /* display: flex; */
   min-height: 100vh;
   padding: 50px 0;
   margin: 0 auto;
@@ -15,7 +14,6 @@ const Container = styled.div`
 const HeadContainer = styled.div`
   display: flex;
   justify-content: center;
-  /* position: absolute; */
 `
 
 const TimerContainer = styled.div`
@@ -52,36 +50,8 @@ export default function Home() {
     longBreak: 15,
   });
 
-  const updateTimeInputs = (e) => {
-    console.log("NEW VALUE:", e.target.value);
-    console.log("WHICH TIMER?:", e.target.name);
-    const max = 60
-    // const limitedVal = e.target.value < max ? e.target.value : max;
-    const limitedVal = Math.min( e.target.value, max )
-    setTimeInputs({ ...timeInputs, [e.target.name]: limitedVal})
-  }
-
-  const updateTimeInputsUp = (e) => {
-    console.log("show us what is e.target?", e.target.name, timeInputs[e.target.name], timeInputs[e.target.name] + 1)
-    if (timeInputs[e.target.name] < 60) {
-    setTimeInputs({ ...timeInputs, [e.target.name]: timeInputs[e.target.name] + 1 })}
-  }
-
-  const updateTimeInputsDown = (e) => {
-    if (timeInputs[e.target.name] > 0) {
-    setTimeInputs({ ...timeInputs, [e.target.name]: timeInputs[e.target.name] - 1 })}
-  }
-
   const [selectedFont, setSelectedFont] = useState(KUMBH_SANS)
   const [selectedColor, setSelectedColor] = useState(red)
-
-  const onFontSelection = ((font) => {
-    setSelectedFont(font)});
-
-  const onColorSelection = ((color) => {
-    setSelectedColor(color)
-    
-});
 
   const [ mode, setMode ] = useState("pomodoro")
 
@@ -103,7 +73,6 @@ export default function Home() {
   }
 
   const restart = () => {
-    // console.log("What is timeInputs[mode]" ,timeInputs[mode])
     setTotalTime(timeInputs[mode] * 60)
     setTimeRemaining(timeInputs[mode] * 60)
     setIsActive("start")
@@ -128,7 +97,6 @@ export default function Home() {
 
 
   const handleChanges = (changedColor, changedFont, changedTimeInputs ) => {
-    console.log("apply changes", changedTimeInputs)
     setSelectedColor(changedColor)
     setSelectedFont(changedFont)
     setTimeInputs(changedTimeInputs)
@@ -136,22 +104,12 @@ export default function Home() {
     setTimeRemaining(changedTimeInputs[mode] * 60)
     setIsActive("start")
 
-    // e.preventDefault()
-    // console.log(applyChanges)
-    // setApplyChanges({
-    //   pomodoro: 25,
-    //   shortBreak: 5,
-    //   longBreak: 15,
-    // }, selectedColor, selectedFont)
-    // setApplyChanges({...applyChanges});
-    // setTotalTime(timeInputs[mode] * 60)
-    // setTimeRemaining(timeInputs[mode] * 60)
     closeModal();
 
   }
 
   return (
-    <settingsContext.Provider value={{ selectedColor: selectedColor, setSelectedColor: setSelectedColor, onColorSelection: onColorSelection, selectedFont: selectedFont, onFontSelection: onFontSelection, timeInputs: timeInputs, updateTimeInputs: updateTimeInputs, updateTimeInputsUp: updateTimeInputsUp, updateTimeInputsDown: updateTimeInputsDown, handleChanges: handleChanges, mode: mode, setMode: setMode, toggleAction:toggleAction, showModal: showModal, openModal: openModal, closeModal: closeModal }}>
+    <settingsContext.Provider value={{ colorOptions: colorOptions, fontOptions: fontOptions, selectedColor: selectedColor, setSelectedColor: setSelectedColor, selectedFont: selectedFont, timeInputs: timeInputs, handleChanges: handleChanges, mode: mode, setMode: setMode, toggleAction:toggleAction, showModal: showModal, openModal: openModal, closeModal: closeModal }}>
       <Container>
         <HeadContainer>
         <Heading
@@ -160,24 +118,17 @@ export default function Home() {
         font="kumbhSans"
         >pomodoro</Heading>       
         <TripleToggleSwitch
-        selectedColor={selectedColor}
-        selectedFont={selectedFont}
         /> 
         </HeadContainer>
         <TimerContainer>
         <ProgressBar
-        selectedColor={selectedColor}
-        selectedFont={selectedFont}
         seconds={remainingSeconds}
         minutes={minutes}
         progress={progress}
         actionName={isActive}
         /></TimerContainer>
         <Settings 
-        colorOptions={colorOptions}
-        fontOptions={fontOptions}
         />
-
       </Container>
     </settingsContext.Provider>
   )

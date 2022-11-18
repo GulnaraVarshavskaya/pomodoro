@@ -7,17 +7,6 @@ const fontFamily = {
   spaceMono: "'Space Mono', monospace",
 }
 
-const colorFont = {
-  dark: "rgba(22, 25, 50, 1)",
-  light: "rgba(215, 224, 255, 1)",
-}
-
-const colorBg = {
-    red: "rgba(248, 112, 112, 1)",
-    blue: "rgba(112, 243, 248, 1)",
-    violet: "rgba(216, 129, 248, 1)"
-}
-
 const RadioInput = styled.input.attrs({type: "radio"})`
   -webkit-appearance: none; 
   -moz-appearance: none;

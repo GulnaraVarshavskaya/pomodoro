@@ -1,7 +1,7 @@
 import Label from '../Label'
 import InputCounter from '../InputCounter'
 import styled from 'styled-components'
-import React, {useState} from 'react'
+import React from 'react'
 
 const FormContainer = styled.div`
     width: 140px;
@@ -18,7 +18,6 @@ const UpArrow = styled.img`
     right: 16px;
     top: 16px;
     cursor: pointer;
-    /* pointer-events: none; */
 `
 
 const DownArrow = styled.img`
@@ -26,7 +25,6 @@ const DownArrow = styled.img`
     right: 16px;
     bottom: 16px;
     cursor: pointer;
-    /* pointer-events: none; */
 `
 
 export default function FormInputLabel (props) {

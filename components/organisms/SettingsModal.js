@@ -8,15 +8,6 @@ import ColorRadioLabel from '../ColorRadioLabel'
 import { settingsContext } from '../../pages'
 
 
-
-const fontFamily = {
-    kumbhSans: "'Kumbh Sans', sans-serif;",
-    robotoSlab: "'Roboto Slab', serif",
-    spaceMono: "'Space Mono', monospace",
-}
-
-
-
 const colorFont = {
     dark: "rgba(30, 33, 63, 1)",
     light: "rgba(255, 255, 255, 1)",
@@ -38,11 +29,9 @@ const ModalContainer = styled.div`
 
 
 const SettingsModalContainer = styled.div`
-    position: absolute;
-    /* width: 540px;
-    height: 464px; */
-    /* flex-direction: column; */
-    /* margin-top: 100px; */
+    position: fixed;
+    height: 464px;
+    margin-top: -790px;
     border-radius: 25px;
     background-color: white;
     z-index: 100;
@@ -109,29 +98,21 @@ const HeadingInputWrapper = styled.div`
 `
 
 
-function SettingsModal(props) {
+function SettingsModal() {
 
-const {showModal, closeModal} = props
-const { selectedColor, onColorSelection, selectedFont, onFontSelection,  timeInputs, 
-    // updateTimeInputs, 
-    // updateTimeInputsUp, updateTimeInputsDown, 
-    handleChanges } = useContext(settingsContext)
+const { colorOptions, fontOptions, selectedColor, selectedFont, timeInputs, handleChanges, showModal, closeModal } = useContext(settingsContext)
 
 const [temporaryColor, setTemporaryColor] = useState(selectedColor);
 const [temporaryFont, setTemporaryFont] = useState(selectedFont);
 const [temporaryTimeInputs, setTemporaryTimeInputs] = useState(timeInputs)
 
 const updateTimeInputs = (e) => {
-    console.log("NEW VALUE:", e.target.value);
-    console.log("WHICH TIMER?:", e.target.name);
     const max = 60
-    // const limitedVal = e.target.value < max ? e.target.value : max;
     const limitedVal = Math.min( e.target.value, max )
     setTemporaryTimeInputs({ ...temporaryTimeInputs, [e.target.name]: limitedVal})
 }
 
 const updateTimeInputsUp = (e) => {
-    console.log("show us what is e.target?", e.target.name, temporaryTimeInputs[e.target.name], temporaryTimeInputs[e.target.name] + 1)
     if (temporaryTimeInputs[e.target.name] < 60) {
     setTemporaryTimeInputs({ ...temporaryTimeInputs, [e.target.name]: temporaryTimeInputs[e.target.name] + 1 })}
 }
@@ -141,11 +122,8 @@ const updateTimeInputsDown = (e) => {
     setTemporaryTimeInputs({ ...temporaryTimeInputs, [e.target.name]: temporaryTimeInputs[e.target.name] - 1 })}
 }
 
-  console.log("Is it getting update?", temporaryTimeInputs)
-
 const submit = (e) => {
     e.preventDefault();
-    console.log("submit")
     handleChanges(temporaryColor, temporaryFont, temporaryTimeInputs)    
 }
 
@@ -212,7 +190,7 @@ const submit = (e) => {
                         FONT
                     </Heading>
                     <RadioGroup>
-                        {props.fontOptions.map((font) => {
+                        {fontOptions.map((font) => {
                             return <FontRadioLabel
                             key={font}
                             font={font}
@@ -233,7 +211,7 @@ const submit = (e) => {
                         COLOR
                     </Heading>
                     <RadioGroup>
-                        {props.colorOptions.map((color) => {
+                        {colorOptions.map((color) => {
                             return <ColorRadioLabel
                             key={color}
                             backgroundColor={color}

@@ -1,5 +1,6 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import styled from 'styled-components'
+import { settingsContext } from '../../pages'
 import ToggleLabel from './ToggleLabel'
 
 
@@ -14,23 +15,25 @@ const TripleToggleSwitchContainer = styled.div`
 
 
 export default function TripleToggleSwitch (props) {
+
+    const { selectedColor, selectedFont } = useContext(settingsContext)
     
     return <TripleToggleSwitchContainer>
         <ToggleLabel
-        selectedColor={props.selectedColor}
-        selectedFont={props.selectedFont}
+        selectedColor={selectedColor}
+        selectedFont={selectedFont}
         span="pomodoro" 
         value="pomodoro"      
         />
         <ToggleLabel
-        selectedColor={props.selectedColor}
-        selectedFont={props.selectedFont}
+        selectedColor={selectedColor}
+        selectedFont={selectedFont}
         span="short break"
         value="shortBreak"
         />
         <ToggleLabel
-        selectedColor={props.selectedColor}
-        selectedFont={props.selectedFont}
+        selectedColor={selectedColor}
+        selectedFont={selectedFont}
         span="long break"
         value="longBreak"
         />
