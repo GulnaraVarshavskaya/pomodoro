@@ -1,5 +1,6 @@
 import styled from 'styled-components'
-import React, {useState, useEffect} from 'react'
+import React, { useContext } from 'react'
+import { settingsContext } from '../../pages'
 
 const colors = {
   red: "rgba(248, 112, 112, 1)",
@@ -12,6 +13,10 @@ const fonts = {
   robotoSlab: "'Roboto Slab', serif",
   spaceMono: "'Space Mono', monospace",
 }
+
+const TimerContainer = styled.div`
+
+`
 
 const WrapperSvg = styled.div`
   width: 410px;
@@ -104,8 +109,7 @@ export default function ProgressBar(props) {
     addToRadius = 13,
     seconds,
     minutes,
-    actionName,
-    toggleAction
+    actionName
   } = props
 
   const center = size / 2
@@ -115,8 +119,11 @@ export default function ProgressBar(props) {
   // const dashOffset = 2 * Math.PI * offsetRadius
  
   const dashOffset = dashArray * (progress / 100)
+
+  const {toggleAction, selectedFont, selectedColor} = useContext(settingsContext)
   
   return (
+    <TimerContainer>
     <WrapperSvg>
       <ProgressCircleSvg>
         <ProgressCircleTrack
@@ -132,13 +139,13 @@ export default function ProgressBar(props) {
           r={radius}
           strokeDasharray={dashArray}
           strokeDashoffset={dashOffset}
-          selectedColor={props.selectedColor}
+          selectedColor={selectedColor}
         />
         <TimeCountdown
           height="100"
           x={center}
           y={center}
-          selectedFont={props.selectedFont}
+          selectedFont={selectedFont}
           >
           {minutes < 10 ? '0' + minutes : minutes}:{seconds < 10 ? '0' + seconds : seconds}
         </TimeCountdown>
@@ -149,7 +156,7 @@ export default function ProgressBar(props) {
             <body xmlns="http://www.w3.org/1999/xhtml">
               <ForeignObjectDivForButton>
                 <ActionButton
-                selectedFont={props.selectedFont}
+                selectedFont={selectedFont}
                 onClick={toggleAction}>
                   {actionName}
                 </ActionButton>
@@ -157,6 +164,6 @@ export default function ProgressBar(props) {
             </body>
         </ForeignObject>
       </ProgressCircleSvg>
-    </WrapperSvg>
+    </WrapperSvg></TimerContainer>
   )
 }

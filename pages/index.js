@@ -6,14 +6,21 @@ import Settings from '../components/Settings'
 import styled from 'styled-components'
 
 const Container = styled.div`
-  display: flex;
+  /* display: flex; */
   min-height: 100vh;
   padding: 50px 0;
   margin: 0 auto;
   justify-content: center;
 `
-const DIV = styled.div`
-  position: absolute;
+const HeadContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  /* position: absolute; */
+`
+
+const TimerContainer = styled.div`
+  display: flex;
+  justify-content: center;
 `
 
 const KUMBH_SANS = 'kumbhSans'
@@ -32,12 +39,12 @@ export const settingsContext = createContext({});
 
 export default function Home() {
 
-  // const [applyChanges, setApplyChanges] = useState(true)
+  const [showModal, setShowModal] = useState(false)
 
-  // const handleChanges = (e) => {
-  //   e.preventDefault()
-  //   setApplyChanges()
-  // }
+  const openModal = () => {
+      setShowModal(true)};
+  const closeModal = () => {
+      setShowModal(false)};
 
   const [timeInputs, setTimeInputs] = useState({
     pomodoro: 25,
@@ -56,7 +63,8 @@ export default function Home() {
 
   const updateTimeInputsUp = (e) => {
     console.log("show us what is e.target?", e.target.name, timeInputs[e.target.name], timeInputs[e.target.name] + 1)
-    setTimeInputs({ ...timeInputs, [e.target.name]: limitedVal[e.target.name] + 1 })
+    if (timeInputs[e.target.name] < 60) {
+    setTimeInputs({ ...timeInputs, [e.target.name]: timeInputs[e.target.name] + 1 })}
   }
 
   const updateTimeInputsDown = (e) => {
@@ -64,20 +72,22 @@ export default function Home() {
     setTimeInputs({ ...timeInputs, [e.target.name]: timeInputs[e.target.name] - 1 })}
   }
 
-  const [selectedFont, setSelectedFont] = useState(SPACE_MONO)
+  const [selectedFont, setSelectedFont] = useState(KUMBH_SANS)
   const [selectedColor, setSelectedColor] = useState(red)
 
   const onFontSelection = ((font) => {
     setSelectedFont(font)});
 
-  const onColorSelection = ((e) => {
-    setSelectedColor(e)
+  const onColorSelection = ((color) => {
+    setSelectedColor(color)
     
 });
 
-  const [totalTime, setTotalTime] = useState(25*60)
+  const [ mode, setMode ] = useState("pomodoro")
+
+  const [totalTime, setTotalTime] = useState(timeInputs[mode]*60)
   const [timeRemaining, setTimeRemaining] = useState(totalTime);  
-  const [isActive, setIsActive] = useState("pause");
+  const [isActive, setIsActive] = useState("start");
 
   const minutes = Math.floor(timeRemaining / 60)
   const remainingSeconds = timeRemaining % 60
@@ -93,9 +103,15 @@ export default function Home() {
   }
 
   const restart = () => {
-    setTimeRemaining(totalTime)
-    setIsActive("pause")
+    // console.log("What is timeInputs[mode]" ,timeInputs[mode])
+    setTotalTime(timeInputs[mode] * 60)
+    setTimeRemaining(timeInputs[mode] * 60)
+    setIsActive("start")
   }
+
+  useEffect( () => {
+    restart();
+  }, [mode])
 
   useEffect(() => {
     let countdown = setInterval( () => {
@@ -108,31 +124,55 @@ export default function Home() {
         setIsActive("restart")
     }
     return () => clearInterval(countdown);
-  }, [isActive, timeRemaining, progress])
+  }, [isActive, timeRemaining])
 
+
+  const handleChanges = (changedColor, changedFont, changedTimeInputs ) => {
+    console.log("apply changes", changedTimeInputs)
+    setSelectedColor(changedColor)
+    setSelectedFont(changedFont)
+    setTimeInputs(changedTimeInputs)
+    setTotalTime(changedTimeInputs[mode] * 60)
+    setTimeRemaining(changedTimeInputs[mode] * 60)
+    setIsActive("start")
+
+    // e.preventDefault()
+    // console.log(applyChanges)
+    // setApplyChanges({
+    //   pomodoro: 25,
+    //   shortBreak: 5,
+    //   longBreak: 15,
+    // }, selectedColor, selectedFont)
+    // setApplyChanges({...applyChanges});
+    // setTotalTime(timeInputs[mode] * 60)
+    // setTimeRemaining(timeInputs[mode] * 60)
+    closeModal();
+
+  }
 
   return (
-    <settingsContext.Provider value={{ selectedColor: selectedColor, setSelectedColor: setSelectedColor, onColorSelection: onColorSelection, selectedFont: selectedFont, onFontSelection: onFontSelection, timeInputs: timeInputs, updateTimeInputs: updateTimeInputs, updateTimeInputsUp: updateTimeInputsUp, updateTimeInputsDown: updateTimeInputsDown }}>
+    <settingsContext.Provider value={{ selectedColor: selectedColor, setSelectedColor: setSelectedColor, onColorSelection: onColorSelection, selectedFont: selectedFont, onFontSelection: onFontSelection, timeInputs: timeInputs, updateTimeInputs: updateTimeInputs, updateTimeInputsUp: updateTimeInputsUp, updateTimeInputsDown: updateTimeInputsDown, handleChanges: handleChanges, mode: mode, setMode: setMode, toggleAction:toggleAction, showModal: showModal, openModal: openModal, closeModal: closeModal }}>
       <Container>
-        <DIV>
+        <HeadContainer>
         <Heading
         color="light"
         size="headingXl"
         font="kumbhSans"
-        >pomodoro</Heading></DIV>
+        >pomodoro</Heading>       
         <TripleToggleSwitch
         selectedColor={selectedColor}
         selectedFont={selectedFont}
-        />
+        /> 
+        </HeadContainer>
+        <TimerContainer>
         <ProgressBar
         selectedColor={selectedColor}
         selectedFont={selectedFont}
         seconds={remainingSeconds}
         minutes={minutes}
         progress={progress}
-        toggleAction={toggleAction}
         actionName={isActive}
-        />
+        /></TimerContainer>
         <Settings 
         colorOptions={colorOptions}
         fontOptions={fontOptions}

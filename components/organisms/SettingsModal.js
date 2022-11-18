@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import styled from 'styled-components'
 import Button from '../Button'
 import RadioLabel from '../RadioLabel'
@@ -30,16 +30,22 @@ const colorBg = {
     violet: "rgba(216, 129, 248, 1)"
 }
 
+const ModalContainer = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+`
+
 
 const SettingsModalContainer = styled.div`
     position: absolute;
-    width: 540px;
-    height: 464px;
-    flex-direction: column;
-    margin-top: 100px;
+    /* width: 540px;
+    height: 464px; */
+    /* flex-direction: column; */
+    /* margin-top: 100px; */
     border-radius: 25px;
     background-color: white;
-    z-index: 5;
+    z-index: 100;
 `
 
 const SettingsModalHeader = styled.header`
@@ -93,26 +99,60 @@ const FontRadioLabel = styled(RadioLabel)`
     span {
         font-size: 15px;
         font-weight: 400px;
-        /* font-family: ${(props) => fontFamily[props.font]}; */
         background-color: ${(props) => colorBg[props.backgroundColor]};
         color: ${(props) => colorFont[props.color]};        
     }
 `
-
 
 const HeadingInputWrapper = styled.div`
     display: block;
 `
 
 
-
 function SettingsModal(props) {
 
 const {showModal, closeModal} = props
-const { selectedColor, onColorSelection, selectedFont, onFontSelection,  timeInputs, updateTimeInputs, updateTimeInputsUp, updateTimeInputsDown } = useContext(settingsContext)
+const { selectedColor, onColorSelection, selectedFont, onFontSelection,  timeInputs, 
+    // updateTimeInputs, 
+    // updateTimeInputsUp, updateTimeInputsDown, 
+    handleChanges } = useContext(settingsContext)
+
+const [temporaryColor, setTemporaryColor] = useState(selectedColor);
+const [temporaryFont, setTemporaryFont] = useState(selectedFont);
+const [temporaryTimeInputs, setTemporaryTimeInputs] = useState(timeInputs)
+
+const updateTimeInputs = (e) => {
+    console.log("NEW VALUE:", e.target.value);
+    console.log("WHICH TIMER?:", e.target.name);
+    const max = 60
+    // const limitedVal = e.target.value < max ? e.target.value : max;
+    const limitedVal = Math.min( e.target.value, max )
+    setTemporaryTimeInputs({ ...temporaryTimeInputs, [e.target.name]: limitedVal})
+}
+
+const updateTimeInputsUp = (e) => {
+    console.log("show us what is e.target?", e.target.name, temporaryTimeInputs[e.target.name], temporaryTimeInputs[e.target.name] + 1)
+    if (temporaryTimeInputs[e.target.name] < 60) {
+    setTemporaryTimeInputs({ ...temporaryTimeInputs, [e.target.name]: temporaryTimeInputs[e.target.name] + 1 })}
+}
+
+const updateTimeInputsDown = (e) => {
+    if (temporaryTimeInputs[e.target.name] > 0) {
+    setTemporaryTimeInputs({ ...temporaryTimeInputs, [e.target.name]: temporaryTimeInputs[e.target.name] - 1 })}
+}
+
+  console.log("Is it getting update?", temporaryTimeInputs)
+
+const submit = (e) => {
+    e.preventDefault();
+    console.log("submit")
+    handleChanges(temporaryColor, temporaryFont, temporaryTimeInputs)    
+}
+
+
   return (
-    <>
-    {showModal ? (<SettingsModalContainer showModal={showModal}>
+    <ModalContainer showModal={showModal}>
+    <SettingsModalContainer>
         <SettingsModalHeader>
             <Heading
             size="headingL"
@@ -125,91 +165,94 @@ const { selectedColor, onColorSelection, selectedFont, onFontSelection,  timeInp
             </CloseButton>
         </SettingsModalHeader>
         <SettingsModalBody>
-            <SettingsModalSection>
-                <HeadingInputWrapper>
+            <form onSubmit={submit}>
+                <SettingsModalSection>
+                    <HeadingInputWrapper>
+                        <Heading
+                        size="headingS"
+                        letter="letterSpaceSmall"
+                        color="dark"
+                        >
+                            TIME (MINUTES)
+                        </Heading>
+                        <ModalInputLabelWrapper>
+                            <FormInputLabel
+                            name="pomodoro"
+                            number={temporaryTimeInputs.pomodoro}
+                            onChange={updateTimeInputs}
+                            handleClickUp={updateTimeInputsUp}
+                            handleClickDown={updateTimeInputsDown}
+                            label="pomodoro"
+                            />
+                            <FormInputLabel
+                            name="shortBreak"
+                            number={temporaryTimeInputs.shortBreak}
+                            onChange={updateTimeInputs}
+                            handleClickUp={updateTimeInputsUp}
+                            handleClickDown={updateTimeInputsDown}
+                            label="short break"
+                            />
+                            <FormInputLabel
+                            name="longBreak"
+                            number={temporaryTimeInputs.longBreak}
+                            onChange={updateTimeInputs}
+                            handleClickUp={updateTimeInputsUp}
+                            handleClickDown={updateTimeInputsDown}
+                            label="long break"
+                            />
+                        </ModalInputLabelWrapper>
+                    </HeadingInputWrapper>
+                </SettingsModalSection>
+                <SettingsModalSection>
                     <Heading
                     size="headingS"
                     letter="letterSpaceSmall"
                     color="dark"
                     >
-                        TIME (MINUTES)
+                        FONT
                     </Heading>
-                    <ModalInputLabelWrapper>
-                        <FormInputLabel
-                        name="pomodoro"
-                        number={timeInputs.pomodoro}
-                        onChange={updateTimeInputs}
-                        handleClickUp={updateTimeInputsUp}
-                        handleClickDown={updateTimeInputsDown}
-                        label="pomodoro"
-                        />
-                        <FormInputLabel
-                        name="shortBreak"
-                        number={timeInputs.shortBreak}
-                        onChange={updateTimeInputs}
-                        handleClickUp={updateTimeInputsUp}
-                        handleClickDown={updateTimeInputsDown}
-                        label="short break"
-                        />
-                        <FormInputLabel
-                        name="longBreak"
-                        number={timeInputs.longBreak}
-                        onChange={updateTimeInputs}
-                        handleClickUp={updateTimeInputsUp}
-                        handleClickDown={updateTimeInputsDown}
-                        label="long break"
-                        />
-                    </ModalInputLabelWrapper>
-                </HeadingInputWrapper>
-            </SettingsModalSection>
-            <SettingsModalSection>
-                <Heading
-                size="headingS"
-                letter="letterSpaceSmall"
-                color="dark"
-                >
-                    FONT
-                </Heading>
-                <RadioGroup>
-                    {props.fontOptions.map((font) => {
-                        return <FontRadioLabel
-                        key={font}
-                        font={font}
-                        span="Aa"
-                        selected={font === selectedFont}
-                        onClick={() => onFontSelection(font)}
-                        >
-                        </FontRadioLabel> 
-                    })}
-                </RadioGroup>
-            </SettingsModalSection>
-            <SettingsModalSection>
-                <Heading
-                size="headingS"
-                letter="letterSpaceSmall"
-                color="dark"
-                >
-                    COLOR
-                </Heading>
-                <RadioGroup>
-                    {props.colorOptions.map((color) => {
-                        return <ColorRadioLabel
-                        key={color}
-                        backgroundColor={color}
-                        selected={color === selectedColor}
-                        onClick={() => onColorSelection(color)}
-                        >                           
-                        </ColorRadioLabel>
-                    })}
-                        
-                </RadioGroup>
-            </SettingsModalSection>
-            <Button
-            backgroundColor="red"
-            >Apply</Button>
+                    <RadioGroup>
+                        {props.fontOptions.map((font) => {
+                            return <FontRadioLabel
+                            key={font}
+                            font={font}
+                            span="Aa"
+                            selected={font === temporaryFont}
+                            onClick={() => setTemporaryFont(font)}
+                            >
+                            </FontRadioLabel> 
+                        })}
+                    </RadioGroup>
+                </SettingsModalSection>
+                <SettingsModalSection>
+                    <Heading
+                    size="headingS"
+                    letter="letterSpaceSmall"
+                    color="dark"
+                    >
+                        COLOR
+                    </Heading>
+                    <RadioGroup>
+                        {props.colorOptions.map((color) => {
+                            return <ColorRadioLabel
+                            key={color}
+                            backgroundColor={color}
+                            selected={color === temporaryColor}
+                            onClick={() => setTemporaryColor(color)}
+                            >                           
+                            </ColorRadioLabel>
+                        })}
+                            
+                    </RadioGroup>
+                </SettingsModalSection>
+                <Button
+                backgroundColor="red"
+                onClick={submit}
+                >Apply</Button>
+            </form>
         </SettingsModalBody>
-    </SettingsModalContainer>) : null}
-    </>
+    </SettingsModalContainer>
+    </ModalContainer>
   )
 }
 

@@ -1,5 +1,7 @@
 import React from 'react'
+import { useContext } from 'react'
 import styled from 'styled-components'
+import { settingsContext } from '../../pages'
 
 const colors = {
   red: "rgba(248, 112, 112, 1)",
@@ -53,12 +55,19 @@ const RadioInputText = styled.span`
 
 export default function ToggleLabel(props) {
   
+  const { mode, setMode} = useContext(settingsContext)
+
   return (
         <ToggleLabelContainer>
             <RadioInput
             name="mode"
+            value={props.value}
             selectedColor={props.selectedColor}
             selectedFont={props.selectedFont}
+            onChange={ (e) => {
+              setMode(e.target.value)
+            } }
+            checked={mode === props.value}
             />
             <RadioInputText
             selectedFont={props.selectedFont}

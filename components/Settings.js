@@ -1,17 +1,12 @@
-import React, {useState} from 'react'
+import React, { useState, useContext } from 'react'
 import styled from 'styled-components'
+import { settingsContext } from '../pages'
 import SettingsModal     from './organisms/SettingsModal'
 
 const SettingsContainer = styled.div`
     display: flex;
     justify-content: center;
-    position: absolute;
-`
-
-const SettingsButtonGroup = styled.div`
     /* position: absolute; */
-    /* bottom: -60px; */
-    /* justify-content: center; */
 `
 
 const SettingsButton = styled.button`
@@ -34,28 +29,21 @@ const SettingsSvg = () => (
 
 function Settings(props) {
 
-    const [showModal, setShowModal] = useState(false)
-
-    const openModal = () => {
-        setShowModal(true)};
-    const closeModal = () => {
-        setShowModal(false)};
+    const { openModal, showModal, closeModal } = useContext(settingsContext)
 
     return (
-        <SettingsContainer>
-            <SettingsButtonGroup>
+        <SettingsContainer>           
             <SettingsButton
             onClick={openModal}
             >
                 <SettingsSvg />                
             </SettingsButton>
-            </SettingsButtonGroup>
-            <SettingsModal 
+            { showModal ? <SettingsModal 
             closeModal={closeModal} 
             showModal={showModal}
             colorOptions={props.colorOptions}
             fontOptions={props.fontOptions}
-            />
+            /> : null }
         </SettingsContainer>
     )
 }

@@ -62,6 +62,7 @@ export default function RadioLabel(props) {
             <RadioInput
             onClick={props.onClick}
             name="mode"
+            checked={props.selected}
             />
             <RadioInputText           
             >{props.span}</RadioInputText>

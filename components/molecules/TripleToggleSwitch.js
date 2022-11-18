@@ -19,17 +19,20 @@ export default function TripleToggleSwitch (props) {
         <ToggleLabel
         selectedColor={props.selectedColor}
         selectedFont={props.selectedFont}
-        span="pomodoro"       
+        span="pomodoro" 
+        value="pomodoro"      
         />
         <ToggleLabel
         selectedColor={props.selectedColor}
         selectedFont={props.selectedFont}
         span="short break"
+        value="shortBreak"
         />
         <ToggleLabel
         selectedColor={props.selectedColor}
         selectedFont={props.selectedFont}
         span="long break"
+        value="longBreak"
         />
         </TripleToggleSwitchContainer>
 }
