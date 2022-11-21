@@ -1,5 +1,5 @@
-import Label from '../Label'
-import InputCounter from '../InputCounter'
+import Label from '../atoms/Label'
+import InputCounter from '../atoms/InputCounter'
 import styled from 'styled-components'
 import React from 'react'
 

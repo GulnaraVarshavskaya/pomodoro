@@ -1,3 +1,4 @@
+import RadioInput from '../atoms/RadioInput'
 import React from 'react'
 import styled from 'styled-components'
 
@@ -7,20 +8,6 @@ const colorBg = {
     violet: "rgba(216, 129, 248, 1)"
 }
 
-const RadioInput = styled.input.attrs({type: "radio"})`
-  -webkit-appearance: none; 
-  -moz-appearance: none;
-  position: absolute;
-  &:focus {
-    outline: none;
-  }
-  &:checked ~ span:first-of-type {
-  width: 40px;
-  height: 40px;
-  text-align: center;
-  border-radius: 50%;
-}
-`
 const ColorRadioLabelContainer = styled.label`
   display: flex;
   justify-content: center;

@@ -1,8 +1,9 @@
-import Heading from '../components/Heading'
+import Heading from '../components/atoms/Heading'
 import TripleToggleSwitch from '../components/molecules/TripleToggleSwitch'
 import ProgressBar from '../components/organisms/ProgressBar'
+import Settings from '../components/molecules/Settings'
+
 import {useState, useEffect, createContext} from 'react'
-import Settings from '../components/Settings'
 import styled from 'styled-components'
 
 const Container = styled.div`

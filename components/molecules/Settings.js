@@ -1,7 +1,7 @@
 import React, { useContext } from 'react'
 import styled from 'styled-components'
-import { settingsContext } from '../pages'
-import SettingsModal from './organisms/SettingsModal'
+import { settingsContext } from '../../pages'
+import SettingsModal from '../organisms/SettingsModal'
 
 const SettingsContainer = styled.div`
     display: flex;

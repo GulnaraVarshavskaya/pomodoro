@@ -30,16 +30,9 @@ const RadioInput = styled.input.attrs({type: "radio"})`
 `
 const ToggleLabelContainer = styled.label`
   display: flex;
-  /* background-color: ${(props) => colors[props.selectedColor]}; */
   border-radius: 26.5px;
   cursor: pointer;
 `
-
-const fontFamily = {
-  kumbhSans: "'Kumbh Sans', sans-serif;",
-  robotoSlab: "'Roboto Slab', serif",
-  spaceMono: "'Space Mono', monospace",
-}
 
 const RadioInputText = styled.span`
   padding: 17px 26px;

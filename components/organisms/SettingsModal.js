@@ -1,29 +1,16 @@
+import Button from '../atoms/Button'
+import FontRadioLabel from '../molecules/FontRadioLabel'
+import FormInputLabel from '../molecules/FormInputLabel'
+import Heading from '../atoms/Heading'
+import ColorRadioLabel from '../molecules/ColorRadioLabel'
+
 import React, { useContext, useState } from 'react'
 import styled from 'styled-components'
-import Button from '../Button'
-import RadioLabel from '../RadioLabel'
-import FormInputLabel from '../molecules/FormInputLabel'
-import Heading from '../Heading'
-import ColorRadioLabel from '../ColorRadioLabel'
 import { settingsContext } from '../../pages'
 
 
-const colorFont = {
-    dark: "rgba(30, 33, 63, 1)",
-    light: "rgba(255, 255, 255, 1)",
-}
-
-const colorBg = {
-    black: "rgba(22, 25, 50, 1)",
-    white: "rgba(215, 224, 255, 1)",
-    red: "rgba(248, 112, 112, 1)",
-    blue: "rgba(112, 243, 248, 1)",
-    violet: "rgba(216, 129, 248, 1)"
-}
-
 const ModalContainer = styled.div`
     display: flex;
-    /* justify-content: center; */
     align-items: center;
 `
 
@@ -81,15 +68,6 @@ const RadioGroup = styled.div`
     gap: 16px;
     justify-content: right;
     align-items: center;
-`
-
-const FontRadioLabel = styled(RadioLabel)`
-    span {
-        font-size: 15px;
-        font-weight: 400px;
-        background-color: ${(props) => colorBg[props.backgroundColor]};
-        color: ${(props) => colorFont[props.color]};        
-    }
 `
 
 const HeadingInputWrapper = styled.div`

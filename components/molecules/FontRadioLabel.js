@@ -1,5 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
+import RadioInput from '../atoms/RadioInput'
 
 const fontFamily = {
   kumbhSans: "'Kumbh Sans', sans-serif;",
@@ -7,24 +8,6 @@ const fontFamily = {
   spaceMono: "'Space Mono', monospace",
 }
 
-const RadioInput = styled.input.attrs({type: "radio"})`
-  -webkit-appearance: none; 
-  -moz-appearance: none;
-  position: absolute;
-  &:focus {
-    outline: none;
-  }
-  &:checked ~ span:first-of-type {
-  width: 40px;
-  height: 40px;
-  text-align: center;
-  border-radius: 50%;
-  color: rgba(255, 255, 255, 1);
-  font-weight: bold;
-  font-family: ${(props) => fontFamily[props.font]};
-  background-color: rgba(22, 25, 50, 1);
-}
-`
 const RadioLabelContainer = styled.label`
   display: flex;
   width: 40px;
@@ -52,8 +35,12 @@ export default function RadioLabel(props) {
             onClick={props.onClick}
             name="mode"
             checked={props.selected}
+            font={props.font}
+            color="light"
+            backgroundColor="black"
             />
-            <RadioInputText           
+            <RadioInputText 
+            font={props.font}          
             >{props.span}</RadioInputText>
         </RadioLabelContainer>
   )

@@ -1,4 +1,3 @@
-import React from 'react'
 import styled from 'styled-components'
 
 const colorFont = {
@@ -12,6 +11,12 @@ const colorBg = {
     red: "rgba(248, 112, 112, 1)",
     blue: "rgba(112, 243, 248, 1)",
     violet: "rgba(216, 129, 248, 1)"
+}
+
+const fontFamily = {
+  kumbhSans: "'Kumbh Sans', sans-serif;",
+  robotoSlab: "'Roboto Slab', serif",
+  spaceMono: "'Space Mono', monospace",
 }
 
 const RadioInput = styled.input.attrs({type: "radio"})`
@@ -28,6 +33,8 @@ const RadioInput = styled.input.attrs({type: "radio"})`
   border-radius: 50%;
   color: ${(props) => colorFont[props.color]}; 
   background-color: ${(props) => colorBg[props.backgroundColor]};
+  font-weight: bold;
+  font-family: ${(props) => fontFamily[props.font]};
 }
 `
 
