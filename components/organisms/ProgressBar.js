@@ -145,7 +145,6 @@ export default function ProgressBar(props) {
           x={center}
           y={center} 
           >
-            <body xmlns="http://www.w3.org/1999/xhtml">
               <ForeignObjectDivForButton>
                 <ActionButton
                 selectedFont={selectedFont}
@@ -153,7 +152,6 @@ export default function ProgressBar(props) {
                   {actionName}
                 </ActionButton>
               </ForeignObjectDivForButton>
-            </body>
         </ForeignObject>
       </ProgressCircleSvg>
     </WrapperSvg>
