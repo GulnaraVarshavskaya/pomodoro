@@ -15,7 +15,6 @@ const Button = styled.button`
     border-radius: 27px;
     background-color: ${(props) => colorBg[props.backgroundColor]};
     &:hover {
-        /* background-color: rgba(248, 112, 112, 0.8); */
         background-color: rgba(250, 141, 141, 1);
     }
     font-size: 16px;

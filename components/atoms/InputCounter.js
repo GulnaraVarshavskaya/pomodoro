@@ -2,7 +2,7 @@ import styled from "styled-components"
 
 
 const InputCounter = styled.input.attrs({ type: 'number' })`
-    padding: 17px 16px;
+    padding: 15px 16px;
     border: none;    
     border-radius: 10px; 
     background-color: rgba(239, 241, 250, 1);
@@ -19,6 +19,9 @@ const InputCounter = styled.input.attrs({ type: 'number' })`
     &:focus {
     outline: 0;
     } 
+    @media only screen and (min-width: 768px){
+        padding: 17px 16px;
+    };
 `
 
 export default InputCounter;

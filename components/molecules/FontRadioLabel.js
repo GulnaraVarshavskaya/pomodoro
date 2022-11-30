@@ -15,6 +15,9 @@ const RadioLabelContainer = styled.label`
   background-color: rgba(239, 241, 250, 1);
   border-radius: 50%;
   cursor: pointer;
+  &:hover {
+    box-shadow: 0px 0px 0px 4px white, 0px 0px 0px 5px #EFF1FA;
+  }
 `
 
 const RadioInputText = styled.span`

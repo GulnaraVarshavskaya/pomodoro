@@ -4,8 +4,14 @@ import styled from 'styled-components'
 import React from 'react'
 
 const FormContainer = styled.div`
-    width: 140px;
-    margin-top: 24px;
+    display: flex;
+    align-items: center;
+    margin-top: 8px;
+    justify-content: space-between;
+    @media only screen and (min-width: 768px){
+        display: block;
+        width: 140px;
+    };
 `
 
 const NumberWrapper = styled.div`
@@ -16,15 +22,23 @@ const NumberWrapper = styled.div`
 const UpArrow = styled.img`
     position: absolute;
     right: 16px;
-    top: 16px;
+    top: 14px;
     cursor: pointer;
+    opacity: 0.25;
+    &:hover {
+        opacity: 1;
+    }
 `
 
 const DownArrow = styled.img`
     position: absolute;
     right: 16px;
-    bottom: 16px;
+    bottom: 14px;
     cursor: pointer;
+    opacity: 0.25;
+    &:hover {
+        opacity: 1;
+    }
 `
 
 export default function FormInputLabel (props) {
@@ -35,6 +49,7 @@ export default function FormInputLabel (props) {
                 {props.label}
                 </Label>
             <NumberWrapper>
+                
                 <UpArrow 
                 src="assets/icon-arrow-up.svg"
                 name={props.name}

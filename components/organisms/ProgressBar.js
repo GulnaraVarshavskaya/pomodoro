@@ -14,34 +14,46 @@ const fonts = {
   spaceMono: "'Space Mono', monospace",
 }
 
+
 const WrapperSvg = styled.div`
-  width: 410px;
-  height: 410px;
+  width: 300px;
+  height: 300px;
   background: linear-gradient(315deg, #2E325A 0%, #0E112A 100%);
   border-radius: 50%;
   box-shadow: -50px -50px 100px #272C5A, 50px 50px 100px #121530;
   align-items: center;
   justify-content: center;
   display: flex;
-  margin-top: 200px;
+  margin-top: 140px;
   margin-bottom: 63px;  
+  @media only screen and (min-width: 768px){
+      width: 410px;
+      height: 410px;
+    };
 `
 
 const ProgressCircleSvg = styled.svg`
-  width: 366px;
-  height: 366px;
+  width: 268px;
+  height: 268px;
   border-radius: 50%;
   background-color: rgba(22, 25, 50, 1);
   align-items: center;
   justify-content: center;
   display: flex;
   text-align: center;
+  @media only screen and (min-width: 768px){
+      width: 366px;
+      height: 366px;
+    };
 `
 
 const ProgressCircleTrack = styled.circle`
   stroke-width: 11px;
   stroke: rgba(22, 25, 50, 1);
   fill: transparent;
+  stroke-linecap: round;
+  transform: rotate(-90deg);
+  transform-origin: center;
 `
 
 const ProgressCircleIndicator = styled.circle`
@@ -88,8 +100,10 @@ const ActionButton = styled.button`
   background-color: transparent;
   margin-top: 40px;
   margin-right: -15px;
-  &:focus {
+  cursor: pointer;
+  &:hover {
     outline: 0;
+    color: ${(props) => colors[props.selectedColor]};
   }
 `
 
@@ -116,8 +130,12 @@ export default function ProgressBar(props) {
   
   return (
 
-    <WrapperSvg>
-      <ProgressCircleSvg>
+    <WrapperSvg
+    >
+      <ProgressCircleSvg
+      viewBox='0 0 366 366'
+      // preserveAspectRatio='xMidYMid meet'
+      >
         <ProgressCircleTrack
           cx={radius}
           cy={radius}
@@ -134,7 +152,6 @@ export default function ProgressBar(props) {
           selectedColor={selectedColor}
         />
         <TimeCountdown
-          height="100"
           x={center}
           y={center}
           selectedFont={selectedFont}
@@ -147,7 +164,8 @@ export default function ProgressBar(props) {
           >
               <ForeignObjectDivForButton>
                 <ActionButton
-                selectedFont={selectedFont}
+                selectedFont={selectedFont} 
+                selectedColor={selectedColor}               
                 onClick={toggleAction}>
                   {actionName}
                 </ActionButton>

@@ -117,7 +117,7 @@ export default function Home() {
         <HeadContainer>
         <Heading
         color="light"
-        size="headingXl"
+        size="headingL"
         font="kumbhSans"
         >pomodoro</Heading>       
         <TripleToggleSwitch

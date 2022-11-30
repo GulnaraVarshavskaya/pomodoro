@@ -17,6 +17,9 @@ const ColorRadioLabelContainer = styled.label`
   background-color: ${(props) => colorBg[props.backgroundColor]};
   border-radius: 50%;
   cursor: pointer;
+  &:hover {
+    box-shadow: 0px 0px 0px 4px white, 0px 0px 0px 5px #EFF1FA;
+  }
 `
 
 const RadioInputCheck = styled.span`
@@ -27,6 +30,7 @@ const RadioInputCheck = styled.span`
 export default function ColorRadioLabel(props) {
 
   return (
+
         <ColorRadioLabelContainer
         backgroundColor={props.backgroundColor}
         onClick={props.onClick}
@@ -41,6 +45,7 @@ export default function ColorRadioLabel(props) {
             </RadioInputCheck>) : false}
             
         </ColorRadioLabelContainer>
+
   )
 }
 

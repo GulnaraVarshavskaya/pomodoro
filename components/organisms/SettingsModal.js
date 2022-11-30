@@ -17,10 +17,13 @@ const ModalContainer = styled.div`
 
 const SettingsModalContainer = styled.div`
     position: fixed;
-    inset: calc((100vh - 464px)/2) calc((100vw - 540px)/2);
+    inset: calc((100vh - 580px)/2) calc((100vw - 328px)/2);
     border-radius: 25px;
     background-color: white;
     z-index: 100;
+    @media only screen and (min-width: 768px){
+        inset: calc((100vh - 464px)/2) calc((100vw - 540px)/2);
+    };
 `
 
 const SettingsModalHeader = styled.header`
@@ -28,46 +31,75 @@ const SettingsModalHeader = styled.header`
     justify-content: space-between;
     align-items: center;
     border-bottom: 1px solid rgba(227, 225, 225, 1);
-    padding: 32px 40px;
+    padding: 24px 24px 28px;
+    @media only screen and (min-width: 768px){
+        padding: 33px 40px;
+    };
 `
 
 const CloseButton = styled.button`
     background: none;
     cursor: pointer;
     border: none;
+    opacity: 0.5;
+    &:hover {
+        opacity: 1;
+    }
     &:focus {
-    outline: 0;
+        outline: 0;
     } 
 `
 
 const SettingsModalBody = styled.div`
-    padding: 0 40px 50px;
+    padding: 0 24px 50px;
+    @media only screen and (min-width: 768px){
+        padding: 0 40px 50px;
+    };
 `
 
 const SettingsModalSection = styled.div`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding-bottom: 24px;
-    padding-top: 24px;
+    text-align: center;
+    padding-bottom: 22px;
+    padding-top: 22px;
     &:not(&:last-of-type) {
        border-bottom: 1px solid rgba(227, 225, 225, 1); 
+       padding-bottom: 24px;
+        padding-top: 24px;
     }   
+    @media only screen and (min-width: 768px){
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: left;
+        padding-bottom: 19px;
+        padding-top: 19px;
+    };
 `
 
 const ModalInputLabelWrapper = styled.div`
-    display: flex;
-    flex-direction: row;
-    gap: 20px;
+
+    margin-top: 10px;
+
+    @media only screen and (min-width: 768px){
+        display: flex;
+        flex-direction: row;
+        gap: 20px;
+        margin-top: 14px;
+    };
 `
 
 const RadioGroup = styled.div`
-    width: 100%;
     display: flex;
     flex-direction: row;
     gap: 16px;
-    justify-content: right;
     align-items: center;
+    justify-content: center;
+    margin-top: 18px;
+    @media only screen and (min-width: 768px){
+        width: 100%;
+        justify-content: right;
+        margin-top: 0;
+    };
 `
 
 const HeadingInputWrapper = styled.div`
@@ -110,7 +142,7 @@ const submit = (e) => {
     <SettingsModalContainer>
         <SettingsModalHeader>
             <Heading
-            size="headingL"
+            size="headingM"
             color="dark"
             >
                 Settings
@@ -119,7 +151,8 @@ const submit = (e) => {
                 <img src="./assets/icon-close.svg" alt="Close modal" />
             </CloseButton>
         </SettingsModalHeader>
-        <SettingsModalBody>
+        <SettingsModalBody
+        >
             <form onSubmit={submit}>
                 <SettingsModalSection>
                     <HeadingInputWrapper>

@@ -2,16 +2,14 @@ import styled from "styled-components"
 import PropTypes from 'prop-types';
 
 const sizesDesktop = {
-    headingXl: "32px",
-    headingL: "28px",
-    headingM: "16px",
+    headingL: "32px",
+    headingM: "28px",
     headingS: "13px"
 }
 
 const sizesMobile = {
-    headingXl: "24px",
-    headingL: "20px",
-    headingM: "14px",
+    headingL: "24px",
+    headingM: "20px",
     headingS: "11px"
 }
 
@@ -45,7 +43,7 @@ const Heading = styled.h1`
     font-weight: bold;
     letter-spacing: ${(props) => letterSpacingMobile[props.letter]};
     color: ${(props) => colorFont[props.color]};
-    @media only screen and (min-width: 1440px){
+    @media only screen and (min-width: 768px){
         font-size: ${(props) => sizesDesktop[props.size]};
         letter-spacing: ${(props) => letterSpacingDesktop[props.letter]};
     };
