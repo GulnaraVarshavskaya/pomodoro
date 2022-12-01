@@ -24,8 +24,8 @@ const WrapperSvg = styled.div`
   align-items: center;
   justify-content: center;
   display: flex;
-  margin-top: 140px;
-  margin-bottom: 63px;  
+  margin-top: 150px;
+  margin-bottom: 50px;  
   @media only screen and (min-width: 768px){
       width: 410px;
       height: 410px;
