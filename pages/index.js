@@ -2,6 +2,7 @@ import Heading from '../components/atoms/Heading'
 import TripleToggleSwitch from '../components/molecules/TripleToggleSwitch'
 import ProgressBar from '../components/organisms/ProgressBar'
 import Settings from '../components/molecules/Settings'
+import ToDoList from '../components/molecules/ToDoList'
 
 import {useState, useEffect, createContext} from 'react'
 import styled from 'styled-components'
@@ -24,6 +25,12 @@ const TimerContainer = styled.div`
   justify-content: center;
 `
 
+const SettingsContainer = styled.div`
+  display: grid;
+  grid-auto-flow: column;
+  grid-column-gap: 200px;
+`
+
 const KUMBH_SANS = 'kumbhSans'
 const ROBOTO_SLAB = 'robotoSlab'
 const SPACE_MONO = 'spaceMono'
@@ -40,7 +47,13 @@ export const settingsContext = createContext({});
 
 export default function Home() {
 
+  const [showSettingsModal, setShowSettingsModal] = useState(false)
   const [showModal, setShowModal] = useState(false)
+
+  const openSettingsModal = () => {
+      setShowSettingsModal(true)};
+  const closeSettingsModal = () => {
+      setShowSettingsModal(false)};
 
   const openModal = () => {
       setShowModal(true)};
@@ -107,31 +120,36 @@ export default function Home() {
     setTimeRemaining(changedTimeInputs[mode] * 60)
     setIsActive("start")
 
-    closeModal();
+    closeSettingsModal();
 
   }
 
   return (
-    <settingsContext.Provider value={{ colorOptions: colorOptions, fontOptions: fontOptions, selectedColor: selectedColor, setSelectedColor: setSelectedColor, selectedFont: selectedFont, timeInputs: timeInputs, handleChanges: handleChanges, mode: mode, setMode: setMode, toggleAction:toggleAction, showModal: showModal, openModal: openModal, closeModal: closeModal }}>
+    <settingsContext.Provider value={{ colorOptions: colorOptions, fontOptions: fontOptions, selectedColor: selectedColor, setSelectedColor: setSelectedColor, selectedFont: selectedFont, timeInputs: timeInputs, handleChanges: handleChanges, mode: mode, setMode: setMode, toggleAction:toggleAction, showModal: showModal, showSettingsModal: showSettingsModal, openSettingsModal: openSettingsModal, closeSettingsModal: closeSettingsModal, openModal: openModal, closeModal: closeModal }}>
       <Container>
         <HeadContainer>
-        <Heading
-        color="light"
-        size="headingL"
-        font="kumbhSans"
-        >pomodoro</Heading>       
-        <TripleToggleSwitch
-        /> 
+          <Heading
+          color="light"
+          size="headingL"
+          font="kumbhSans"
+          >pomodoro
+          </Heading>       
+          <TripleToggleSwitch
+          /> 
         </HeadContainer>
         <TimerContainer>
-        <ProgressBar
-        seconds={remainingSeconds}
-        minutes={minutes}
-        progress={progress}
-        actionName={isActive}
-        /></TimerContainer>
-        <Settings 
-        />
+          <ProgressBar
+          seconds={remainingSeconds}
+          minutes={minutes}
+          progress={progress}
+          actionName={isActive}
+          />
+        </TimerContainer>
+        <SettingsContainer>
+          <ToDoList />
+          <Settings 
+          />
+        </SettingsContainer>
       </Container>
     </settingsContext.Provider>
   )

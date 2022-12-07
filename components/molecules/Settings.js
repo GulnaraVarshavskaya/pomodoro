@@ -32,18 +32,18 @@ const SettingsSvg = () => (
 
 function Settings() {
 
-    const { openModal, showModal, closeModal, colorOptions, fontOptions } = useContext(settingsContext)
+    const { openSettingsModal, showSettingsModal, closeSettingsModal, colorOptions, fontOptions } = useContext(settingsContext)
 
     return (
         <SettingsContainer>           
             <SettingsButton
-            onClick={openModal}
+            onClick={openSettingsModal}
             >
                 <SettingsSvg />                
             </SettingsButton>
-            { showModal ? <SettingsModal 
-            closeModal={closeModal} 
-            showModal={showModal}
+            { showSettingsModal ? <SettingsModal 
+            closeSettingsModal={closeSettingsModal} 
+            showSettingsModal={showSettingsModal}
             colorOptions={colorOptions}
             fontOptions={fontOptions}
             /> : null }

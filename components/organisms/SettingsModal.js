@@ -109,7 +109,7 @@ const HeadingInputWrapper = styled.div`
 
 function SettingsModal() {
 
-const { colorOptions, fontOptions, selectedColor, selectedFont, timeInputs, handleChanges, showModal, closeModal } = useContext(settingsContext)
+const { colorOptions, fontOptions, selectedColor, selectedFont, timeInputs, handleChanges, showSettingsModal, closeSettingsModal } = useContext(settingsContext)
 
 const [temporaryColor, setTemporaryColor] = useState(selectedColor);
 const [temporaryFont, setTemporaryFont] = useState(selectedFont);
@@ -138,7 +138,7 @@ const submit = (e) => {
 
 
   return (
-    <ModalContainer showModal={showModal}>
+    <ModalContainer showSettingsModal={showSettingsModal}>
     <SettingsModalContainer>
         <SettingsModalHeader>
             <Heading
@@ -147,7 +147,7 @@ const submit = (e) => {
             >
                 Settings
             </Heading>
-            <CloseButton onClick={closeModal}>
+            <CloseButton onClick={closeSettingsModal}>
                 <img src="./assets/icon-close.svg" alt="Close modal" />
             </CloseButton>
         </SettingsModalHeader>
