@@ -31,12 +31,13 @@ const ButtonInputText = styled.span`
     cursor: pointer;
 `
 
-function PlusButton() {
+function PlusButton(props) {
+    // console.log("props", props)
     return (       
             <PlusButtonContainer
             >
                 <PlusButtonSvg /> 
-                <ButtonInputText>Add a project</ButtonInputText>
+                <ButtonInputText>{props.children}</ButtonInputText>
                              
             </PlusButtonContainer>
     )

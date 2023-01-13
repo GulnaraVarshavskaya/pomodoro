@@ -54,7 +54,6 @@ const RadioInput = styled.input.attrs({type: "radio"})`
 `
 const ToggleLabelContainer = styled.label`
   display: flex;
-  /* border-radius: 26.5px; */
   cursor: pointer;
 `
 
