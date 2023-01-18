@@ -17,6 +17,9 @@ const ToDoListButton = styled.button`
     &:hover {
         opacity: 1;
     }
+    &:disabled {
+        opacity: 0.5;
+    }
     &:focus {
         outline: none;
         border: none;
@@ -44,10 +47,11 @@ function ToDoList() {
         <ToDoListContainer>           
             <ToDoListButton
             onClick={openModal}
+            disabled={ showModal !== null }
             >
                 <ToDoListSvg />                
             </ToDoListButton>
-            { showModal ? <ToDoListModal 
+            { showModal === "todoList" ? <ToDoListModal 
             closeModal={closeModal} 
             showModal={showModal}
             /> : null }

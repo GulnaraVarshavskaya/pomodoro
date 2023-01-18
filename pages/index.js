@@ -47,18 +47,20 @@ export const settingsContext = createContext({});
 
 export default function Home() {
 
-  const [showSettingsModal, setShowSettingsModal] = useState(false)
-  const [showModal, setShowModal] = useState(false)
+  const [showModal, setShowModal] = useState(null)
+  // show to do list => "todoList"
+  // show settings => "settings"
+  // show nothing => null
 
   const openSettingsModal = () => {
-      setShowSettingsModal(true)};
+      setShowModal("settings")};
   const closeSettingsModal = () => {
-      setShowSettingsModal(false)};
+      setShowModal(null)};
 
   const openModal = () => {
-      setShowModal(true)};
+      setShowModal("todoList")};
   const closeModal = () => {
-      setShowModal(false)};
+      setShowModal(null)};
 
   const [timeInputs, setTimeInputs] = useState({
     pomodoro: 25,
@@ -125,7 +127,7 @@ export default function Home() {
   }
 
   return (
-    <settingsContext.Provider value={{ colorOptions: colorOptions, fontOptions: fontOptions, selectedColor: selectedColor, setSelectedColor: setSelectedColor, selectedFont: selectedFont, timeInputs: timeInputs, handleChanges: handleChanges, mode: mode, setMode: setMode, toggleAction:toggleAction, showModal: showModal, showSettingsModal: showSettingsModal, openSettingsModal: openSettingsModal, closeSettingsModal: closeSettingsModal, openModal: openModal, closeModal: closeModal }}>
+    <settingsContext.Provider value={{ colorOptions: colorOptions, fontOptions: fontOptions, selectedColor: selectedColor, setSelectedColor: setSelectedColor, selectedFont: selectedFont, timeInputs: timeInputs, handleChanges: handleChanges, mode: mode, setMode: setMode, toggleAction:toggleAction, showModal: showModal, openSettingsModal: openSettingsModal, closeSettingsModal: closeSettingsModal, openModal: openModal, closeModal: closeModal }}>
       <Container>
         <HeadContainer>
           <Heading

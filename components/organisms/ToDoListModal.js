@@ -190,37 +190,56 @@ function ToDoListModal() {
     }, [])
 
     async function handleCheckboxClick(id, completed) {
+        // when user clicks checkbox this function will be executed 
+        // id - id of task, 
+        // completed - when the checkbox is empty the value is false and when the checkbox is checked - it's true
         console.log("id", id, "completed", completed)
+
+        console.log("data", data)
+        // here we mapping whole array of projects and return new array of updated project
+        const updatedProjects = projects.map( (project) => {
+            // if the project we are mapping over is the selected project then we're going to do something
+            if ( project.id === selectedProjectId) {
+                console.log("project", project)
+                // in the selected project we're mapping tasks to find the right task
+                const updatedTasks = project.tasks.map( (task) => {
+                    // if the id of task matches with task id that was updated on the backend
+                    if (task.id === id) {
+                        // return an object. id, title, projectId stay the same, completed is going to change
+                       return {
+                        id: task.id,
+                        title: task.title,
+                        projectId: task.projectId,
+                        completed: !completed
+                    } 
+                    }
+                    // if the task wasn't updated just return it in a new array
+                    else {return task}
+                    
+                })
+                // we're replacing the old array of tasks with the new one
+                project.tasks = updatedTasks
+                console.log("updatedTasks", updatedTasks)
+            }
+            // when we're mapping we always need to return project otherwise it's going to be underfind
+            return project
+        })
+        console.log("updatedProjects", updatedProjects)
+        // we're calling the setter and triggering rerender
+        setProjects(updatedProjects)
+
+        // we're sending a PATCH request to update task with a specific id
+        // we're sending in the body an object with key completed and the value of completed id not completed
+        // optimistic update
         const response = await fetch (`api/tasks/${id}`, {
             method: "PATCH",
             body: JSON.stringify({
                 completed: !completed,
             }),
         })
+        // here we get data from the server. It's an object with id and completed 
+        // id - id of task, completed - updated value 
         const data = await response.json()
-
-        console.log("data", data)
-        const updatedProjects = projects.map( (project) => {
-            if ( project.id === selectedProjectId) {
-                console.log("project", project)
-                const updatedTasks = project.tasks.map( (task) => {
-                    if (task.id === data.id) {
-                       return {
-                        id: task.id,
-                        title: task.title,
-                        projectId: task.projectId,
-                        completed: data.completed
-                    } 
-                    }
-                    else {return task}
-                    
-                })
-                project.tasks = updatedTasks
-            }
-            return project
-        })
-        console.log("updatedProjects", updatedProjects)
-        setProjects(updatedProjects)
     }
 
     // console.log("projects", projects)
@@ -269,7 +288,9 @@ function ToDoListModal() {
                         </ListTextArrow>
                     </ProjectsTasksList>)})}
             </ProjectsTasksUl>)}
-            <PlusButton>Add a project</PlusButton>
+            <PlusButton
+            onClick={() => {}}
+            >Add a project</PlusButton>
         </ToDoListModalBody>}
 
         {selectedProjectId !== null && <ToDoListModalBody>

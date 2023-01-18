@@ -17,6 +17,9 @@ const SettingsButton = styled.button`
     &:hover {
         opacity: 1;
     }
+    &:disabled {
+        opacity: 0.5;
+    }
     &:focus {
         outline: none;
         border: none;
@@ -32,18 +35,18 @@ const SettingsSvg = () => (
 
 function Settings() {
 
-    const { openSettingsModal, showSettingsModal, closeSettingsModal, colorOptions, fontOptions } = useContext(settingsContext)
+    const { openSettingsModal, showModal, closeSettingsModal, colorOptions, fontOptions } = useContext(settingsContext)
 
     return (
         <SettingsContainer>           
             <SettingsButton
             onClick={openSettingsModal}
+            disabled={ showModal !== null }
             >
                 <SettingsSvg />                
             </SettingsButton>
-            { showSettingsModal ? <SettingsModal 
+            { showModal === "settings" ? <SettingsModal 
             closeSettingsModal={closeSettingsModal} 
-            showSettingsModal={showSettingsModal}
             colorOptions={colorOptions}
             fontOptions={fontOptions}
             /> : null }
