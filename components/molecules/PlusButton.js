@@ -35,6 +35,7 @@ function PlusButton(props) {
     // console.log("props", props)
     return (       
             <PlusButtonContainer
+            onClick={props.onClick}
             >
                 <PlusButtonSvg /> 
                 <ButtonInputText>{props.children}</ButtonInputText>

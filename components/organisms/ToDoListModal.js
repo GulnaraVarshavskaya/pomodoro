@@ -1,5 +1,5 @@
 import Heading from '../atoms/Heading'
-import PlusButton from '../atoms/PlusButton'
+import PlusButton from '../molecules/PlusButton'
 import React, { useContext, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { settingsContext } from '../../pages'
@@ -248,6 +248,18 @@ function ToDoListModal() {
         return project.id === selectedProjectId
     })
 
+    async function handleAddProject () {
+        const response = await fetch (`api/projects`, {
+            method: "POST",
+        })
+        const data = await response.json()
+        console.log("data", data.newProject)
+        
+        const updatedProjects = [ ...projects, data.newProject ]
+
+        setProjects(updatedProjects)
+    }
+
   return (
     <ModalContainer showModal={showModal}>
     <ToDoListModalContainer>
@@ -289,7 +301,7 @@ function ToDoListModal() {
                     </ProjectsTasksList>)})}
             </ProjectsTasksUl>)}
             <PlusButton
-            onClick={() => {}}
+            onClick={() => handleAddProject()}
             >Add a project</PlusButton>
         </ToDoListModalBody>}
 
