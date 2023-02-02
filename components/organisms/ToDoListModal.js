@@ -475,7 +475,6 @@ function ToDoListModal() {
 
         {selectedProjectId !== null && (
           <ToDoListModalBody>
-            {selectedProject.tasks.length > 0 && (
               <ProjectsTasksUl>
                 {selectedProject.tasks.map((task) => {
                   return (
@@ -516,7 +515,7 @@ function ToDoListModal() {
                   false
                 )}
               </ProjectsTasksUl>
-            )}
+  
             <PlusButton onClick={handleAddTask}>Add a task</PlusButton>
           </ToDoListModalBody>
         )}
