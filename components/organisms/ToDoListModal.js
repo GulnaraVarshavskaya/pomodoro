@@ -102,7 +102,7 @@ const ProjectListText = styled.span`
 
 const ProjectInput = styled.input`
   display: block;
-  width: 378px;
+  /* width: 100%; */
   padding: 0;
   margin-left: 12px;
   border: none;
@@ -187,6 +187,23 @@ const PlayTimerButton = styled.button`
   }
 `;
 
+const DoneBtn = styled.button`
+  padding: 0px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  &:focus {
+    outline: 0;
+  }
+`;
+
+const TextDoneBtn = styled.span`
+  font-size: 16px;
+  line-height: 16px;
+  font-weight: bold;
+  color: #F97070;
+`
+
 function ToDoListModal() {
   const { showModal, closeModal } = useContext(settingsContext);
 
@@ -199,6 +216,7 @@ function ToDoListModal() {
   const [taskTitle, setTaskTitle] = useState("");
 
   const [showInput, setShowInput] = useState(false);
+  const [showDoneBtn, setShowDoneBtn] = useState(false);
 
   async function fetchProjects() {
     const response = await fetch(`api/projects`);
@@ -335,7 +353,11 @@ function ToDoListModal() {
 
     useEffect(() => {
       const handleClick = (event) => {
-        if (ref.current && !ref.current.contains(event.target)) {
+        console.log("event.target", event.target, event.target.innerText !== "Done")
+        const isRefBeingUsed = Boolean(ref.current)
+        const isClickOutsideInput = !ref.current?.contains(event.target)
+        const isTargetNotDoneBtn = event.target.innerText !== "Done"
+        if (isRefBeingUsed && isClickOutsideInput && isTargetNotDoneBtn) {
           callback();
         }
       };
@@ -352,6 +374,7 @@ function ToDoListModal() {
 
   const handleClickOutside = () => {
     setShowInput(false);
+    setShowDoneBtn(false);
   };
 
   const ref = useOutsideClick(handleClickOutside);
@@ -360,7 +383,7 @@ function ToDoListModal() {
     setTaskTitle(e.target.value);
   }
 
-  async function handleTaskChanges(e, completed) {
+  async function handleTaskChanges(e) {
     if (e.key === "Enter") {
       const newTask = {
         id: uuid(),
@@ -382,6 +405,7 @@ function ToDoListModal() {
       setProjects(updatedProjects);
       setShowInput(false);
       setTaskTitle("");
+      setShowDoneBtn(false);
 
       const response = await fetch(
         `/api/projects/${selectedProjectId}/tasks/`,
@@ -391,7 +415,7 @@ function ToDoListModal() {
             id: newTask.id,
             projectId: selectedProjectId,
             title: taskTitle,
-            completed: false
+            completed: false,
           }),
         }
       );
@@ -400,10 +424,54 @@ function ToDoListModal() {
     }
   }
 
+  async function handleTaskChangesDoneBtn(e) {
+      const newTask = {
+        id: uuid(),
+        title: taskTitle,
+        projectId: selectedProjectId,
+        completed: false,
+      };
+      console.log("newTask", newTask);
+      const updatedProjects = projects.map((project) => {
+        if (project.id === selectedProjectId) {
+          console.log("project", project);
+          return {
+            ...project,
+            tasks: [...project.tasks, newTask],
+          };
+        }
+        return project;
+      });
+      setProjects(updatedProjects);
+      setShowInput(false);
+      setTaskTitle("");
+      setShowDoneBtn(false);
+
+      const response = await fetch(
+        `/api/projects/${selectedProjectId}/tasks/`,
+        {
+          method: "POST",
+          body: JSON.stringify({
+            id: newTask.id,
+            projectId: selectedProjectId,
+            title: taskTitle,
+            completed: false,
+          }),
+        }
+      );
+      const data = await response.json();
+      console.log("updatedProjects", updatedProjects);
+    }
+
   async function handleAddTask() {
     console.log("let's start");
     setShowInput(true);
+    setShowDoneBtn(true);
     console.log("selselectedProjectId", selectedProjectId);
+  }
+
+  function handleEditProject() {
+    alert("Hi")
   }
 
   return (
@@ -421,9 +489,17 @@ function ToDoListModal() {
               {selectedProjectId === null && "Projects"}
             </Heading>
           </Wrapper>
-          <CloseButton onClick={closeModal}>
-            <img src="./assets/icon-close.svg" alt="Close modal" />
-          </CloseButton>
+          {showDoneBtn ? (
+            <DoneBtn
+            onClick={handleTaskChangesDoneBtn}
+            >
+              <TextDoneBtn>Done</TextDoneBtn>
+            </DoneBtn>
+          ) : (
+            <CloseButton onClick={closeModal}>
+              <img src="./assets/icon-close.svg" alt="Close modal" />
+            </CloseButton>
+          )}
         </ToDoListModalHeader>
         {selectedProjectId === null && (
           <ToDoListModalBody>
@@ -433,7 +509,8 @@ function ToDoListModal() {
                   if (projectInEditModeId === project.id) {
                     return (
                       <>
-                        <ProjectsTasksList>
+                        <ProjectsTasksList
+                        >
                           <ProjectListDot backgroundColor="grey" />
                           <ProjectInput
                             // maxLength="60"
@@ -447,7 +524,10 @@ function ToDoListModal() {
                     );
                   } else {
                     return (
-                      <ProjectsTasksList key={project.id}>
+                      <ProjectsTasksList 
+                      key={project.id}
+                      onContextMenu={handleEditProject}
+                      >
                         {" "}
                         <ProjectListDot backgroundColor="red" />
                         <ListTextArrow>
@@ -475,47 +555,49 @@ function ToDoListModal() {
 
         {selectedProjectId !== null && (
           <ToDoListModalBody>
-              <ProjectsTasksUl>
-                {selectedProject.tasks.map((task) => {
-                  return (
-                    <ProjectsTasksList key={task.id}>
-                      <ListTextArrow>
-                        <Wrapper>
-                          <Checkbox
-                            checked={task.completed}
-                            onClick={() =>
-                              handleCheckboxClick(task.id, task.completed)
-                            }
-                          />
-                          <ProjectListText>{task.title}</ProjectListText>
-                        </Wrapper>
-                        <PlayTimerButton>
-                          <img src="./assets/play-timer.svg" alt="Play" />
-                        </PlayTimerButton>
-                      </ListTextArrow>
-                    </ProjectsTasksList>
-                  );
-                })}
-
-                {showInput ? (
-                  <ProjectsTasksList ref={ref}>
+            <ProjectsTasksUl>
+              {selectedProject.tasks.map((task) => {
+                return (
+                  <ProjectsTasksList key={task.id}>
                     <ListTextArrow>
                       <Wrapper>
-                        <Checkbox disabled={true} />
-                        <ProjectInput
-                          autoFocus
-                          // onBlur={handleClickOutside}
-                          onChange={updateTaskTitle}
-                          onKeyDown={handleTaskChanges}
+                        <Checkbox
+                          checked={task.completed}
+                          onClick={() =>
+                            handleCheckboxClick(task.id, task.completed)
+                          }
                         />
+                        <ProjectListText>{task.title}</ProjectListText>
                       </Wrapper>
+                      <PlayTimerButton>
+                        <img src="./assets/play-timer.svg" alt="Play" />
+                      </PlayTimerButton>
                     </ListTextArrow>
                   </ProjectsTasksList>
-                ) : (
-                  false
-                )}
-              </ProjectsTasksUl>
-  
+                );
+              })}
+
+              {showInput ? (
+                <ProjectsTasksList 
+                ref={ref}
+                >
+                  <ListTextArrow>
+                    <Wrapper>
+                      <Checkbox disabled={true} />
+                      <ProjectInput
+                        autoFocus
+                        // onBlur={handleClickOutside}
+                        onChange={updateTaskTitle}
+                        onKeyDown={handleTaskChanges}
+                      />
+                    </Wrapper>
+                  </ListTextArrow>
+                </ProjectsTasksList>
+              ) : (
+                false
+              )}
+            </ProjectsTasksUl>
+
             <PlusButton onClick={handleAddTask}>Add a task</PlusButton>
           </ToDoListModalBody>
         )}
