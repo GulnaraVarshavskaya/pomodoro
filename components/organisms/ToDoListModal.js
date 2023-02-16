@@ -5,6 +5,7 @@ import styled from "styled-components";
 import { settingsContext } from "../../pages";
 import tasks from "../../prisma/seed/data/tasks";
 import { v4 as uuid } from "uuid";
+import ModalMenuList from "./ModalMenuList";
 
 const colorBg = {
   red: "rgba(248, 112, 112, 1)",
@@ -71,7 +72,7 @@ const ProjectsTasksUl = styled.div`
 const ProjectsTasksList = styled.div`
   display: flex;
   align-items: center;
-  padding: 16px 10px;
+  padding: 13px 10px 13px 5px;
   border-bottom: 1px solid rgba(227, 225, 225, 0.7);
 `;
 
@@ -81,6 +82,23 @@ const ProjectListDot = styled.svg`
   border-radius: 50%;
   background-color: ${(props) => colorBg[props.backgroundColor]};
 `;
+
+const ProjectVerticalDots = styled.button`
+  display: grid;
+  align-items: center;
+  background: none;
+  cursor: pointer;
+  border: none;
+  padding: 0;
+  margin: 0;
+  opacity: 0.5;
+  &:hover {
+    opacity: 1;
+  }
+  &:focus {
+    outline: 0;
+  }
+`
 
 const ListTextArrow = styled.div`
   display: flex;
@@ -92,17 +110,17 @@ const ListTextArrow = styled.div`
 const ProjectListText = styled.span`
   font-size: 14px;
   font-weight: 500px;
+  font-family: 'Kumbh Sans';
   line-height: 18px;
   vertical-align: middle;
   align-items: center;
   color: rgba(22, 25, 50, 1);
-  margin-left: 12px;
+  margin-left: 10px;
   cursor: pointer;
 `;
 
 const ProjectInput = styled.input`
   display: block;
-  /* width: 100%; */
   padding: 0;
   margin-left: 12px;
   border: none;
@@ -111,6 +129,7 @@ const ProjectInput = styled.input`
   }
   color: rgba(22, 25, 50, 1);
   font-size: 14px;
+  font-family: 'Kumbh Sans';
   font-weight: 500;
   line-height: 18px;
 `;
@@ -205,7 +224,7 @@ const TextDoneBtn = styled.span`
 `
 
 function ToDoListModal() {
-  const { showModal, closeModal } = useContext(settingsContext);
+  const { showModal, closeModal} = useContext(settingsContext);
 
   const [projects, setProjects] = useState([]);
   const [selectedProjectId, setSelectedProjectId] = useState(null);
@@ -217,6 +236,7 @@ function ToDoListModal() {
 
   const [showInput, setShowInput] = useState(false);
   const [showDoneBtn, setShowDoneBtn] = useState(false);
+  const [showModalMenuListId, setShowModalMenuListId] = useState(null)
 
   async function fetchProjects() {
     const response = await fetch(`api/projects`);
@@ -373,6 +393,7 @@ function ToDoListModal() {
   };
 
   const handleClickOutside = () => {
+    setShowModalMenuListId(null);
     setShowInput(false);
     setShowDoneBtn(false);
   };
@@ -383,48 +404,13 @@ function ToDoListModal() {
     setTaskTitle(e.target.value);
   }
 
-  async function handleTaskChanges(e) {
+  async function handleEnterKey(e) {
     if (e.key === "Enter") {
-      const newTask = {
-        id: uuid(),
-        title: taskTitle,
-        projectId: selectedProjectId,
-        completed: false,
-      };
-      console.log("newTask", newTask);
-      const updatedProjects = projects.map((project) => {
-        if (project.id === selectedProjectId) {
-          console.log("project", project);
-          return {
-            ...project,
-            tasks: [...project.tasks, newTask],
-          };
-        }
-        return project;
-      });
-      setProjects(updatedProjects);
-      setShowInput(false);
-      setTaskTitle("");
-      setShowDoneBtn(false);
-
-      const response = await fetch(
-        `/api/projects/${selectedProjectId}/tasks/`,
-        {
-          method: "POST",
-          body: JSON.stringify({
-            id: newTask.id,
-            projectId: selectedProjectId,
-            title: taskTitle,
-            completed: false,
-          }),
-        }
-      );
-      const data = await response.json();
-      console.log("updatedProjects", updatedProjects);
+      createTask()
     }
   }
 
-  async function handleTaskChangesDoneBtn(e) {
+  async function createTask() {
       const newTask = {
         id: uuid(),
         title: taskTitle,
@@ -470,11 +456,40 @@ function ToDoListModal() {
     console.log("selselectedProjectId", selectedProjectId);
   }
 
-  function handleEditProject() {
-    alert("Hi")
-  }
+    async function handleDeleteProject() {
+      console.log("showModalMenuListId", showModalMenuListId)
+      const deletedProject = projects.filter((project) => {
+          return project.id !== showModalMenuListId
+      });
+      setProjects(deletedProject);
+      console.log("deletedProject", deletedProject)
+
+      const response = await fetch(`api/projects/${showModalMenuListId}`,{
+          method: "DELETE",
+          body: JSON.stringify({
+            id: showModalMenuListId
+          })
+      });
+      const data = await response.json();
+      // console.log("data", data)
+    }
+
+    async function handleRenameProject() {
+      const currentTitle = projects.filter((project)=> {
+        return project.id === showModalMenuListId
+        }).map((project) => {
+         console.log("project", project)
+        return project.title
+      });
+
+      setProjectInEditModeId(showModalMenuListId);
+      setProjectTitle(currentTitle);
+      setShowModalMenuListId(null);
+    }
+
 
   return (
+    <settingsContext.Provider value={{ showModalMenuListId, ref, handleDeleteProject, handleRenameProject }}>
     <ModalContainer showModal={showModal}>
       <ToDoListModalContainer>
         <ToDoListModalHeader>
@@ -491,7 +506,7 @@ function ToDoListModal() {
           </Wrapper>
           {showDoneBtn ? (
             <DoneBtn
-            onClick={handleTaskChangesDoneBtn}
+            onClick={createTask}
             >
               <TextDoneBtn>Done</TextDoneBtn>
             </DoneBtn>
@@ -511,7 +526,10 @@ function ToDoListModal() {
                       <>
                         <ProjectsTasksList
                         >
-                          <ProjectListDot backgroundColor="grey" />
+                          {/* <ProjectListDot backgroundColor="grey" /> */}
+                          <ProjectVerticalDots>
+                            <img src="./assets/more-vertical.svg" alt="More" />
+                          </ProjectVerticalDots>
                           <ProjectInput
                             // maxLength="60"
                             autoFocus
@@ -522,14 +540,46 @@ function ToDoListModal() {
                         </ProjectsTasksList>
                       </>
                     );
+                  } else if (showModalMenuListId === project.id) {
+                    return (
+                      <ProjectsTasksList 
+                      key={project.id}
+                      >
+                        {" "}
+                        <ProjectVerticalDots
+                        onClick={() => setShowModalMenuListId(project.id)}
+                        >
+                          <img src="./assets/more-vertical.svg" alt="More" />
+                        </ProjectVerticalDots>
+                        { <ModalMenuList
+                         showModalMenuListId={showModalMenuListId}
+                        /> }
+                        <ListTextArrow>
+                          <ProjectListText>{project.title}</ProjectListText>
+                          <ForwardArrowSvg
+                            onClick={() => setSelectedProjectId(project.id)}
+                          >
+                            <img
+                              src="./assets/icon-arrow-right.svg"
+                              alt="Forward"
+                            />
+                          </ForwardArrowSvg>
+                        </ListTextArrow>
+                      </ProjectsTasksList>
+                    );
                   } else {
                     return (
                       <ProjectsTasksList 
                       key={project.id}
-                      onContextMenu={handleEditProject}
+                      // onContextMenu={handleEditProject}
                       >
                         {" "}
-                        <ProjectListDot backgroundColor="red" />
+                        {/* <ProjectListDot backgroundColor="red" /> */}
+                        <ProjectVerticalDots
+                        onClick={() => setShowModalMenuListId(project.id)}
+                        >
+                          <img src="./assets/more-vertical.svg" alt="More" />
+                        </ProjectVerticalDots>
                         <ListTextArrow>
                           <ProjectListText>{project.title}</ProjectListText>
                           <ForwardArrowSvg
@@ -588,7 +638,7 @@ function ToDoListModal() {
                         autoFocus
                         // onBlur={handleClickOutside}
                         onChange={updateTaskTitle}
-                        onKeyDown={handleTaskChanges}
+                        onKeyDown={handleEnterKey}
                       />
                     </Wrapper>
                   </ListTextArrow>
@@ -603,6 +653,7 @@ function ToDoListModal() {
         )}
       </ToDoListModalContainer>
     </ModalContainer>
+    </settingsContext.Provider>
   );
 }
 
