@@ -345,7 +345,6 @@ function ToDoListModal() {
       setProjects(updatedProjects);
       // by setting this state to null, all projects are displayed normally (no input field anywhere). Close the input
       setProjectInEditModeId(null);
-      console.log("projectInEditModeId", projectInEditModeId);
 
       // we're sending a PATCH request to update project with a specific id
       // we're sending in the body an object with key title and the value of new title
@@ -367,13 +366,10 @@ function ToDoListModal() {
   };
 
   const useOutsideClick = (callback) => {
-    // console.log("callback", callback)
     const ref = useRef();
-    // console.log("ref", ref)
 
     useEffect(() => {
       const handleClick = (event) => {
-        console.log("event.target", event.target, event.target.innerText !== "Done")
         const isRefBeingUsed = Boolean(ref.current)
         const isClickOutsideInput = !ref.current?.contains(event.target)
         const isTargetNotDoneBtn = event.target.innerText !== "Done"
@@ -417,10 +413,8 @@ function ToDoListModal() {
         projectId: selectedProjectId,
         completed: false,
       };
-      console.log("newTask", newTask);
       const updatedProjects = projects.map((project) => {
         if (project.id === selectedProjectId) {
-          console.log("project", project);
           return {
             ...project,
             tasks: [...project.tasks, newTask],
@@ -446,23 +440,18 @@ function ToDoListModal() {
         }
       );
       const data = await response.json();
-      console.log("updatedProjects", updatedProjects);
     }
 
   async function handleAddTask() {
-    console.log("let's start");
     setShowInput(true);
     setShowDoneBtn(true);
-    console.log("selselectedProjectId", selectedProjectId);
   }
 
     async function handleDeleteProject() {
-      console.log("showModalMenuListId", showModalMenuListId)
       const deletedProject = projects.filter((project) => {
           return project.id !== showModalMenuListId
       });
       setProjects(deletedProject);
-      console.log("deletedProject", deletedProject)
 
       const response = await fetch(`api/projects/${showModalMenuListId}`,{
           method: "DELETE",
@@ -471,14 +460,12 @@ function ToDoListModal() {
           })
       });
       const data = await response.json();
-      // console.log("data", data)
     }
 
     async function handleRenameProject() {
       const currentTitle = projects.filter((project)=> {
         return project.id === showModalMenuListId
         }).map((project) => {
-         console.log("project", project)
         return project.title
       });
 
