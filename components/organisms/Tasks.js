@@ -103,11 +103,8 @@ const PlayTimerButton = styled.button`
 `;
 
 const CompletedTasksBtn = styled.button`
-    margin-top: 20px;
-    position: absolute;
-    left: 50%;
-    -ms-transform: translateX(-50%);
-    transform: translateX(-50%);
+    margin: 20px auto;
+    display: block;
     justify-content: center;
     background-color: #EFF1FA;
     border-radius: 10px;
@@ -134,29 +131,9 @@ function Tasks({
     return (
       <ToDoListModalBody>
         <ProjectsTasksUl>
-          { showCompletedTasks ? (selectedProject.tasks
-          .map((task) => {
-            return (
-              <ProjectsTasksList key={task.id}>
-                <ListTextArrow>
-                  <Wrapper>
-                    <Checkbox
-                      checked={task.completed}
-                      onClick={() => handleCheckboxClick(task.id, task.completed)}
-                    />
-                    <ProjectListText>{task.title}</ProjectListText>
-                  </Wrapper>
-                  <PlayTimerButton>
-                    <img src="./assets/play-timer.svg" alt="Play" />
-                  </PlayTimerButton>
-                </ListTextArrow>
-              </ProjectsTasksList>
-            );
-          }))
-          :
-          (selectedProject.tasks
+          {selectedProject.tasks
           .filter((task) => {
-            return task.completed === showCompletedTasks
+            return task.completed === false
           })
           .map((task) => {
             return (
@@ -175,9 +152,7 @@ function Tasks({
                 </ListTextArrow>
               </ProjectsTasksList>
             );
-          }))
-          
-          }
+          })}
   
           {showInput ? (
             <ProjectsTasksList ref={ref}>
@@ -201,6 +176,28 @@ function Tasks({
             >
             {!showCompletedTasks ? "Show completed tasks" : "Hide completed tasks"}
             </CompletedTasksBtn>
+            { showCompletedTasks === true && selectedProject.tasks
+          .filter((task) => {
+            return task.completed === true
+          })
+          .map((task) => {
+            return (
+              <ProjectsTasksList key={task.id}>
+                <ListTextArrow>
+                  <Wrapper>
+                    <Checkbox
+                      checked={task.completed}
+                      onClick={() => handleCheckboxClick(task.id, task.completed)}
+                    />
+                    <ProjectListText>{task.title}</ProjectListText>
+                  </Wrapper>
+                  <PlayTimerButton>
+                    <img src="./assets/play-timer.svg" alt="Play" />
+                  </PlayTimerButton>
+                </ListTextArrow>
+              </ProjectsTasksList>
+            );
+          })}
         </ProjectsTasksUl>
 
   
