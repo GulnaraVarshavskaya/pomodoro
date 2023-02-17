@@ -102,6 +102,24 @@ const PlayTimerButton = styled.button`
   }
 `;
 
+const CompletedTasksBtn = styled.button`
+    margin-top: 20px;
+    position: absolute;
+    left: 50%;
+    -ms-transform: translateX(-50%);
+    transform: translateX(-50%);
+    justify-content: center;
+    background-color: #EFF1FA;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    font-size: 12px;
+    font-family: "Kumbh Sans";
+    color: rgba(22, 25, 50, 1);
+    line-height: 14px;
+    padding: 4px 10px;
+`
+
 function Tasks({
     selectedProject,
     handleCheckboxClick,
@@ -110,11 +128,14 @@ function Tasks({
     updateTaskTitle,
     handleEnterKey,
     handleAddTask,
+    showCompletedTasks,
+    setShowCompletedTasks,
   }) {
     return (
       <ToDoListModalBody>
         <ProjectsTasksUl>
-          {selectedProject.tasks.map((task) => {
+          { showCompletedTasks ? (selectedProject.tasks
+          .map((task) => {
             return (
               <ProjectsTasksList key={task.id}>
                 <ListTextArrow>
@@ -131,7 +152,32 @@ function Tasks({
                 </ListTextArrow>
               </ProjectsTasksList>
             );
-          })}
+          }))
+          :
+          (selectedProject.tasks
+          .filter((task) => {
+            return task.completed === showCompletedTasks
+          })
+          .map((task) => {
+            return (
+              <ProjectsTasksList key={task.id}>
+                <ListTextArrow>
+                  <Wrapper>
+                    <Checkbox
+                      checked={task.completed}
+                      onClick={() => handleCheckboxClick(task.id, task.completed)}
+                    />
+                    <ProjectListText>{task.title}</ProjectListText>
+                  </Wrapper>
+                  <PlayTimerButton>
+                    <img src="./assets/play-timer.svg" alt="Play" />
+                  </PlayTimerButton>
+                </ListTextArrow>
+              </ProjectsTasksList>
+            );
+          }))
+          
+          }
   
           {showInput ? (
             <ProjectsTasksList ref={ref}>
@@ -150,7 +196,13 @@ function Tasks({
           ) : (
             false
           )}
+            <CompletedTasksBtn
+            onClick={() => setShowCompletedTasks(!showCompletedTasks)}
+            >
+            {!showCompletedTasks ? "Show completed tasks" : "Hide completed tasks"}
+            </CompletedTasksBtn>
         </ProjectsTasksUl>
+
   
         <PlusButton onClick={handleAddTask}>Add a task</PlusButton>
       </ToDoListModalBody>

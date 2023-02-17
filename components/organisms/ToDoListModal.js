@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState, useRef } from "react";
 import styled from "styled-components";
 import { settingsContext } from "../../pages";
-import tasks from "../../prisma/seed/data/tasks";
 import { v4 as uuid } from "uuid";
 import ProjectHeader from "./ProjectHeader";
 import Projects from "./Projects";
@@ -39,6 +38,9 @@ function ToDoListModal() {
   const [showInput, setShowInput] = useState(false);
   const [showDoneBtn, setShowDoneBtn] = useState(false);
   const [showModalMenuListId, setShowModalMenuListId] = useState(null);
+  const [showCompletedTasks, setShowCompletedTasks] = useState(false)
+
+  console.log("showCompletedTasks", showCompletedTasks)
 
   async function fetchProjects() {
     const response = await fetch(`api/projects`);
@@ -261,7 +263,7 @@ function ToDoListModal() {
     const data = await response.json();
   }
 
-  async function handleRenameProject() {
+  function handleRenameProject() {
     const currentTitle = projects
       .filter((project) => {
         return project.id === showModalMenuListId;
@@ -274,6 +276,7 @@ function ToDoListModal() {
     setProjectTitle(currentTitle);
     setShowModalMenuListId(null);
   }
+
 
   return (
     <settingsContext.Provider
@@ -303,6 +306,8 @@ function ToDoListModal() {
               updateTaskTitle={updateTaskTitle}
               handleEnterKey={handleEnterKey}
               handleAddTask={handleAddTask}
+              showCompletedTasks={showCompletedTasks}
+              setShowCompletedTasks={setShowCompletedTasks}
             />
           ) : (
             <Projects
