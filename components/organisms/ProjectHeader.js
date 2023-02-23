@@ -71,6 +71,8 @@ function ProjectHeader({
   showDoneBtn,
   createTask,
   closeModal,
+  selectedTaskId,
+  renameTask,
 }) {
   return (
     <ToDoListModalHeader>
@@ -85,7 +87,7 @@ function ProjectHeader({
         </Heading>
       </Wrapper>
       {showDoneBtn ? (
-        <DoneBtn onClick={createTask}>
+        <DoneBtn onClick={selectedTaskId == null ? createTask : renameTask}>
           <TextDoneBtn>Done</TextDoneBtn>
         </DoneBtn>
       ) : (

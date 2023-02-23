@@ -1,7 +1,5 @@
-
 import PlusButton from "../molecules/PlusButton";
 import styled from "styled-components";
-
 
 const Wrapper = styled.div`
   display: flex;
@@ -21,6 +19,10 @@ const ProjectsTasksUl = styled.div`
   height: 255px;
 `;
 
+const LineUnderBtn = styled.div`
+  border-bottom: 1px solid rgba(227, 225, 225, 0.7);
+`;
+
 const ProjectsTasksList = styled.div`
   display: flex;
   align-items: center;
@@ -37,6 +39,7 @@ const ListTextArrow = styled.div`
 
 const ProjectListText = styled.span`
   font-size: 14px;
+  width: 350px;
   font-weight: 500px;
   font-family: "Kumbh Sans";
   line-height: 18px;
@@ -50,6 +53,7 @@ const ProjectListText = styled.span`
 const ProjectInput = styled.input`
   display: block;
   padding: 0;
+  width: 350px;
   margin-left: 12px;
   border: none;
   &:focus {
@@ -103,108 +107,161 @@ const PlayTimerButton = styled.button`
 `;
 
 const CompletedTasksBtn = styled.button`
-    margin: 20px auto;
-    display: block;
-    justify-content: center;
-    background-color: #EFF1FA;
-    border-radius: 10px;
-    border: none;
-    cursor: pointer;
-    font-size: 12px;
-    font-family: "Kumbh Sans";
-    color: rgba(22, 25, 50, 1);
-    line-height: 14px;
-    padding: 4px 10px;
-`
+  margin: 20px auto;
+  display: block;
+  justify-content: center;
+  background-color: #eff1fa;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  font-size: 12px;
+  font-family: "Kumbh Sans";
+  color: rgba(22, 25, 50, 1);
+  line-height: 14px;
+  padding: 4px 10px;
+  &:disabled {
+    opacity: 0.6;
+  }
+`;
 
 function Tasks({
-    selectedProject,
-    handleCheckboxClick,
-    showInput,
-    ref,
-    updateTaskTitle,
-    handleEnterKey,
-    handleAddTask,
-    showCompletedTasks,
-    setShowCompletedTasks,
-  }) {
-    return (
-      <ToDoListModalBody>
-        <ProjectsTasksUl>
-          {selectedProject.tasks
+  selectedProject,
+  handleCheckboxClick,
+  showInput,
+  refCancel,
+  handleEnterKey,
+  handleAddTask,
+  showCompletedTasks,
+  setShowCompletedTasks,
+  handleRenameTask,
+  selectedTaskId,
+  handleEnterKeyUpdate,
+  taskTitle,
+  taskEditTitle,
+  refTask,
+  startTimer,
+}) {
+  const completedTasks = selectedProject.tasks.filter(
+    (task) => task.completed === true
+  );
+  const completedTasksCount = completedTasks.length;
+  
+  return (
+    <ToDoListModalBody>
+      <ProjectsTasksUl>
+        {selectedProject.tasks
           .filter((task) => {
-            return task.completed === false
+            return task.completed === false;
           })
           .map((task) => {
-            return (
-              <ProjectsTasksList key={task.id}>
-                <ListTextArrow>
-                  <Wrapper>
-                    <Checkbox
-                      checked={task.completed}
-                      onClick={() => handleCheckboxClick(task.id, task.completed)}
-                    />
-                    <ProjectListText>{task.title}</ProjectListText>
-                  </Wrapper>
-                  <PlayTimerButton>
-                    <img src="./assets/play-timer.svg" alt="Play" />
-                  </PlayTimerButton>
-                </ListTextArrow>
-              </ProjectsTasksList>
-            );
+            if (selectedTaskId === task.id) {
+              return (
+                <ProjectsTasksList
+                ref={refTask}
+                >
+                  <ListTextArrow>
+                    <Wrapper>
+                      <Checkbox disabled={true} />
+                      <ProjectInput
+                        autoFocus
+                        value={taskEditTitle}
+                        // onBlur={handleClickOutside}
+                        onChange={handleEnterKeyUpdate}
+                        onKeyDown={handleEnterKeyUpdate}
+                      />
+                    </Wrapper>
+                  </ListTextArrow>
+                </ProjectsTasksList>
+              );
+            } else {
+              return (
+                <ProjectsTasksList key={task.id}>
+                  <ListTextArrow>
+                    <Wrapper>
+                      <Checkbox
+                        checked={task.completed}
+                        onClick={() =>
+                          handleCheckboxClick(task.id, task.completed)
+                        }
+                      />
+                      <ProjectListText
+                        onClick={() => handleRenameTask(task.id, task.title)}
+                      >
+                        {task.title}
+                      </ProjectListText>
+                    </Wrapper>
+                    <PlayTimerButton
+                    onClick={startTimer}
+                    >
+                      <img src="./assets/play-timer.svg" alt="Play" />
+                    </PlayTimerButton>
+                  </ListTextArrow>
+                </ProjectsTasksList>
+              );
+            }
           })}
-  
-          {showInput ? (
-            <ProjectsTasksList ref={ref}>
-              <ListTextArrow>
-                <Wrapper>
-                  <Checkbox disabled={true} />
-                  <ProjectInput
-                    autoFocus
-                    // onBlur={handleClickOutside}
-                    onChange={updateTaskTitle}
-                    onKeyDown={handleEnterKey}
-                  />
-                </Wrapper>
-              </ListTextArrow>
-            </ProjectsTasksList>
-          ) : (
-            false
-          )}
-            <CompletedTasksBtn
-            onClick={() => setShowCompletedTasks(!showCompletedTasks)}
-            >
-            {!showCompletedTasks ? "Show completed tasks" : "Hide completed tasks"}
-            </CompletedTasksBtn>
-            { showCompletedTasks === true && selectedProject.tasks
-          .filter((task) => {
-            return task.completed === true
-          })
-          .map((task) => {
-            return (
-              <ProjectsTasksList key={task.id}>
-                <ListTextArrow>
-                  <Wrapper>
-                    <Checkbox
-                      checked={task.completed}
-                      onClick={() => handleCheckboxClick(task.id, task.completed)}
-                    />
-                    <ProjectListText>{task.title}</ProjectListText>
-                  </Wrapper>
-                  <PlayTimerButton>
-                    <img src="./assets/play-timer.svg" alt="Play" />
-                  </PlayTimerButton>
-                </ListTextArrow>
-              </ProjectsTasksList>
-            );
-          })}
-        </ProjectsTasksUl>
 
-  
-        <PlusButton onClick={handleAddTask}>Add a task</PlusButton>
-      </ToDoListModalBody>
-    );
-  }
+        {showInput ? (
+          <ProjectsTasksList 
+          ref={refCancel}
+          >
+            <ListTextArrow>
+              <Wrapper>
+                <Checkbox disabled={true} />
+                <ProjectInput
+                  autoFocus
+                  value={taskTitle}
+                  // onBlur={handleClickOutside}
+                  onChange={handleEnterKey}
+                  onKeyDown={handleEnterKey}
+                />
+              </Wrapper>
+            </ListTextArrow>
+          </ProjectsTasksList>
+        ) : (
+          false
+        )}
+        <CompletedTasksBtn
+          onClick={() => setShowCompletedTasks(!showCompletedTasks)}
+          disabled={completedTasksCount === 0}
+        >
+          {completedTasksCount === 0 || !showCompletedTasks
+            ? "Show completed tasks"
+            : "Hide completed tasks"}
+        </CompletedTasksBtn>
+        {completedTasksCount > 0 && showCompletedTasks ? (
+          <LineUnderBtn />
+        ) : null}
+        {showCompletedTasks === true &&
+          selectedProject.tasks
+            .filter((task) => {
+              return task.completed === true;
+            })
+            .map((task) => {
+              return (
+                <ProjectsTasksList key={task.id}>
+                  <ListTextArrow>
+                    <Wrapper>
+                      <Checkbox
+                        checked={task.completed}
+                        onClick={() =>
+                          handleCheckboxClick(task.id, task.completed, completedTasksCount)
+                        }
+                      />
+                      <ProjectListText>{task.title}</ProjectListText>
+                    </Wrapper>
+                    <PlayTimerButton>
+                      <img src="./assets/play-timer.svg" alt="Play" />
+                    </PlayTimerButton>
+                  </ListTextArrow>
+                </ProjectsTasksList>
+              );
+            })}
+      </ProjectsTasksUl>
 
-  export default Tasks;
-  
+      <PlusButton onClick={handleAddTask}>Add a task</PlusButton>
+    </ToDoListModalBody>
+  );
+}
+
+export default Tasks;

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState, useRef } from "react";
+import React, { useContext } from "react";
 import styled from "styled-components";
 import { settingsContext } from "../../pages";
 
@@ -60,12 +60,12 @@ const MenuListText = styled.span`
 
 
 function ModalMenuList () {
-    const { showModalMenuListId, ref, handleDeleteProject, handleRenameProject } = useContext(settingsContext);
+    const { showModalMenuListId, refCancel, handleDeleteProject, handleRenameProject } = useContext(settingsContext);
 
     return (
         <ModalContainer 
         showModalMenuListId={showModalMenuListId}
-        ref={ref}
+        ref={refCancel}
         >
             <MenuUl>
                 <MenuList>

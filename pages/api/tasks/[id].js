@@ -7,14 +7,19 @@ export default async function handler(req, res) {
     const id = req.query.id
     const data = JSON.parse(req.body)
 
-    console.log("completed", data.completed)
+    
 
     const task = await prisma.task.update(
         {
             where: { id: id },
-            data: { completed: data.completed },
+            data: { 
+                completed: data.completed,
+                title: data.title,
+             },
         }
     )
 
-  res.status(200).json({ id, completed: data.completed })
+    console.log("completed", data.title)
+
+  res.status(200).json({ id, completed: data.completed, title: data.title })
 }

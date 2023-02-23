@@ -60,6 +60,7 @@ const ProjectListText = styled.span`
 
 const ProjectInput = styled.input`
   display: block;
+  /* width: 400px; */
   padding: 0;
   margin-left: 12px;
   border: none;

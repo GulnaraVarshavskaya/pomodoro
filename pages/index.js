@@ -86,18 +86,24 @@ export default function Home() {
     if (isActive === "start") {
       setIsActive("pause")
     } else if (isActive === "restart") {
-      restart()
+      reset()
     } else setIsActive("start")  
   }
 
-  const restart = () => {
+  const reset = () => {
     setTotalTime(timeInputs[mode] * 60)
     setTimeRemaining(timeInputs[mode] * 60)
     setIsActive("start")
   }
 
+  const restart = () => {
+    setTotalTime(timeInputs[mode] * 60)
+    setTimeRemaining(timeInputs[mode] * 60)
+    setIsActive("pause")
+  }
+
   useEffect( () => {
-    restart();
+    reset();
   }, [mode])
 
   useEffect(() => {
@@ -123,11 +129,10 @@ export default function Home() {
     setIsActive("start")
 
     closeSettingsModal();
-
   }
 
   return (
-    <settingsContext.Provider value={{ colorOptions: colorOptions, fontOptions: fontOptions, selectedColor: selectedColor, setSelectedColor: setSelectedColor, selectedFont: selectedFont, timeInputs: timeInputs, handleChanges: handleChanges, mode: mode, setMode: setMode, toggleAction:toggleAction, showModal: showModal, openSettingsModal: openSettingsModal, closeSettingsModal: closeSettingsModal, openModal: openModal, closeModal: closeModal }}>
+    <settingsContext.Provider value={{ colorOptions: colorOptions, fontOptions: fontOptions, selectedColor: selectedColor, setSelectedColor: setSelectedColor, selectedFont: selectedFont, timeInputs: timeInputs, handleChanges: handleChanges, mode: mode, setMode: setMode, toggleAction:toggleAction, showModal: showModal, openSettingsModal: openSettingsModal, closeSettingsModal: closeSettingsModal, openModal: openModal, closeModal: closeModal, toggleAction: toggleAction, restart: restart }}>
       <Container>
         <HeadContainer>
           <Heading

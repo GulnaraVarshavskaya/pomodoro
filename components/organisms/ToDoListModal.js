@@ -5,7 +5,7 @@ import { v4 as uuid } from "uuid";
 import ProjectHeader from "./ProjectHeader";
 import Projects from "./Projects";
 import Tasks from "./Tasks";
-
+import { xml2json } from "json_xml";
 
 const ModalContainer = styled.div`
   display: flex;
@@ -23,24 +23,25 @@ const ToDoListModalContainer = styled.div`
   } ;
 `;
 
-
 function ToDoListModal() {
-  const { showModal, closeModal } = useContext(settingsContext);
+  const { showModal, closeModal, toggleAction, restart } = useContext(settingsContext);
 
   const [projects, setProjects] = useState([]);
   const [selectedProjectId, setSelectedProjectId] = useState(null);
 
   const [projectInEditModeId, setProjectInEditModeId] = useState(null);
   const [projectTitle, setProjectTitle] = useState("");
+  const [taskEditTitle, setTaskEditTitle] = useState("")
 
   const [taskTitle, setTaskTitle] = useState("");
 
   const [showInput, setShowInput] = useState(false);
   const [showDoneBtn, setShowDoneBtn] = useState(false);
   const [showModalMenuListId, setShowModalMenuListId] = useState(null);
-  const [showCompletedTasks, setShowCompletedTasks] = useState(false)
+  const [showCompletedTasks, setShowCompletedTasks] = useState(false);
+  const [selectedTaskId, setSelectedTaskId] = useState(null);
 
-  console.log("showCompletedTasks", showCompletedTasks)
+  // console.log("showCompletedTasks", showCompletedTasks)
 
   async function fetchProjects() {
     const response = await fetch(`api/projects`);
@@ -54,7 +55,10 @@ function ToDoListModal() {
     fetchProjects();
   }, []);
 
-  async function handleCheckboxClick(id, completed) {
+  async function handleCheckboxClick(id, completed, completedTasksCount) {
+    if(completed === true && completedTasksCount === 1) {
+      setShowCompletedTasks(false)
+    } 
     // when user clicks checkbox this function will be executed
     // id - id of task,
     // completed - when the checkbox is empty the value is false and when the checkbox is checked - it's true
@@ -169,7 +173,7 @@ function ToDoListModal() {
     }
   };
 
-  const useOutsideClick = (callback) => {
+  const useOutsideClick = (callback, dependencies) => {
     const ref = useRef();
 
     useEffect(() => {
@@ -187,18 +191,25 @@ function ToDoListModal() {
       return () => {
         document.removeEventListener("click", handleClick, true);
       };
-    }, [ref]);
+    }, [ref, ...dependencies]);
 
     return ref;
   };
 
-  const handleClickOutside = () => {
+  const handleClickOutsideTasksCancelCreate = () => {   
+    console.log("hello there") 
     setShowModalMenuListId(null);
     setShowInput(false);
     setShowDoneBtn(false);
   };
 
-  const ref = useOutsideClick(handleClickOutside);
+  const handleClickOutsideTasks = () =>  {
+    renameTask()
+  }
+
+  const refTask = useOutsideClick(handleClickOutsideTasks, [selectedTaskId])
+
+  const refCancel = useOutsideClick(handleClickOutsideTasksCancelCreate, [showInput]);
 
   function updateTaskTitle(e) {
     setTaskTitle(e.target.value);
@@ -207,6 +218,8 @@ function ToDoListModal() {
   async function handleEnterKey(e) {
     if (e.key === "Enter") {
       createTask();
+    } else {
+      setTaskTitle(e.target.value);
     }
   }
 
@@ -228,7 +241,6 @@ function ToDoListModal() {
     });
     setProjects(updatedProjects);
     setShowInput(false);
-    setTaskTitle("");
     setShowDoneBtn(false);
 
     const response = await fetch(`/api/projects/${selectedProjectId}/tasks/`, {
@@ -246,6 +258,7 @@ function ToDoListModal() {
   async function handleAddTask() {
     setShowInput(true);
     setShowDoneBtn(true);
+    setTaskTitle("");
   }
 
   async function handleDeleteProject() {
@@ -271,18 +284,72 @@ function ToDoListModal() {
       .map((project) => {
         return project.title;
       });
-
+    console.log("showModalMenuListId", showModalMenuListId);
     setProjectInEditModeId(showModalMenuListId);
     setProjectTitle(currentTitle);
     setShowModalMenuListId(null);
+    // console.log("showModalMenuListId", showModalMenuListId)
   }
 
+  async function handleRenameTask(id, title) {
+    console.log("selectedId:" + id);
+    setSelectedTaskId(id);
+    setTaskEditTitle(title);
+    setShowDoneBtn(true);
+  }
+
+  function handleEnterKeyUpdate(e) {
+    if (e.key === "Enter") {
+      renameTask();
+    } else {
+      setTaskEditTitle(e.target.value);
+    }
+  }
+
+  async function renameTask() {
+    const updatedProjects = projects.map((project) => {
+      if (project.id === selectedProjectId) {
+        const updatedTasks = project.tasks.map((task) => {
+          if (task.id === selectedTaskId) {
+            return {
+              ...task,
+              title: taskEditTitle,
+            };
+          } else {
+            return task;
+          }
+        });
+        project.tasks = updatedTasks;
+      }
+      return project;
+    });
+    console.log("taskEditTitle", taskEditTitle);
+    setProjects(updatedProjects);
+    setShowDoneBtn(false);
+    setSelectedTaskId(null);
+    
+    const response = await fetch(`api/tasks/${selectedTaskId}`, {
+      method: "PATCH",
+      body: JSON.stringify({
+        id: selectedTaskId,
+        title: taskEditTitle,
+      }),
+    });
+    const data = await response.json();
+  }
+
+  const startTimer = () => {
+    console.log("Hi")
+    closeModal();
+    // toggleAction();
+    restart();
+  }
 
   return (
     <settingsContext.Provider
       value={{
         showModalMenuListId,
-        ref,
+        refCancel,
         handleDeleteProject,
         handleRenameProject,
       }}
@@ -296,18 +363,27 @@ function ToDoListModal() {
             showDoneBtn={showDoneBtn}
             createTask={createTask}
             closeModal={closeModal}
+            selectedTaskId={selectedTaskId}
+            renameTask={renameTask}
           />
           {selectedProjectId ? (
             <Tasks
               selectedProject={selectedProject}
               handleCheckboxClick={handleCheckboxClick}
               showInput={showInput}
-              ref={ref}
+              refCancel={refCancel}
               updateTaskTitle={updateTaskTitle}
               handleEnterKey={handleEnterKey}
               handleAddTask={handleAddTask}
               showCompletedTasks={showCompletedTasks}
               setShowCompletedTasks={setShowCompletedTasks}
+              handleRenameTask={handleRenameTask}
+              selectedTaskId={selectedTaskId}
+              handleEnterKeyUpdate={handleEnterKeyUpdate}
+              taskEditTitle={taskEditTitle}
+              taskTitle={taskTitle}
+              refTask={refTask}
+              startTimer={startTimer}
             />
           ) : (
             <Projects
