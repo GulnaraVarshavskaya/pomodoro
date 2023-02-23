@@ -63,7 +63,7 @@ export default function Home() {
       setShowModal(null)};
 
   const [timeInputs, setTimeInputs] = useState({
-    pomodoro: 25,
+    pomodoro: 0.1,
     shortBreak: 5,
     longBreak: 15,
   });
@@ -75,7 +75,7 @@ export default function Home() {
 
   const [totalTime, setTotalTime] = useState(timeInputs[mode]*60)
   const [timeRemaining, setTimeRemaining] = useState(totalTime);  
-  const [isActive, setIsActive] = useState("start");
+  const [isActive, setIsActive] = useState("pause");
 
   const minutes = Math.floor(timeRemaining / 60)
   const remainingSeconds = timeRemaining % 60
@@ -83,23 +83,23 @@ export default function Home() {
   let progress = 100 / (totalTime / timeRemaining)
   
   const toggleAction = () => {
-    if (isActive === "start") {
-      setIsActive("pause")
+    if (isActive === "pause") {
+      setIsActive("start")
     } else if (isActive === "restart") {
       reset()
-    } else setIsActive("start")  
+    } else setIsActive("pause")  
   }
 
   const reset = () => {
     setTotalTime(timeInputs[mode] * 60)
     setTimeRemaining(timeInputs[mode] * 60)
-    setIsActive("start")
+    setIsActive("pause")
   }
 
   const restart = () => {
     setTotalTime(timeInputs[mode] * 60)
     setTimeRemaining(timeInputs[mode] * 60)
-    setIsActive("pause")
+    setIsActive("start")
   }
 
   useEffect( () => {
@@ -108,7 +108,7 @@ export default function Home() {
 
   useEffect(() => {
     let countdown = setInterval( () => {
-      if (isActive !== "start") {
+      if (isActive !== "pause") {
         setTimeRemaining( timeRemaining - 1)
       }
     }, 1000)
@@ -126,7 +126,7 @@ export default function Home() {
     setTimeInputs(changedTimeInputs)
     setTotalTime(changedTimeInputs[mode] * 60)
     setTimeRemaining(changedTimeInputs[mode] * 60)
-    setIsActive("start")
+    setIsActive("pause")
 
     closeSettingsModal();
   }

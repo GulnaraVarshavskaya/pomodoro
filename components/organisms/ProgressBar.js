@@ -167,7 +167,9 @@ export default function ProgressBar(props) {
                 selectedFont={selectedFont} 
                 selectedColor={selectedColor}               
                 onClick={toggleAction}>
-                  {actionName}
+                  {actionName === "start" && "pause"}
+                  {actionName === "pause" && "start"}
+                  {actionName === "restart" && "restart"}
                 </ActionButton>
               </ForeignObjectDivForButton>
         </ForeignObject>
