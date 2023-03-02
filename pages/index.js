@@ -63,7 +63,7 @@ export default function Home() {
       setShowModal(null)};
 
   const [timeInputs, setTimeInputs] = useState({
-    pomodoro: 0.1,
+    pomodoro: 25,
     shortBreak: 5,
     longBreak: 15,
   });

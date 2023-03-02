@@ -130,9 +130,18 @@ function ToDoListModal() {
     setProjectTitle("");
   }
 
-  const handleChanges = async (e) => {
+  async function handleEnterKeyProject(e) {
     // when user press Enter this function will be executed
     if (e.key === "Enter") {
+      handleChanges();
+    } else {
+      //when users don't press Enter they can continue typing in the input
+      setProjectTitle(e.target.value);
+    }
+  }
+
+  const handleChanges = async () => {
+    console.log("projectInEditModeId", projectInEditModeId, "projectTitle",projectTitle)
       // we mapping the array of projects and return new array of updated project
       const updatedProjects = projects.map((project) => {
         // if the id of the project we are mapping over matches with the project id in edit mode
@@ -167,10 +176,6 @@ function ToDoListModal() {
       // here we get data from the server. It's an object with id and title
       // id - id of project, title - updated value
       const data = await response.json();
-    } else {
-      //when users don't press Enter they can continue typing in the input
-      setProjectTitle(e.target.value);
-    }
   };
 
   const useOutsideClick = (callback, dependencies) => {
@@ -207,9 +212,16 @@ function ToDoListModal() {
     renameTask()
   }
 
+  const handleClickOutsideProjects = () =>  {
+    console.log("Hi")
+    handleDeleteProject(projectInEditModeId)
+  }
+
   const refTask = useOutsideClick(handleClickOutsideTasks, [selectedTaskId])
 
   const refCancel = useOutsideClick(handleClickOutsideTasksCancelCreate, [showInput]);
+
+  const refProjectCancel = useOutsideClick(handleClickOutsideProjects, [projectInEditModeId])
 
   function updateTaskTitle(e) {
     setTaskTitle(e.target.value);
@@ -261,16 +273,16 @@ function ToDoListModal() {
     setTaskTitle("");
   }
 
-  async function handleDeleteProject() {
+  async function handleDeleteProject(projectId) {
     const deletedProject = projects.filter((project) => {
-      return project.id !== showModalMenuListId;
+      return project.id !== projectId;
     });
     setProjects(deletedProject);
 
-    const response = await fetch(`api/projects/${showModalMenuListId}`, {
+    const response = await fetch(`api/projects/${projectId}`, {
       method: "DELETE",
       body: JSON.stringify({
-        id: showModalMenuListId,
+        id: projectId,
       }),
     });
     const data = await response.json();
@@ -395,6 +407,8 @@ function ToDoListModal() {
               setShowModalMenuListId={setShowModalMenuListId}
               setSelectedProjectId={setSelectedProjectId}
               handleAddProject={handleAddProject}
+              handleEnterKeyProject={handleEnterKeyProject}
+              refProjectCancel={refProjectCancel}
             />
           )}
         </ToDoListModalContainer>

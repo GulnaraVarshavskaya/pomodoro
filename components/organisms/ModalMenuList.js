@@ -4,9 +4,10 @@ import { settingsContext } from "../../pages";
 
 const ModalContainer = styled.div`
     position: absolute;
+    transform: translateY(50%);
     width: 150px;
     left: 60px;
-    top: 150px;
+    /* top: 150px; */
     border-radius: 10px;
     background-color: #EFF1FA;
     box-shadow: 0px 4px 10px rgba(26, 39, 95, 0.25);
@@ -80,7 +81,7 @@ function ModalMenuList () {
                 </MenuList>
                 <MenuList>
                     <MenuListBtn
-                    onClick={handleDeleteProject}                 
+                    onClick={() => handleDeleteProject(showModalMenuListId)}                 
                     >
                         <MenuListImg>
                             <img src="./assets/icon-trash.svg" alt="Delete" />

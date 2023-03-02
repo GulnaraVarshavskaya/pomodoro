@@ -39,7 +39,7 @@ const ListTextArrow = styled.div`
 
 const ProjectListText = styled.span`
   font-size: 14px;
-  width: 350px;
+  width: 380px;
   font-weight: 500px;
   font-family: "Kumbh Sans";
   line-height: 18px;
@@ -48,12 +48,15 @@ const ProjectListText = styled.span`
   color: rgba(22, 25, 50, 1);
   margin-left: 10px;
   cursor: pointer;
+  white-space: nowrap; 
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 
 const ProjectInput = styled.input`
   display: block;
   padding: 0;
-  width: 350px;
+  width: 380px;
   margin-left: 12px;
   border: none;
   &:focus {
@@ -103,6 +106,9 @@ const PlayTimerButton = styled.button`
   }
   &:focus {
     outline: 0;
+  }
+  &:disabled {
+    opacity: 0.5;
   }
 `;
 
@@ -163,6 +169,7 @@ function Tasks({
                     <Wrapper>
                       <Checkbox disabled={true} />
                       <ProjectInput
+                        maxLength="100"
                         autoFocus
                         value={taskEditTitle}
                         // onBlur={handleClickOutside}
@@ -209,6 +216,7 @@ function Tasks({
               <Wrapper>
                 <Checkbox disabled={true} />
                 <ProjectInput
+                  maxLength="100"
                   autoFocus
                   value={taskTitle}
                   // onBlur={handleClickOutside}
@@ -250,7 +258,9 @@ function Tasks({
                       />
                       <ProjectListText>{task.title}</ProjectListText>
                     </Wrapper>
-                    <PlayTimerButton>
+                    <PlayTimerButton
+                    disabled={showCompletedTasks}
+                    >
                       <img src="./assets/play-timer.svg" alt="Play" />
                     </PlayTimerButton>
                   </ListTextArrow>

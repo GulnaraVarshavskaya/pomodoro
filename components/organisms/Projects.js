@@ -56,11 +56,15 @@ const ProjectListText = styled.span`
   color: rgba(22, 25, 50, 1);
   margin-left: 10px;
   cursor: pointer;
+  width: 380px;
+  white-space: nowrap; 
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 
 const ProjectInput = styled.input`
   display: block;
-  /* width: 400px; */
+  width: 380px;
   padding: 0;
   margin-left: 12px;
   border: none;
@@ -99,26 +103,30 @@ function Projects({
   setShowModalMenuListId,
   setSelectedProjectId,
   handleAddProject,
+  handleEnterKeyProject,
+  refProjectCancel
 }) {
   return (
     <ToDoListModalBody>
       {projects.length > 0 && (
         <ProjectsTasksUl>
           {projects.map((project) => {
+            // console.log("projectInEditModeId", projectInEditModeId)
             if (projectInEditModeId === project.id) {
               return (
                 <>
-                  <ProjectsTasksList>
-                    {/* <ProjectListDot backgroundColor="grey" /> */}
+                  <ProjectsTasksList
+                  ref={refProjectCancel}
+                  >
                     <ProjectVerticalDots>
                       <img src="./assets/more-vertical.svg" alt="More" />
                     </ProjectVerticalDots>
                     <ProjectInput
-                      // maxLength="60"
+                      maxLength="100"
                       autoFocus
                       value={projectTitle}
-                      onChange={handleChanges}
-                      onKeyDown={handleChanges}
+                      onChange={handleEnterKeyProject}
+                      onKeyDown={handleEnterKeyProject}
                     />
                   </ProjectsTasksList>
                 </>
