@@ -16,7 +16,15 @@ const ToDoListModalBody = styled.div`
 const ProjectsTasksUl = styled.div`
   padding-left: 0;
   overflow: scroll;
-  height: 255px;
+  height: 380px;
+  -ms-overflow-style: none;  // IE and Edge
+  scrollbar-width: none;  // Firefox
+  &::-webkit-scrollbar { // Chrome, Safari and Opera 
+  display: none;
+  }
+  @media only screen and (min-width: 768px) {
+    height: 255px;
+  } ;
 `;
 
 const LineUnderBtn = styled.div`
@@ -26,7 +34,7 @@ const LineUnderBtn = styled.div`
 const ProjectsTasksList = styled.div`
   display: flex;
   align-items: center;
-  padding: 13px 10px 13px 5px;
+  padding: 13px 5px;
   border-bottom: 1px solid rgba(227, 225, 225, 0.7);
 `;
 
@@ -38,35 +46,45 @@ const ListTextArrow = styled.div`
 `;
 
 const ProjectListText = styled.span`
-  font-size: 14px;
-  width: 380px;
+  font-size: 12px;
+  width: 210px;
   font-weight: 500px;
   font-family: "Kumbh Sans";
   line-height: 18px;
   vertical-align: middle;
   align-items: center;
   color: rgba(22, 25, 50, 1);
-  margin-left: 10px;
+  margin-left: 8px;
   cursor: pointer;
   white-space: nowrap; 
   overflow: hidden;
   text-overflow: ellipsis;
+  @media only screen and (min-width: 768px) {
+    font-size: 14px;
+    margin-left: 10px;
+    width: 380px;
+  } ;
 `;
 
 const ProjectInput = styled.input`
   display: block;
   padding: 0;
-  width: 380px;
-  margin-left: 12px;
+  width: 210px;
+  margin-left: 8px;
   border: none;
   &:focus {
     outline: 0;
   }
   color: rgba(22, 25, 50, 1);
-  font-size: 14px;
+  font-size: 12px;
   font-family: "Kumbh Sans";
   font-weight: 500;
   line-height: 18px;
+  @media only screen and (min-width: 768px) {
+    font-size: 14px;
+    margin-left: 10px;
+    width: 380px;
+  };
 `;
 
 const Checkbox = styled.input.attrs({ type: "checkbox" })`
@@ -135,13 +153,13 @@ function Tasks({
   handleCheckboxClick,
   showInput,
   refCancel,
-  handleEnterKey,
+  createTaskEnterKey,
   handleAddTask,
   showCompletedTasks,
   setShowCompletedTasks,
   handleRenameTask,
   selectedTaskId,
-  handleEnterKeyUpdate,
+  renameTaskEnterKey,
   taskTitle,
   taskEditTitle,
   refTask,
@@ -173,8 +191,8 @@ function Tasks({
                         autoFocus
                         value={taskEditTitle}
                         // onBlur={handleClickOutside}
-                        onChange={handleEnterKeyUpdate}
-                        onKeyDown={handleEnterKeyUpdate}
+                        onChange={renameTaskEnterKey}
+                        onKeyDown={renameTaskEnterKey}
                       />
                     </Wrapper>
                   </ListTextArrow>
@@ -220,8 +238,8 @@ function Tasks({
                   autoFocus
                   value={taskTitle}
                   // onBlur={handleClickOutside}
-                  onChange={handleEnterKey}
-                  onKeyDown={handleEnterKey}
+                  onChange={createTaskEnterKey}
+                  onKeyDown={createTaskEnterKey}
                 />
               </Wrapper>
             </ListTextArrow>

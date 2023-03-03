@@ -6,7 +6,8 @@ const PlusButtonContainer = styled.button`
     background-color: transparent;
     display: flex;
     position: absolute;
-    left: 40px;
+    padding: 0;
+    /* left: 40px; */
     bottom: 50px;
     &:hover {
         opacity: 0.7;

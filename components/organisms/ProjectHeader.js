@@ -69,10 +69,10 @@ function ProjectHeader({
   setSelectedProjectId,
   selectedProject,
   showDoneBtn,
-  createTask,
+  create,
   closeModal,
-  selectedTaskId,
-  renameTask,
+  selectedId,
+  rename,
 }) {
   return (
     <ToDoListModalHeader>
@@ -86,8 +86,9 @@ function ProjectHeader({
           {selectedProjectId ? selectedProject.title : "Projects"}
         </Heading>
       </Wrapper>
+      <>
       {showDoneBtn ? (
-        <DoneBtn onClick={selectedTaskId == null ? createTask : renameTask}>
+        <DoneBtn onClick={selectedId == null ? create : rename}>
           <TextDoneBtn>Done</TextDoneBtn>
         </DoneBtn>
       ) : (
@@ -95,6 +96,7 @@ function ProjectHeader({
           <img src="./assets/icon-close.svg" alt="Close modal" />
         </CloseButton>
       )}
+      </>
     </ToDoListModalHeader>
   );
 }

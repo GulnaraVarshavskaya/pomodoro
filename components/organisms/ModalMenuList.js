@@ -61,17 +61,17 @@ const MenuListText = styled.span`
 
 
 function ModalMenuList () {
-    const { showModalMenuListId, refCancel, handleDeleteProject, handleRenameProject } = useContext(settingsContext);
+    const { showModalMenuListId, refProjectCancel, handleDeleteProject, handleRenameProject, projectEditTitle } = useContext(settingsContext);
 
     return (
         <ModalContainer 
         showModalMenuListId={showModalMenuListId}
-        ref={refCancel}
+        ref={refProjectCancel}
         >
             <MenuUl>
                 <MenuList>
                     <MenuListBtn
-                    onClick={handleRenameProject}
+                    onClick={() => handleRenameProject(showModalMenuListId)}
                     >
                         <MenuListImg>
                             <img src="./assets/icon-edit.svg" alt="Edit" />

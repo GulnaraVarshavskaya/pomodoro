@@ -12,13 +12,21 @@ const ToDoListModalBody = styled.div`
 const ProjectsTasksUl = styled.div`
   padding-left: 0;
   overflow: scroll;
-  height: 255px;
+  height: 380px;
+  -ms-overflow-style: none;  // IE and Edge
+  scrollbar-width: none;  // Firefox
+  &::-webkit-scrollbar { // Chrome, Safari and Opera 
+  display: none;
+  }
+  @media only screen and (min-width: 768px) {
+    height: 255px;
+  } ;
 `;
 
 const ProjectsTasksList = styled.div`
   display: flex;
   align-items: center;
-  padding: 13px 10px 13px 5px;
+  padding: 13px 0;
   border-bottom: 1px solid rgba(227, 225, 225, 0.7);
 `;
 
@@ -47,35 +55,45 @@ const ListTextArrow = styled.div`
 `;
 
 const ProjectListText = styled.span`
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 500px;
   font-family: "Kumbh Sans";
   line-height: 18px;
   vertical-align: middle;
   align-items: center;
   color: rgba(22, 25, 50, 1);
-  margin-left: 10px;
+  margin-left: 8px;
   cursor: pointer;
-  width: 380px;
+  width: 210px;
   white-space: nowrap; 
   overflow: hidden;
   text-overflow: ellipsis;
+  @media only screen and (min-width: 768px) {
+    font-size: 14px;
+    margin-left: 10px;
+    width: 380px;
+  } ;
 `;
 
 const ProjectInput = styled.input`
   display: block;
-  width: 380px;
+  width: 210px;
   padding: 0;
-  margin-left: 12px;
+  margin-left: 8px;
   border: none;
   &:focus {
     outline: 0;
   }
   color: rgba(22, 25, 50, 1);
-  font-size: 14px;
+  font-size: 12px;
   font-family: "Kumbh Sans";
   font-weight: 500;
   line-height: 18px;
+  @media only screen and (min-width: 768px) {
+    font-size: 14px;
+    margin-left: 10px;
+    width: 380px;
+  } ;
 `;
 
 const ForwardArrowSvg = styled.button`
@@ -98,25 +116,27 @@ function Projects({
   projects,
   projectInEditModeId,
   projectTitle,
-  handleChanges,
   showModalMenuListId,
   setShowModalMenuListId,
   setSelectedProjectId,
+  createProjectEnterKey,
+  handleEnterKeyRenameProject,
+  refProjectCancel,
+  refProject,
+  showInput,
   handleAddProject,
-  handleEnterKeyProject,
-  refProjectCancel
+  projectEditTitle
 }) {
   return (
     <ToDoListModalBody>
       {projects.length > 0 && (
         <ProjectsTasksUl>
           {projects.map((project) => {
-            // console.log("projectInEditModeId", projectInEditModeId)
             if (projectInEditModeId === project.id) {
               return (
                 <>
                   <ProjectsTasksList
-                  ref={refProjectCancel}
+                  ref={refProject}
                   >
                     <ProjectVerticalDots>
                       <img src="./assets/more-vertical.svg" alt="More" />
@@ -124,9 +144,9 @@ function Projects({
                     <ProjectInput
                       maxLength="100"
                       autoFocus
-                      value={projectTitle}
-                      onChange={handleEnterKeyProject}
-                      onKeyDown={handleEnterKeyProject}
+                      value={projectEditTitle}
+                      onChange={handleEnterKeyRenameProject}
+                      onKeyDown={handleEnterKeyRenameProject}
                     />
                   </ProjectsTasksList>
                 </>
@@ -155,7 +175,6 @@ function Projects({
               return (
                 <ProjectsTasksList key={project.id}>
                   {" "}
-                  {/* <ProjectListDot backgroundColor="red" /> */}
                   <ProjectVerticalDots
                     onClick={() => setShowModalMenuListId(project.id)}
                   >
@@ -173,6 +192,26 @@ function Projects({
               );
             }
           })}
+
+        {showInput ? (
+          <ProjectsTasksList 
+          ref={refProjectCancel}
+          >
+              <ProjectVerticalDots>
+                <img src="./assets/more-vertical.svg" alt="More" />
+              </ProjectVerticalDots>
+              <ProjectInput
+                maxLength="100"
+                autoFocus
+                value={projectTitle}
+                onChange={createProjectEnterKey}
+                onKeyDown={createProjectEnterKey}
+              />
+          </ProjectsTasksList>
+        ) : (
+          false
+        )}
+
         </ProjectsTasksUl>
       )}
       <PlusButton onClick={() => handleAddProject()}>Add a project</PlusButton>

@@ -45,12 +45,16 @@ const RadioInput = styled.input.attrs({type: "radio"})`
   position: absolute;
   &:focus {
     outline: none;
-  }
+  } 
+  &:disabled ~ span:first-of-type {
+  color: rgba(215, 224, 255, 0.4);
+ }
   &:checked ~ span:first-of-type {
   transition: 0.15s ease-out;
   color: rgba(30, 33, 63, 1);
   background-color: ${(props) => colors[props.selectedColor]};
 }
+
 `
 const ToggleLabelContainer = styled.label`
   display: flex;
@@ -69,6 +73,9 @@ const RadioInputText = styled.span`
   &:hover {
     color: rgba(215, 224, 255);
   }
+  &:hover:disabled {
+    color: rgba(215, 224, 255, 0.4);
+  }
   @media only screen and (min-width: 768px){
         padding: ${(props) => paddingsDesktop[props.padding]};
         font-size: ${(props) => sizeDesktop[props.size]};
@@ -78,7 +85,7 @@ const RadioInputText = styled.span`
 
 export default function ToggleLabel(props) {
   
-  const { mode, setMode} = useContext(settingsContext)
+  const { mode, setMode, showModal} = useContext(settingsContext)
 
   return (
         <ToggleLabelContainer>
@@ -91,6 +98,7 @@ export default function ToggleLabel(props) {
               setMode(e.target.value)
             } }
             checked={mode === props.value}
+            disabled={ showModal !== null }
             />
             <RadioInputText
             padding="padding"
@@ -98,6 +106,7 @@ export default function ToggleLabel(props) {
             height="height"
             selectedFont={props.selectedFont}
             font="kumbhSans"
+            disabled={ showModal !== null }
             >{props.span}</RadioInputText>
         </ToggleLabelContainer>
   )

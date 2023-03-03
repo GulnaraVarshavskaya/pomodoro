@@ -59,8 +59,14 @@ export default function Home() {
 
   const openModal = () => {
       setShowModal("todoList")};
-  const closeModal = () => {
-      setShowModal(null)};
+  const closeModal = (e) => {
+    console.log("Hello executed")
+    if (e.key === "Escape") {
+      setShowModal(null)
+    } else {
+      setShowModal(null)
+    }
+    }
 
   const [timeInputs, setTimeInputs] = useState({
     pomodoro: 25,
@@ -132,7 +138,7 @@ export default function Home() {
   }
 
   return (
-    <settingsContext.Provider value={{ colorOptions: colorOptions, fontOptions: fontOptions, selectedColor: selectedColor, setSelectedColor: setSelectedColor, selectedFont: selectedFont, timeInputs: timeInputs, handleChanges: handleChanges, mode: mode, setMode: setMode, toggleAction:toggleAction, showModal: showModal, openSettingsModal: openSettingsModal, closeSettingsModal: closeSettingsModal, openModal: openModal, closeModal: closeModal, toggleAction: toggleAction, restart: restart }}>
+    <settingsContext.Provider value={{ colorOptions: colorOptions, fontOptions: fontOptions, selectedColor: selectedColor, setSelectedColor: setSelectedColor, selectedFont: selectedFont, timeInputs: timeInputs, handleChanges: handleChanges, mode: mode, setMode: setMode, toggleAction:toggleAction, showModal: showModal, openSettingsModal: openSettingsModal, closeSettingsModal: closeSettingsModal, openModal: openModal, closeModal: closeModal, toggleAction: toggleAction, restart: restart, setShowModal: setShowModal }}>
       <Container>
         <HeadContainer>
           <Heading
