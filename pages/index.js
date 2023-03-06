@@ -54,8 +54,13 @@ export default function Home() {
 
   const openSettingsModal = () => {
       setShowModal("settings")};
-  const closeSettingsModal = () => {
-      setShowModal(null)};
+  const closeSettingsModal = (e) => {
+    if (e.key === "Escape") {
+      setShowModal(null)
+    } else {
+      setShowModal(null)
+    }
+  }
 
   const openModal = () => {
       setShowModal("todoList")};

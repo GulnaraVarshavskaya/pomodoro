@@ -78,6 +78,8 @@ function ToDoListModal() {
     }
   }, [showInput, projectInEditModeId, selectedTaskId, selectedProjectId])
 
+  
+
   useEffect(() => {
     fetchProjects();
   }, []);

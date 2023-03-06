@@ -4,7 +4,7 @@ import FormInputLabel from '../molecules/FormInputLabel'
 import Heading from '../atoms/Heading'
 import ColorRadioLabel from '../molecules/ColorRadioLabel'
 
-import React, { useContext, useState } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { settingsContext } from '../../pages'
 
@@ -109,11 +109,23 @@ const HeadingInputWrapper = styled.div`
 
 function SettingsModal() {
 
-const { colorOptions, fontOptions, selectedColor, selectedFont, timeInputs, handleChanges, showSettingsModal, closeSettingsModal } = useContext(settingsContext)
+const { colorOptions, fontOptions, selectedColor, selectedFont, timeInputs, handleChanges, showSettingsModal, closeSettingsModal, setShowModal } = useContext(settingsContext)
 
 const [temporaryColor, setTemporaryColor] = useState(selectedColor);
 const [temporaryFont, setTemporaryFont] = useState(selectedFont);
 const [temporaryTimeInputs, setTemporaryTimeInputs] = useState(timeInputs)
+
+useEffect(() => {
+    const closeSettingsModal = (e) => {
+      if (e.key === "Escape") {
+        setShowModal(null)
+      }
+    }
+    window.addEventListener("keydown", closeSettingsModal)
+    return () => {
+      window.removeEventListener("keydown", closeSettingsModal)
+    }
+  }, [])
 
 const updateTimeInputs = (e) => {
     const max = 60
