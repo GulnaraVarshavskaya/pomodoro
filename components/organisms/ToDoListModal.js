@@ -5,7 +5,8 @@ import { v4 as uuid } from "uuid";
 import ProjectHeader from "./ProjectHeader";
 import Projects from "./Projects";
 import Tasks from "./Tasks";
-import { xml2json } from "json_xml";
+import { createProject, renameProject, deleteProject, fetchProjects } from "../../services/projects";
+import { useOutsideClick } from "../../hooks/useOutsideClick"
 
 const ModalContainer = styled.div`
   display: flex;
@@ -47,10 +48,9 @@ function ToDoListModal() {
 
   // console.log("showCompletedTasks", showCompletedTasks)
 
-  async function fetchProjects() {
-    const response = await fetch(`api/projects`);
+  async function handleFetchProjects() {
 
-    const data = await response.json();
+    const data = await fetchProjects();
 
     setProjects(data.projects);
   }
@@ -81,8 +81,149 @@ function ToDoListModal() {
   
 
   useEffect(() => {
-    fetchProjects();
+    handleFetchProjects();
   }, []);
+
+  
+  const selectedProject = projects.find((project) => {
+    return project.id === selectedProjectId;
+  });
+
+  function handleAddProject() {
+    setShowInput(true);
+    setShowDoneBtn(true);
+    setProjectTitle("");
+  }
+
+  function createProjectEnterKey(e) {
+    if (e.key === "Enter") {
+      handleCreateProject();
+    } 
+    else {
+      setProjectTitle(e.target.value);
+    }
+  }
+
+  async function handleCreateProject() {
+    const newProject = {
+      id: uuid(),
+      title: projectTitle,
+    };
+    const updatedProjects = [...projects, newProject];
+
+    setProjects(updatedProjects);
+    setShowInput(false);
+    setShowDoneBtn(false);
+
+    await createProject(newProject);
+  }
+
+  function handleRenameProject(projectId) {
+    setProjectInEditModeId(projectId);
+    if (projectId !== null) {  
+    const updatedProject = projects.find((project) => {
+      return project.id === projectId;
+    });
+    setProjectEditTitle(updatedProject.title);
+    setShowDoneBtn(true);
+    setShowModalMenuListId(null);}
+    else {
+      setShowDoneBtn(false);
+    }
+  }
+
+  function handleEnterKeyRenameProject(e) {
+    // when user press Enter this function will be executed
+    if (e.key === "Enter") {
+      handleUpdateProject();
+    }   
+    else {
+      //when users don't press Enter they can continue typing in the input
+      setProjectEditTitle(e.target.value);
+    }
+  }
+
+  const handleUpdateProject = async () => {
+    // we mapping the array of projects and return new array of updated project
+    const updatedProjects = projects.map((project) => {
+      // if the id of the project we are mapping over matches with the project id in edit mode
+      if (project.id === projectInEditModeId) {
+        // return an object. id, included tasks stay the same, title is going to change
+        return {
+          // id: project.id,
+          // tasks: project.tasks,
+          ...project,
+          title: projectEditTitle,
+        };
+      }
+      // if the project wasn't updated just return it in a new array
+      return project;
+    });
+
+    // we're calling the setter and triggering rerender (update state)
+    setProjects(updatedProjects);
+    // by setting this state to null, all projects are displayed normally (no input field anywhere). Close the input
+    setShowDoneBtn(false);
+    setProjectInEditModeId(null);
+
+    await renameProject(projectInEditModeId, projectEditTitle);
+  };
+
+  async function handleDeleteProject(projectId) {
+    const deletedProject = projects.filter((project) => {
+      return project.id !== projectId;
+    });
+    setProjects(deletedProject);
+
+    await deleteProject(projectId);
+  }
+
+  const handleClickOutsideTasksCancelCreate = (event) => {
+    const isTargetNotDoneBtn = event.target.innerText !== "Done";
+    if (isTargetNotDoneBtn) {
+    setShowInput(false);
+    setShowDoneBtn(false);
+    };
+  };
+
+  const handleClickOutsideTasks = (event) => {
+    const isTargetNotDoneBtn = event.target.innerText !== "Done";
+    if (isTargetNotDoneBtn) {
+    renameTask();
+    };
+  };
+
+  const refTask = useOutsideClick(handleClickOutsideTasks, [selectedTaskId]);
+
+  const refCancel = useOutsideClick(handleClickOutsideTasksCancelCreate, [
+    showInput,
+  ]);
+  
+  const handleClickOutsideProjects = (event) => {
+    console.log("event", event)
+    const isTargetNotDoneBtn = event.target.innerText !== "Done";
+    if (isTargetNotDoneBtn) {
+      handleRenameProject(null);
+    }    
+  };
+
+  const handleClickOutsideProjectsCancelCreate = (event) => {
+    const isTargetNotDoneBtn = event.target.innerText !== "Done";
+    if (isTargetNotDoneBtn) {
+    setShowModalMenuListId(null);
+    setShowInput(false);
+    setShowDoneBtn(false);
+    }
+  };
+
+  const refProject = useOutsideClick(handleClickOutsideProjects, [
+    selectedProjectId,
+  ]);
+
+  const refProjectCancel = useOutsideClick(
+    handleClickOutsideProjectsCancelCreate,
+    [showInput]
+  );
 
   async function handleCheckboxClick(id, completed, completedTasksCount) {
     if (completed === true && completedTasksCount === 1) {
@@ -140,189 +281,6 @@ function ToDoListModal() {
     const data = await response.json();
   }
 
-  const selectedProject = projects.find((project) => {
-    return project.id === selectedProjectId;
-  });
-
-  function handleAddProject() {
-    setShowInput(true);
-    setShowDoneBtn(true);
-    setProjectTitle("");
-  }
-
-  function createProjectEnterKey(e) {
-    if (e.key === "Enter") {
-      createProject();
-    } 
-    else {
-      setProjectTitle(e.target.value);
-    }
-  }
-
-  async function createProject() {
-    const newProject = {
-      id: uuid(),
-      title: projectTitle,
-    };
-    const updatedProjects = [...projects, newProject];
-
-    setProjects(updatedProjects);
-    setShowInput(false);
-    setShowDoneBtn(false);
-
-    const response = await fetch(`api/projects`, {
-      method: "POST",
-      body: JSON.stringify({
-        id: newProject.id,
-        title: projectTitle,
-      }),
-    });
-    const data = await response.json();
-  }
-
-  function handleRenameProject(projectId) {
-    setProjectInEditModeId(projectId);
-    if (projectId !== null) {  
-    const updatedProject = projects.find((project) => {
-      return project.id === projectId;
-    });
-    setProjectEditTitle(updatedProject.title);
-    setShowDoneBtn(true);
-    setShowModalMenuListId(null);}
-    else {
-      setShowDoneBtn(false);
-    }
-  }
-
-  function handleEnterKeyRenameProject(e) {
-    // when user press Enter this function will be executed
-    if (e.key === "Enter") {
-      renameProject();
-    }   
-    else {
-      //when users don't press Enter they can continue typing in the input
-      setProjectEditTitle(e.target.value);
-    }
-  }
-
-  const renameProject = async () => {
-    console.log(
-      "projectInEditModeId",
-      projectInEditModeId,
-      "projectTitle",
-      projectTitle
-    );
-    // we mapping the array of projects and return new array of updated project
-    const updatedProjects = projects.map((project) => {
-      // if the id of the project we are mapping over matches with the project id in edit mode
-      if (project.id === projectInEditModeId) {
-        // return an object. id, included tasks stay the same, title is going to change
-        return {
-          // id: project.id,
-          // tasks: project.tasks,
-          ...project,
-          title: projectEditTitle,
-        };
-      }
-      // if the project wasn't updated just return it in a new array
-      return project;
-    });
-
-    // we're calling the setter and triggering rerender (update state)
-    setProjects(updatedProjects);
-    // by setting this state to null, all projects are displayed normally (no input field anywhere). Close the input
-    setShowDoneBtn(false);
-    setProjectInEditModeId(null);
-
-    // we're sending a PATCH request to update project with a specific id
-    // we're sending in the body an object with key title and the value of new title
-    const response = await fetch(`api/projects/${projectInEditModeId}`, {
-      method: "PATCH",
-      body: JSON.stringify({
-        id: projectInEditModeId,
-        title: projectEditTitle,
-      }),
-    });
-
-    // here we get data from the server. It's an object with id and title
-    // id - id of project, title - updated value
-    const data = await response.json();
-  };
-
-  async function handleDeleteProject(projectId) {
-    const deletedProject = projects.filter((project) => {
-      return project.id !== projectId;
-    });
-    setProjects(deletedProject);
-
-    const response = await fetch(`api/projects/${projectId}`, {
-      method: "DELETE",
-      body: JSON.stringify({
-        id: projectId,
-      }),
-    });
-    const data = await response.json();
-  }
-
-
-  const useOutsideClick = (callback, dependencies) => {
-    const ref = useRef();
-
-    useEffect(() => {
-      const handleClick = (event) => {
-        const isRefBeingUsed = Boolean(ref.current);
-        const isClickOutsideInput = !ref.current?.contains(event.target);
-        const isTargetNotDoneBtn = event.target.innerText !== "Done";
-        if (isRefBeingUsed && isClickOutsideInput && isTargetNotDoneBtn) {
-          callback();
-        }
-      };
-
-      document.addEventListener("click", handleClick, true);
-
-      return () => {
-        document.removeEventListener("click", handleClick, true);
-      };
-    }, [ref, ...dependencies]);
-
-    return ref;
-  };
-
-  const handleClickOutsideTasksCancelCreate = () => {
-    console.log("hello there");
-    // setShowModalMenuListId(null);
-    setShowInput(false);
-    setShowDoneBtn(false);
-  };
-
-  const handleClickOutsideTasks = () => {
-    renameTask();
-  };
-
-  const refTask = useOutsideClick(handleClickOutsideTasks, [selectedTaskId]);
-
-  const refCancel = useOutsideClick(handleClickOutsideTasksCancelCreate, [
-    showInput,
-  ]);
-
-  const handleClickOutsideProjects = () => {
-    handleRenameProject(null);
-  };
-
-  const handleClickOutsideProjectsCancelCreate = () => {
-    setShowModalMenuListId(null);
-    setShowInput(false);
-    setShowDoneBtn(false);
-  };
-
-  const refProject = useOutsideClick(handleClickOutsideProjects, [
-    selectedProjectId,
-  ]);
-
-  const refProjectCancel = useOutsideClick(
-    handleClickOutsideProjectsCancelCreate,
-    [showInput]
-  );
 
   function handleAddTask() {
     setShowInput(true);
@@ -454,12 +412,10 @@ function ToDoListModal() {
             setSelectedProjectId={setSelectedProjectId}
             selectedProject={selectedProject}
             showDoneBtn={showDoneBtn}
-            create={createProject}
+            create={handleCreateProject}
             closeModal={closeModal}
             selectedId={projectInEditModeId}
-            rename={renameProject}
-            // createProject={createProject}
-            // renameProject={renameProject}
+            rename={handleUpdateProject}
           />
           )
           }
@@ -507,3 +463,8 @@ function ToDoListModal() {
 }
 
 export default ToDoListModal;
+
+
+
+
+
