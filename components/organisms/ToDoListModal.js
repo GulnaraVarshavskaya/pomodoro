@@ -6,6 +6,7 @@ import ProjectHeader from "./ProjectHeader";
 import Projects from "./Projects";
 import Tasks from "./Tasks";
 import { createProject, renameProject, deleteProject, fetchProjects } from "../../services/projects";
+import { createTask, renameTask, fetchTasks } from "../../services/tasks"
 import { useOutsideClick } from "../../hooks/useOutsideClick"
 
 const ModalContainer = styled.div`
@@ -46,7 +47,6 @@ function ToDoListModal() {
   const [showCompletedTasks, setShowCompletedTasks] = useState(false);
   const [selectedTaskId, setSelectedTaskId] = useState(null);
 
-  // console.log("showCompletedTasks", showCompletedTasks)
 
   async function handleFetchProjects() {
 
@@ -56,8 +56,16 @@ function ToDoListModal() {
   }
 
   useEffect(() => {
+    handleFetchProjects();
+  }, []);
+
+  const selectedProject = projects.find((project) => {
+    return project.id === selectedProjectId;
+  });
+
+
+  useEffect(() => {
     const closeModal = (e) => {
-      console.log("showInput",showInput)
       if (e.key === "Escape" && showInput === false && projectInEditModeId === null && selectedTaskId === null && selectedProjectId === null) {
         setShowModal(null)
       }
@@ -78,16 +86,6 @@ function ToDoListModal() {
     }
   }, [showInput, projectInEditModeId, selectedTaskId, selectedProjectId])
 
-  
-
-  useEffect(() => {
-    handleFetchProjects();
-  }, []);
-
-  
-  const selectedProject = projects.find((project) => {
-    return project.id === selectedProjectId;
-  });
 
   function handleAddProject() {
     setShowInput(true);
@@ -178,6 +176,7 @@ function ToDoListModal() {
     await deleteProject(projectId);
   }
 
+
   const handleClickOutsideTasksCancelCreate = (event) => {
     const isTargetNotDoneBtn = event.target.innerText !== "Done";
     if (isTargetNotDoneBtn) {
@@ -189,7 +188,7 @@ function ToDoListModal() {
   const handleClickOutsideTasks = (event) => {
     const isTargetNotDoneBtn = event.target.innerText !== "Done";
     if (isTargetNotDoneBtn) {
-    renameTask();
+      handleUpdateTask();
     };
   };
 
@@ -267,18 +266,8 @@ function ToDoListModal() {
     // we're calling the setter and triggering rerender
     setProjects(updatedProjects);
 
-    // we're sending a PATCH request to update task with a specific id
-    // we're sending in the body an object with key completed and the value of completed id not completed
     // optimistic update
-    const response = await fetch(`api/tasks/${id}`, {
-      method: "PATCH",
-      body: JSON.stringify({
-        completed: !completed,
-      }),
-    });
-    // here we get data from the server. It's an object with id and completed
-    // id - id of task, completed - updated value
-    const data = await response.json();
+    await fetchTasks(id, completed);
   }
 
 
@@ -290,14 +279,14 @@ function ToDoListModal() {
 
   function createTaskEnterKey(e) {
     if (e.key === "Enter") {
-      createTask();
+      handleCreateTask();
     } 
     else {
       setTaskTitle(e.target.value);
     }
   }
 
-  async function createTask() {
+  async function handleCreateTask() {
     const newTask = {
       id: uuid(),
       title: taskTitle,
@@ -317,16 +306,7 @@ function ToDoListModal() {
     setShowInput(false);
     setShowDoneBtn(false);
 
-    const response = await fetch(`/api/projects/${selectedProjectId}/tasks/`, {
-      method: "POST",
-      body: JSON.stringify({
-        id: newTask.id,
-        projectId: selectedProjectId,
-        title: taskTitle,
-        completed: false,
-      }),
-    }); 
-    const data = await response.json();
+    await createTask(selectedProjectId, newTask);
   }
 
   function handleRenameTask(id, title) {
@@ -338,14 +318,14 @@ function ToDoListModal() {
 
   function renameTaskEnterKey(e) {
     if (e.key === "Enter") {
-      renameTask();
+      handleUpdateTask();
     } 
     else {
       setTaskEditTitle(e.target.value);
     }
   }
 
-  async function renameTask() {
+  async function handleUpdateTask() {
     const updatedProjects = projects.map((project) => {
       if (project.id === selectedProjectId) {
         const updatedTasks = project.tasks.map((task) => {
@@ -362,25 +342,15 @@ function ToDoListModal() {
       }
       return project;
     });
-    console.log("taskEditTitle", taskEditTitle);
     setProjects(updatedProjects);
     setShowDoneBtn(false);
     setSelectedTaskId(null);
 
-    const response = await fetch(`api/tasks/${selectedTaskId}`, {
-      method: "PATCH",
-      body: JSON.stringify({
-        id: selectedTaskId,
-        title: taskEditTitle,
-      }),
-    });
-    const data = await response.json();
+    await renameTask(selectedTaskId, taskEditTitle);
   }
 
   const startTimer = () => {
-    console.log("Hi");
     closeModal();
-    // toggleAction();
     restart();
   };
 
@@ -401,10 +371,10 @@ function ToDoListModal() {
             setSelectedProjectId={setSelectedProjectId}
             selectedProject={selectedProject}
             showDoneBtn={showDoneBtn}
-            create={createTask}
+            create={handleCreateTask}
             closeModal={closeModal}
             selectedId={selectedTaskId}
-            rename={renameTask}
+            rename={handleUpdateTask}
           />   
           ) : (
             <ProjectHeader
@@ -463,8 +433,5 @@ function ToDoListModal() {
 }
 
 export default ToDoListModal;
-
-
-
 
 
