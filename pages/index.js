@@ -54,23 +54,14 @@ export default function Home() {
 
   const openSettingsModal = () => {
       setShowModal("settings")};
-  const closeSettingsModal = (e) => {
-    if (e.key === "Escape") {
-      setShowModal(null)
-    } else {
+  const closeSettingsModal = () => {
       setShowModal(null)
     }
-  }
 
   const openModal = () => {
       setShowModal("todoList")};
-  const closeModal = (e) => {
-    console.log("Hello executed")
-    if (e.key === "Escape") {
+  const closeModal = () => {
       setShowModal(null)
-    } else {
-      setShowModal(null)
-    }
     }
 
   const [timeInputs, setTimeInputs] = useState({
