@@ -26,132 +26,125 @@ const ToDoListModalContainer = styled.div`
 `;
 
 function ToDoListModal() {
-  const { showModal, closeModal, toggleAction, restart, setShowModal } =
+  const { showModal, closeModal, restart, setShowModal } =
     useContext(settingsContext);
 
-  const [projects, setProjects] = useState([]);
+    const [state, setState] = useState({
+      projects: [],
+      selectedProjectId: null,
+      projectInEditModeId: null,
+      projectTitle: "",
+      projectEditTitle: "",
+      taskTitle: "",
+      taskEditTitle: "",
+      selectedTaskId: null,
+      showInput: false,
+      showDoneBtn: false,
+      showModalMenuListId: null,
+      showCompletedTasks: false,   
+    })
 
-  const [selectedProjectId, setSelectedProjectId] = useState(null);
+    function updateStates(updates) {
+      setState({ ...state, ...updates })
+    }
 
-  const [projectInEditModeId, setProjectInEditModeId] = useState(null);
-  const [projectTitle, setProjectTitle] = useState("");
 
-  const [taskEditTitle, setTaskEditTitle] = useState("");
-  const [projectEditTitle, setProjectEditTitle] = useState("");
 
-  const [taskTitle, setTaskTitle] = useState("");
+  // const [projects, setProjects] = useState([]);
 
-  const [showInput, setShowInput] = useState(false);
-  const [showDoneBtn, setShowDoneBtn] = useState(false);
-  const [showModalMenuListId, setShowModalMenuListId] = useState(null);
-  const [showCompletedTasks, setShowCompletedTasks] = useState(false);
-  const [selectedTaskId, setSelectedTaskId] = useState(null);
+  // const [selectedProjectId, setSelectedProjectId] = useState(null);
+
+  // const [projectInEditModeId, setProjectInEditModeId] = useState(null);
+  // const [projectTitle, setProjectTitle] = useState("");
+
+  // const [taskEditTitle, setTaskEditTitle] = useState("");
+  // const [projectEditTitle, setProjectEditTitle] = useState("");
+
+  // const [taskTitle, setTaskTitle] = useState("");
+
+  // const [showInput, setShowInput] = useState(false);
+  // const [showDoneBtn, setShowDoneBtn] = useState(false);
+  // const [showModalMenuListId, setShowModalMenuListId] = useState(null);
+  // const [showCompletedTasks, setShowCompletedTasks] = useState(false);
+  // const [selectedTaskId, setSelectedTaskId] = useState(null);
 
 
   async function handleFetchProjects() {
-
     const data = await fetchProjects();
-
-    setProjects(data.projects);
+    setState({...state, projects: data.projects})
   }
 
   useEffect(() => {
     handleFetchProjects();
   }, []);
 
-  const selectedProject = projects.find((project) => {
-    return project.id === selectedProjectId;
+  const selectedProject = state.projects.find((project) => {
+    return project.id === state.selectedProjectId;
   });
 
 
   useEffect(() => {
     const closeModal = (e) => {
-      if (e.key === "Escape" && showInput === false && projectInEditModeId === null && selectedTaskId === null && selectedProjectId === null) {
-        setShowModal(null)
+      if (e.key === "Escape" && state.showInput === false && state.projectInEditModeId === null && state.selectedTaskId === null && state.selectedProjectId === null) {
+        setShowModal(null);
       }
-      else if (e.key === "Escape" && showInput === true) {
-        setShowInput(false)
-        setShowDoneBtn(false);
-      } else if (e.key === "Escape" && projectInEditModeId !== null) {
-        setProjectInEditModeId(null);
-      }  else if (e.key === "Escape" && selectedTaskId !== null) {
-        setSelectedTaskId(null);
-      } else if (e.key === "Escape" && selectedProjectId !== null) {
-        setSelectedProjectId(null)
+      else if (e.key === "Escape" && state.showInput === true) {
+        setState({ showInput: false, showDoneBtn: false })
+      } else if (e.key === "Escape" && state.projectInEditModeId !== null) {
+        setState({ projectInEditModeId: null })
+      }  else if (e.key === "Escape" && state.selectedTaskId !== null) {
+        setState({ selectedTaskId: null })
+      } else if (e.key === "Escape" && state.selectedProjectId !== null) {
+        setState({ selectedProjectId: null })
       }
     }
     window.addEventListener("keydown", closeModal)
     return () => {
       window.removeEventListener("keydown", closeModal)
     }
-  }, [showInput, projectInEditModeId, selectedTaskId, selectedProjectId])
-
-
-  function handleAddProject() {
-    setShowInput(true);
-    setShowDoneBtn(true);
-    setProjectTitle("");
-  }
-
-  function createProjectEnterKey(e) {
-    if (e.key === "Enter") {
-      handleCreateProject();
-    } 
-    else {
-      setProjectTitle(e.target.value);
-    }
-  }
+  }, [state.showInput, state.projectInEditModeId, state.selectedTaskId, state.selectedProjectId])
 
   async function handleCreateProject() {
     const newProject = {
       id: uuid(),
-      title: projectTitle,
+      title: state.projectTitle,
     };
-    const updatedProjects = [...projects, newProject];
+    const updatedProjects = [...state.projects, newProject];
 
-    setProjects(updatedProjects);
-    setShowInput(false);
-    setShowDoneBtn(false);
+    setState({
+      ...state, projects: updatedProjects, showInput: false, showDoneBtn: false,
+    })
 
     await createProject(newProject);
   }
 
   function handleRenameProject(projectId) {
-    setProjectInEditModeId(projectId);
     if (projectId !== null) {  
-    const updatedProject = projects.find((project) => {
+    const updatedProject = state.projects.find((project) => {
       return project.id === projectId;
     });
-    setProjectEditTitle(updatedProject.title);
-    setShowDoneBtn(true);
-    setShowModalMenuListId(null);}
+    updateStates({
+      projectInEditModeId: projectId,
+      projectEditTitle: updatedProject.title,
+      showDoneBtn: true,
+      showModalMenuListId: null,
+    })}
     else {
-      setShowDoneBtn(false);
-    }
-  }
-
-  function handleEnterKeyRenameProject(e) {
-    // when user press Enter this function will be executed
-    if (e.key === "Enter") {
-      handleUpdateProject();
-    }   
-    else {
-      //when users don't press Enter they can continue typing in the input
-      setProjectEditTitle(e.target.value);
+      updateStates({ showDoneBtn: false })
     }
   }
 
   const handleUpdateProject = async () => {
     // we mapping the array of projects and return new array of updated project
-    const updatedProjects = projects.map((project) => {
+    const updatedProjects = state.projects.map((project) => {
       // if the id of the project we are mapping over matches with the project id in edit mode
-      if (project.id === projectInEditModeId) {
+      if (project.id === state.projectInEditModeId) {
         // return an object. id, included tasks stay the same, title is going to change
         return {
           // id: project.id,
           // tasks: project.tasks,
           ...project,
-          title: projectEditTitle,
+          title: state.projectEditTitle,
         };
       }
       // if the project wasn't updated just return it in a new array
@@ -159,19 +152,17 @@ function ToDoListModal() {
     });
 
     // we're calling the setter and triggering rerender (update state)
-    setProjects(updatedProjects);
     // by setting this state to null, all projects are displayed normally (no input field anywhere). Close the input
-    setShowDoneBtn(false);
-    setProjectInEditModeId(null);
+    setState({...state, projects: updatedProjects, showDoneBtn: false, projectInEditModeId: null})
 
-    await renameProject(projectInEditModeId, projectEditTitle);
+    await renameProject(state.projectInEditModeId, state.projectEditTitle);
   };
 
   async function handleDeleteProject(projectId) {
-    const deletedProject = projects.filter((project) => {
+    const deletedProject = state.projects.filter((project) => {
       return project.id !== projectId;
     });
-    setProjects(deletedProject);
+    setState({ projects: deletedProject })
 
     await deleteProject(projectId);
   }
@@ -180,8 +171,7 @@ function ToDoListModal() {
   const handleClickOutsideTasksCancelCreate = (event) => {
     const isTargetNotDoneBtn = event.target.innerText !== "Done";
     if (isTargetNotDoneBtn) {
-    setShowInput(false);
-    setShowDoneBtn(false);
+    setState({showInput: false, showDoneBtn: false})
     };
   };
 
@@ -192,10 +182,10 @@ function ToDoListModal() {
     };
   };
 
-  const refTask = useOutsideClick(handleClickOutsideTasks, [selectedTaskId]);
+  const refTask = useOutsideClick(handleClickOutsideTasks, [state.selectedTaskId]);
 
   const refCancel = useOutsideClick(handleClickOutsideTasksCancelCreate, [
-    showInput,
+    state.showInput,
   ]);
   
   const handleClickOutsideProjects = (event) => {
@@ -206,36 +196,22 @@ function ToDoListModal() {
     }    
   };
 
-  const handleClickOutsideProjectsCancelCreate = (event) => {
-    const isTargetNotDoneBtn = event.target.innerText !== "Done";
-    if (isTargetNotDoneBtn) {
-    setShowModalMenuListId(null);
-    setShowInput(false);
-    setShowDoneBtn(false);
-    }
-  };
-
   const refProject = useOutsideClick(handleClickOutsideProjects, [
-    selectedProjectId,
+    state.selectedProjectId,
   ]);
-
-  const refProjectCancel = useOutsideClick(
-    handleClickOutsideProjectsCancelCreate,
-    [showInput]
-  );
 
   async function handleCheckboxClick(id, completed, completedTasksCount) {
     if (completed === true && completedTasksCount === 1) {
-      setShowCompletedTasks(false);
+      setState({...state, showCompletedTask: false})
     }
     // when user clicks checkbox this function will be executed
     // id - id of task,
     // completed - when the checkbox is empty the value is false and when the checkbox is checked - it's true
 
     // here we mapping whole array of projects and return new array of updated project
-    const updatedProjects = projects.map((project) => {
+    const updatedProjects = state.projects.map((project) => {
       // if the project we are mapping over is the selected project then we're going to do something
-      if (project.id === selectedProjectId) {
+      if (project.id === state.selectedProjectId) {
         // in the selected project we're mapping tasks to find the right task
 
         const updatedTasks = project.tasks.map((task) => {
@@ -264,7 +240,7 @@ function ToDoListModal() {
     });
 
     // we're calling the setter and triggering rerender
-    setProjects(updatedProjects);
+    setState({...state, projects: updatedProjects})
 
     // optimistic update
     await fetchTasks(id, completed);
@@ -272,9 +248,7 @@ function ToDoListModal() {
 
 
   function handleAddTask() {
-    setShowInput(true);
-    setShowDoneBtn(true);
-    setTaskTitle("");
+    setState({...state, showInput: true, showDoneBtn: true, taskTitle: ""})
   }
 
   function createTaskEnterKey(e) {
@@ -282,19 +256,19 @@ function ToDoListModal() {
       handleCreateTask();
     } 
     else {
-      setTaskTitle(e.target.value);
+      setState({...state, taskTitle: e.target.value})
     }
   }
 
   async function handleCreateTask() {
     const newTask = {
       id: uuid(),
-      title: taskTitle,
-      projectId: selectedProjectId,
+      title: state.taskTitle,
+      projectId: state.selectedProjectId,
       completed: false,
     };
-    const updatedProjects = projects.map((project) => {
-      if (project.id === selectedProjectId) {
+    const updatedProjects = state.projects.map((project) => {
+      if (project.id === state.selectedProjectId) {
         return {
           ...project,
           tasks: [...project.tasks, newTask],
@@ -302,18 +276,14 @@ function ToDoListModal() {
       }
       return project;
     });
-    setProjects(updatedProjects);
-    setShowInput(false);
-    setShowDoneBtn(false);
+    setState({...state, projects: updatedProjects, showInput: false, showDoneBtn: false})
 
-    await createTask(selectedProjectId, newTask);
+    await createTask(state.selectedProjectId, newTask);
   }
 
   function handleRenameTask(id, title) {
     console.log("selectedId:" + id);
-    setSelectedTaskId(id);
-    setTaskEditTitle(title);
-    setShowDoneBtn(true);
+    setState({...state, selectedTaskId: id, taskEditTitle: title, showDoneBtn: true})
   }
 
   function renameTaskEnterKey(e) {
@@ -321,18 +291,18 @@ function ToDoListModal() {
       handleUpdateTask();
     } 
     else {
-      setTaskEditTitle(e.target.value);
+      setState({...state, taskEditTitle: e.target.value})
     }
   }
 
   async function handleUpdateTask() {
-    const updatedProjects = projects.map((project) => {
-      if (project.id === selectedProjectId) {
+    const updatedProjects = state.projects.map((project) => {
+      if (project.id === state.selectedProjectId) {
         const updatedTasks = project.tasks.map((task) => {
-          if (task.id === selectedTaskId) {
+          if (task.id === state.selectedTaskId) {
             return {
               ...task,
-              title: taskEditTitle,
+              title: state.taskEditTitle,
             };
           } else {
             return task;
@@ -342,88 +312,87 @@ function ToDoListModal() {
       }
       return project;
     });
-    setProjects(updatedProjects);
-    setShowDoneBtn(false);
-    setSelectedTaskId(null);
+    setState({...state, projects: updatedProjects, showDoneBtn: false, selectedTaskId: null})
 
-    await renameTask(selectedTaskId, taskEditTitle);
+    await renameTask(state.selectedTaskId, state.taskEditTitle);
   }
 
   const startTimer = () => {
     closeModal();
     restart();
   };
+  function selectProject(id) {
+    setState({...state, selectedProjectId: id})
+  }
+
+  function showModalMenuList(id) {
+    setState({...state, showModalMenuListId: id})
+  }
+
+  function completedTasks() {
+    setState({showCompletedTasks: false})
+  }
 
   return (
     <settingsContext.Provider
       value={{
-        showModalMenuListId,
-        refProjectCancel,
+        showModalMenuListId: state.showModalMenuListId,
         handleDeleteProject,
         handleRenameProject,
       }}
     >
       <ModalContainer showModal={showModal}>
         <ToDoListModalContainer>
-          {selectedProjectId ? (
+          {state.selectedProjectId ? (
             <ProjectHeader
-            selectedProjectId={selectedProjectId}
-            setSelectedProjectId={setSelectedProjectId}
+            selectedProjectId={state.selectedProjectId}
+            setSelectedProjectId={selectProject}
             selectedProject={selectedProject}
-            showDoneBtn={showDoneBtn}
+            showDoneBtn={state.showDoneBtn}
             create={handleCreateTask}
             closeModal={closeModal}
-            selectedId={selectedTaskId}
+            selectedId={state.selectedTaskId}
             rename={handleUpdateTask}
           />   
           ) : (
             <ProjectHeader
-            selectedProjectId={selectedProjectId}
-            setSelectedProjectId={setSelectedProjectId}
+            selectedProjectId={state.selectedProjectId}
+            setSelectedProjectId={selectProject}
             selectedProject={selectedProject}
-            showDoneBtn={showDoneBtn}
+            showDoneBtn={state.showDoneBtn}
             create={handleCreateProject}
             closeModal={closeModal}
-            selectedId={projectInEditModeId}
+            selectedId={state.projectInEditModeId}
             rename={handleUpdateProject}
           />
           )
           }
 
-          {selectedProjectId ? (
+          {state.selectedProjectId ? (
             <Tasks
+              taskTitle={state.taskTitle}
+              showInput={state.showInput}
+              selectedTaskId={state.selectedTaskId}
+              showCompletedTasks={state.showCompletedTasks}
               selectedProject={selectedProject}
+              taskEditTitle={state.taskEditTitle}
               handleCheckboxClick={handleCheckboxClick}
-              showInput={showInput}
               refCancel={refCancel}
               createTaskEnterKey={createTaskEnterKey}
               handleAddTask={handleAddTask}
-              showCompletedTasks={showCompletedTasks}
-              setShowCompletedTasks={setShowCompletedTasks}
+              setShowCompletedTasks={completedTasks}
               handleRenameTask={handleRenameTask}
-              selectedTaskId={selectedTaskId}
               renameTaskEnterKey={renameTaskEnterKey}
-              taskEditTitle={taskEditTitle}
-              taskTitle={taskTitle}
               refTask={refTask}
               startTimer={startTimer}
             />
           ) : (
             <Projects
-              projects={projects}
-              projectInEditModeId={projectInEditModeId}
-              projectTitle={projectTitle}
-              showModalMenuListId={showModalMenuListId}
-              setShowModalMenuListId={setShowModalMenuListId}
-              setSelectedProjectId={setSelectedProjectId}
-              selectedProjectId={selectedProjectId}
-              createProjectEnterKey={createProjectEnterKey}
-              handleEnterKeyRenameProject={handleEnterKeyRenameProject}
-              handleAddProject={handleAddProject}
-              showInput={showInput}
-              refProjectCancel={refProjectCancel}
+              {...state}
+              updateStates={updateStates}
+              handleCreateProject={handleCreateProject}
+              handleUpdateProject={handleUpdateProject}
               refProject={refProject}
-              projectEditTitle={projectEditTitle}
             />
           )}
         </ToDoListModalContainer>

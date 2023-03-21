@@ -1,6 +1,7 @@
 import PlusButton from "../molecules/PlusButton";
 import ModalMenuList from "./ModalMenuList";
 import styled from "styled-components";
+import { useOutsideClick } from "../../hooks/useOutsideClick";
 
 const ToDoListModalBody = styled.div`
   padding: 0 24px 50px;
@@ -13,10 +14,11 @@ const ProjectsTasksUl = styled.div`
   padding-left: 0;
   overflow: scroll;
   height: 380px;
-  -ms-overflow-style: none;  // IE and Edge
-  scrollbar-width: none;  // Firefox
-  &::-webkit-scrollbar { // Chrome, Safari and Opera 
-  display: none;
+  -ms-overflow-style: none; // IE and Edge
+  scrollbar-width: none; // Firefox
+  &::-webkit-scrollbar {
+    // Chrome, Safari and Opera
+    display: none;
   }
   @media only screen and (min-width: 768px) {
     height: 255px;
@@ -65,7 +67,7 @@ const ProjectListText = styled.span`
   margin-left: 8px;
   cursor: pointer;
   width: 210px;
-  white-space: nowrap; 
+  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   @media only screen and (min-width: 768px) {
@@ -113,20 +115,58 @@ const ForwardArrowSvg = styled.button`
 `;
 
 function Projects({
+  updateStates,
   projects,
   projectInEditModeId,
   projectTitle,
   showModalMenuListId,
-  setShowModalMenuListId,
-  setSelectedProjectId,
-  createProjectEnterKey,
-  handleEnterKeyRenameProject,
-  refProjectCancel,
   refProject,
   showInput,
-  handleAddProject,
-  projectEditTitle
+  projectEditTitle,
+  handleUpdateProject,
+  handleCreateProject,
 }) {
+  function handleAddProject() {
+    updateStates({
+      showInput: true, showDoneBtn: true, projectTitle: "",
+    })
+  }
+  function handleEnterKeyRenameProject(e) {
+    // when user press Enter this function will be executed
+    if (e.key === "Enter") {
+      handleUpdateProject();
+    }   
+    else {
+      //when users don't press Enter they can continue typing in the input
+      updateStates({projectEditTitle: e.target.value})
+    }
+  }
+  function createProjectEnterKey(e) {
+    if (e.key === "Enter") {
+      handleCreateProject();
+    } 
+    else {
+      updateStates({projectTitle: e.target.value})
+    }
+  }
+
+  const handleClickOutsideProjectsCancelCreate = (event) => {
+    const isTargetNotDoneBtn = event.target.innerText !== "Done";
+    if (isTargetNotDoneBtn) {
+    updateStates({
+      showModalMenuListId: null,
+      showInput: false,
+      showDoneBtn: false,
+    })
+    }
+  };
+
+  const refProjectCancel = useOutsideClick(
+    handleClickOutsideProjectsCancelCreate,
+    [showInput]
+  );
+  
+
   return (
     <ToDoListModalBody>
       {projects.length > 0 && (
@@ -135,9 +175,7 @@ function Projects({
             if (projectInEditModeId === project.id) {
               return (
                 <>
-                  <ProjectsTasksList
-                  ref={refProject}
-                  >
+                  <ProjectsTasksList ref={refProject}>
                     <ProjectVerticalDots>
                       <img src="./assets/more-vertical.svg" alt="More" />
                     </ProjectVerticalDots>
@@ -156,7 +194,8 @@ function Projects({
                 <ProjectsTasksList key={project.id}>
                   {" "}
                   <ProjectVerticalDots
-                    onClick={() => setShowModalMenuListId(project.id)}
+                    // onClick={() => setShowModalMenuListId(project.id)}
+                    onClick={() => updateStates({showModalMenuListId: project.id})}
                   >
                     <img src="./assets/more-vertical.svg" alt="More" />
                   </ProjectVerticalDots>
@@ -164,7 +203,7 @@ function Projects({
                   <ListTextArrow>
                     <ProjectListText>{project.title}</ProjectListText>
                     <ForwardArrowSvg
-                      onClick={() => setSelectedProjectId(project.id)}
+                      onClick={() => updateStates({selectedProjectId: project.id})}
                     >
                       <img src="./assets/icon-arrow-right.svg" alt="Forward" />
                     </ForwardArrowSvg>
@@ -176,14 +215,14 @@ function Projects({
                 <ProjectsTasksList key={project.id}>
                   {" "}
                   <ProjectVerticalDots
-                    onClick={() => setShowModalMenuListId(project.id)}
+                    onClick={() => updateStates({showModalMenuListId: project.id})}
                   >
                     <img src="./assets/more-vertical.svg" alt="More" />
                   </ProjectVerticalDots>
                   <ListTextArrow>
                     <ProjectListText>{project.title}</ProjectListText>
                     <ForwardArrowSvg
-                      onClick={() => setSelectedProjectId(project.id)}
+                      onClick={() => updateStates({selectedProjectId: project.id})}
                     >
                       <img src="./assets/icon-arrow-right.svg" alt="Forward" />
                     </ForwardArrowSvg>
@@ -193,10 +232,8 @@ function Projects({
             }
           })}
 
-        {showInput ? (
-          <ProjectsTasksList 
-          ref={refProjectCancel}
-          >
+          {showInput ? (
+            <ProjectsTasksList ref={refProjectCancel}>
               <ProjectVerticalDots>
                 <img src="./assets/more-vertical.svg" alt="More" />
               </ProjectVerticalDots>
@@ -207,11 +244,10 @@ function Projects({
                 onChange={createProjectEnterKey}
                 onKeyDown={createProjectEnterKey}
               />
-          </ProjectsTasksList>
-        ) : (
-          false
-        )}
-
+            </ProjectsTasksList>
+          ) : (
+            false
+          )}
         </ProjectsTasksUl>
       )}
       <PlusButton onClick={() => handleAddProject()}>Add a project</PlusButton>
