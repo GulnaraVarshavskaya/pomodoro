@@ -65,20 +65,25 @@ const TextDoneBtn = styled.span`
 `;
 
 function ProjectHeader({
+  projects,
   selectedProjectId,
-  setSelectedProjectId,
-  selectedProject,
   showDoneBtn,
   create,
   closeModal,
   selectedId,
   rename,
+  updateStates
 }) {
+
+  const selectedProject = projects.find((project) => {
+    return project.id === selectedProjectId;
+  });
+
   return (
     <ToDoListModalHeader>
       <Wrapper>
         {selectedProjectId && (
-          <BackArrowSvg onClick={() => setSelectedProjectId(null)}>
+          <BackArrowSvg onClick={() => updateStates({selectedProjectId: null})}>
             <img src="./assets/icon-arrow-left.svg" alt="Back" />
           </BackArrowSvg>
         )}

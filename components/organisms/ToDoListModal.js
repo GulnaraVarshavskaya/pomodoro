@@ -48,8 +48,6 @@ function ToDoListModal() {
       setState({ ...state, ...updates })
     }
 
-
-
   // const [projects, setProjects] = useState([]);
 
   // const [selectedProjectId, setSelectedProjectId] = useState(null);
@@ -77,10 +75,6 @@ function ToDoListModal() {
   useEffect(() => {
     handleFetchProjects();
   }, []);
-
-  const selectedProject = state.projects.find((project) => {
-    return project.id === state.selectedProjectId;
-  });
 
 
   useEffect(() => {
@@ -166,27 +160,6 @@ function ToDoListModal() {
 
     await deleteProject(projectId);
   }
-
-
-  const handleClickOutsideTasksCancelCreate = (event) => {
-    const isTargetNotDoneBtn = event.target.innerText !== "Done";
-    if (isTargetNotDoneBtn) {
-    setState({showInput: false, showDoneBtn: false})
-    };
-  };
-
-  const handleClickOutsideTasks = (event) => {
-    const isTargetNotDoneBtn = event.target.innerText !== "Done";
-    if (isTargetNotDoneBtn) {
-      handleUpdateTask();
-    };
-  };
-
-  const refTask = useOutsideClick(handleClickOutsideTasks, [state.selectedTaskId]);
-
-  const refCancel = useOutsideClick(handleClickOutsideTasksCancelCreate, [
-    state.showInput,
-  ]);
   
   const handleClickOutsideProjects = (event) => {
     console.log("event", event)
@@ -202,7 +175,9 @@ function ToDoListModal() {
 
   async function handleCheckboxClick(id, completed, completedTasksCount) {
     if (completed === true && completedTasksCount === 1) {
-      setState({...state, showCompletedTask: false})
+      setState((oldState) => {
+        return {...oldState, showCompletedTasks: false}
+      })
     }
     // when user clicks checkbox this function will be executed
     // id - id of task,
@@ -240,24 +215,12 @@ function ToDoListModal() {
     });
 
     // we're calling the setter and triggering rerender
-    setState({...state, projects: updatedProjects})
+    setState((oldState) => {
+      return {...oldState, projects: updatedProjects}
+    })
 
     // optimistic update
     await fetchTasks(id, completed);
-  }
-
-
-  function handleAddTask() {
-    setState({...state, showInput: true, showDoneBtn: true, taskTitle: ""})
-  }
-
-  function createTaskEnterKey(e) {
-    if (e.key === "Enter") {
-      handleCreateTask();
-    } 
-    else {
-      setState({...state, taskTitle: e.target.value})
-    }
   }
 
   async function handleCreateTask() {
@@ -279,20 +242,6 @@ function ToDoListModal() {
     setState({...state, projects: updatedProjects, showInput: false, showDoneBtn: false})
 
     await createTask(state.selectedProjectId, newTask);
-  }
-
-  function handleRenameTask(id, title) {
-    console.log("selectedId:" + id);
-    setState({...state, selectedTaskId: id, taskEditTitle: title, showDoneBtn: true})
-  }
-
-  function renameTaskEnterKey(e) {
-    if (e.key === "Enter") {
-      handleUpdateTask();
-    } 
-    else {
-      setState({...state, taskEditTitle: e.target.value})
-    }
   }
 
   async function handleUpdateTask() {
@@ -321,17 +270,6 @@ function ToDoListModal() {
     closeModal();
     restart();
   };
-  function selectProject(id) {
-    setState({...state, selectedProjectId: id})
-  }
-
-  function showModalMenuList(id) {
-    setState({...state, showModalMenuListId: id})
-  }
-
-  function completedTasks() {
-    setState({showCompletedTasks: false})
-  }
 
   return (
     <settingsContext.Provider
@@ -345,24 +283,18 @@ function ToDoListModal() {
         <ToDoListModalContainer>
           {state.selectedProjectId ? (
             <ProjectHeader
-            selectedProjectId={state.selectedProjectId}
-            setSelectedProjectId={selectProject}
-            selectedProject={selectedProject}
-            showDoneBtn={state.showDoneBtn}
+            {...state}
+            updateStates={updateStates}
             create={handleCreateTask}
             closeModal={closeModal}
-            selectedId={state.selectedTaskId}
             rename={handleUpdateTask}
           />   
           ) : (
             <ProjectHeader
-            selectedProjectId={state.selectedProjectId}
-            setSelectedProjectId={selectProject}
-            selectedProject={selectedProject}
-            showDoneBtn={state.showDoneBtn}
+            {...state}
+            updateStates={updateStates}
             create={handleCreateProject}
             closeModal={closeModal}
-            selectedId={state.projectInEditModeId}
             rename={handleUpdateProject}
           />
           )
@@ -370,20 +302,11 @@ function ToDoListModal() {
 
           {state.selectedProjectId ? (
             <Tasks
-              taskTitle={state.taskTitle}
-              showInput={state.showInput}
-              selectedTaskId={state.selectedTaskId}
-              showCompletedTasks={state.showCompletedTasks}
-              selectedProject={selectedProject}
-              taskEditTitle={state.taskEditTitle}
+              {...state}
+              updateStates={updateStates}
               handleCheckboxClick={handleCheckboxClick}
-              refCancel={refCancel}
-              createTaskEnterKey={createTaskEnterKey}
-              handleAddTask={handleAddTask}
-              setShowCompletedTasks={completedTasks}
-              handleRenameTask={handleRenameTask}
-              renameTaskEnterKey={renameTaskEnterKey}
-              refTask={refTask}
+              handleCreateTask={handleCreateTask}
+              handleUpdateTask={handleUpdateTask}
               startTimer={startTimer}
             />
           ) : (

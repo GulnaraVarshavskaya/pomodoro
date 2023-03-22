@@ -1,5 +1,6 @@
 import PlusButton from "../molecules/PlusButton";
 import styled from "styled-components";
+import { useOutsideClick } from "../../hooks/useOutsideClick";
 
 const Wrapper = styled.div`
   display: flex;
@@ -149,27 +150,74 @@ const CompletedTasksBtn = styled.button`
 `;
 
 function Tasks({
-  selectedProject,
+  projects,
+  selectedProjectId,
+  updateStates,
   handleCheckboxClick,
   showInput,
-  refCancel,
-  createTaskEnterKey,
-  handleAddTask,
   showCompletedTasks,
-  setShowCompletedTasks,
-  handleRenameTask,
   selectedTaskId,
-  renameTaskEnterKey,
   taskTitle,
   taskEditTitle,
-  refTask,
   startTimer,
+  handleUpdateTask,
+  handleCreateTask,
 }) {
+
+  const selectedProject = projects.find((project) => {
+    return project.id === selectedProjectId;
+  });
+
   const completedTasks = selectedProject.tasks.filter(
     (task) => task.completed === true
   );
   const completedTasksCount = completedTasks.length;
+
+  function handleAddTask() {
+    updateStates({showInput: true, showDoneBtn: true, taskTitle: ""})
+  }
+
+  function renameTaskEnterKey(e) {
+    if (e.key === "Enter") {
+      handleUpdateTask();
+    } 
+    else {
+      updateStates({taskEditTitle: e.target.value})
+    }
+  }
+
+  function createTaskEnterKey(e) {
+    if (e.key === "Enter") {
+      handleCreateTask();
+    } 
+    else {
+      updateStates({taskTitle: e.target.value})
+    }
+  }
+
+  function handleRenameTask(id, title) {
+    console.log("selectedId:" + id);
+    updateStates({selectedTaskId: id, taskEditTitle: title, showDoneBtn: true})
+  }
+
+  const handleClickOutsideTasksCancelCreate = (event) => {
+    const isTargetNotDoneBtn = event.target.innerText !== "Done";
+    if (isTargetNotDoneBtn) {
+    updateStates({showInput: false, showDoneBtn: false})
+    };
+  };
   
+  const refCancel = useOutsideClick(handleClickOutsideTasksCancelCreate, [showInput]);
+
+  const handleClickOutsideTasks = (event) => {
+    const isTargetNotDoneBtn = event.target.innerText !== "Done";
+    if (isTargetNotDoneBtn) {
+      handleUpdateTask();
+    };
+  };
+
+  const refTask = useOutsideClick(handleClickOutsideTasks, [selectedTaskId]);
+
   return (
     <ToDoListModalBody>
       <ProjectsTasksUl>
@@ -248,7 +296,7 @@ function Tasks({
           false
         )}
         <CompletedTasksBtn
-          onClick={() => setShowCompletedTasks(!showCompletedTasks)}
+          onClick={() => updateStates({showCompletedTasks: !showCompletedTasks})}
           disabled={completedTasksCount === 0}
         >
           {completedTasksCount === 0 || !showCompletedTasks
