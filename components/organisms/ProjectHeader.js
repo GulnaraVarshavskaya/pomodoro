@@ -78,7 +78,6 @@ function ProjectHeader({
   const selectedProject = projects.find((project) => {
     return project.id === selectedProjectId;
   });
-
   return (
     <ToDoListModalHeader>
       <Wrapper>

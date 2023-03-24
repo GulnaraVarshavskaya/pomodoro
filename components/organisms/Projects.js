@@ -2,6 +2,7 @@ import PlusButton from "../molecules/PlusButton";
 import ModalMenuList from "./ModalMenuList";
 import styled from "styled-components";
 import { useOutsideClick } from "../../hooks/useOutsideClick";
+import Project from "./Project";
 
 const ToDoListModalBody = styled.div`
   padding: 0 24px 50px;
@@ -25,14 +26,14 @@ const ProjectsTasksUl = styled.div`
   } ;
 `;
 
-const ProjectsTasksList = styled.div`
+export const ProjectsTasksList = styled.div`
   display: flex;
   align-items: center;
   padding: 13px 0;
   border-bottom: 1px solid rgba(227, 225, 225, 0.7);
 `;
 
-const ProjectVerticalDots = styled.button`
+export const ProjectVerticalDots = styled.button`
   display: grid;
   align-items: center;
   background: none;
@@ -49,14 +50,14 @@ const ProjectVerticalDots = styled.button`
   }
 `;
 
-const ListTextArrow = styled.div`
+export const ListTextArrow = styled.div`
   display: flex;
   align-items: center;
   flex: 1 auto;
   justify-content: space-between;
 `;
 
-const ProjectListText = styled.span`
+export const ProjectListText = styled.span`
   font-size: 12px;
   font-weight: 500px;
   font-family: "Kumbh Sans";
@@ -77,7 +78,7 @@ const ProjectListText = styled.span`
   } ;
 `;
 
-const ProjectInput = styled.input`
+export const ProjectInput = styled.input`
   display: block;
   width: 210px;
   padding: 0;
@@ -98,7 +99,7 @@ const ProjectInput = styled.input`
   } ;
 `;
 
-const ForwardArrowSvg = styled.button`
+export const ForwardArrowSvg = styled.button`
   display: grid;
   align-items: center;
   padding: 0px;
@@ -172,64 +173,73 @@ function Projects({
       {projects.length > 0 && (
         <ProjectsTasksUl>
           {projects.map((project) => {
-            if (projectInEditModeId === project.id) {
-              return (
-                <>
-                  <ProjectsTasksList ref={refProject}>
-                    <ProjectVerticalDots>
-                      <img src="./assets/more-vertical.svg" alt="More" />
-                    </ProjectVerticalDots>
-                    <ProjectInput
-                      maxLength="100"
-                      autoFocus
-                      value={projectEditTitle}
-                      onChange={handleEnterKeyRenameProject}
-                      onKeyDown={handleEnterKeyRenameProject}
-                    />
-                  </ProjectsTasksList>
-                </>
-              );
-            } else if (showModalMenuListId === project.id) {
-              return (
-                <ProjectsTasksList key={project.id}>
-                  {" "}
-                  <ProjectVerticalDots
-                    // onClick={() => setShowModalMenuListId(project.id)}
-                    onClick={() => updateStates({showModalMenuListId: project.id})}
-                  >
-                    <img src="./assets/more-vertical.svg" alt="More" />
-                  </ProjectVerticalDots>
-                  {<ModalMenuList showModalMenuListId={showModalMenuListId} />}
-                  <ListTextArrow>
-                    <ProjectListText>{project.title}</ProjectListText>
-                    <ForwardArrowSvg
-                      onClick={() => updateStates({selectedProjectId: project.id})}
-                    >
-                      <img src="./assets/icon-arrow-right.svg" alt="Forward" />
-                    </ForwardArrowSvg>
-                  </ListTextArrow>
-                </ProjectsTasksList>
-              );
-            } else {
-              return (
-                <ProjectsTasksList key={project.id}>
-                  {" "}
-                  <ProjectVerticalDots
-                    onClick={() => updateStates({showModalMenuListId: project.id})}
-                  >
-                    <img src="./assets/more-vertical.svg" alt="More" />
-                  </ProjectVerticalDots>
-                  <ListTextArrow>
-                    <ProjectListText>{project.title}</ProjectListText>
-                    <ForwardArrowSvg
-                      onClick={() => updateStates({selectedProjectId: project.id})}
-                    >
-                      <img src="./assets/icon-arrow-right.svg" alt="Forward" />
-                    </ForwardArrowSvg>
-                  </ListTextArrow>
-                </ProjectsTasksList>
-              );
-            }
+            return <Project 
+            updateStates = {updateStates}
+            projectInEditModeId = {projectInEditModeId}
+            refProject = {refProject}
+            projectEditTitle = {projectEditTitle}
+            showModalMenuListId = {showModalMenuListId}
+            handleEnterKeyRenameProject = {handleEnterKeyRenameProject}
+            project = {project}
+            />
+            // if (projectInEditModeId === project.id) {
+            //   return (
+            //     <>
+            //       <ProjectsTasksList ref={refProject}>
+            //         <ProjectVerticalDots>
+            //           <img src="./assets/more-vertical.svg" alt="More" />
+            //         </ProjectVerticalDots>
+            //         <ProjectInput
+            //           maxLength="100"
+            //           autoFocus
+            //           value={projectEditTitle}
+            //           onChange={handleEnterKeyRenameProject}
+            //           onKeyDown={handleEnterKeyRenameProject}
+            //         />
+            //       </ProjectsTasksList>
+            //     </>
+            //   );
+            // } else if (showModalMenuListId === project.id) {
+            //   return (
+            //     <ProjectsTasksList key={project.id}>
+            //       {" "}
+            //       <ProjectVerticalDots
+            //         // onClick={() => setShowModalMenuListId(project.id)}
+            //         onClick={() => updateStates({showModalMenuListId: project.id})}
+            //       >
+            //         <img src="./assets/more-vertical.svg" alt="More" />
+            //       </ProjectVerticalDots>
+            //       {<ModalMenuList showModalMenuListId={showModalMenuListId} />}
+            //       <ListTextArrow>
+            //         <ProjectListText>{project.title}</ProjectListText>
+            //         <ForwardArrowSvg
+            //           onClick={() => updateStates({selectedProjectId: project.id})}
+            //         >
+            //           <img src="./assets/icon-arrow-right.svg" alt="Forward" />
+            //         </ForwardArrowSvg>
+            //       </ListTextArrow>
+            //     </ProjectsTasksList>
+            //   );
+            // } else {
+            //   return (
+            //     <ProjectsTasksList key={project.id}>
+            //       {" "}
+            //       <ProjectVerticalDots
+            //         onClick={() => updateStates({showModalMenuListId: project.id})}
+            //       >
+            //         <img src="./assets/more-vertical.svg" alt="More" />
+            //       </ProjectVerticalDots>
+            //       <ListTextArrow>
+            //         <ProjectListText>{project.title}</ProjectListText>
+            //         <ForwardArrowSvg
+            //           onClick={() => updateStates({selectedProjectId: project.id})}
+            //         >
+            //           <img src="./assets/icon-arrow-right.svg" alt="Forward" />
+            //         </ForwardArrowSvg>
+            //       </ListTextArrow>
+            //     </ProjectsTasksList>
+            //   );
+            // }
           })}
 
           {showInput ? (

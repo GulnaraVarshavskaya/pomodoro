@@ -61,6 +61,7 @@ const MenuListText = styled.span`
 
 function ModalMenuList() {
   const {
+    updateStates,
     showModalMenuListId,
     handleDeleteProject,
     handleRenameProject,

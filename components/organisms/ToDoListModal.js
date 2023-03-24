@@ -69,9 +69,9 @@ function ToDoListModal() {
       else if (e.key === "Escape" && state.showInput === true) {
         updateStates({ showInput: false, showDoneBtn: false })
       } else if (e.key === "Escape" && state.projectInEditModeId !== null) {
-        updateStates({ projectInEditModeId: null })
+        updateStates({ projectInEditModeId: null, showDoneBtn: false })
       }  else if (e.key === "Escape" && state.selectedTaskId !== null) {
-        updateStates({ selectedTaskId: null })
+        updateStates({ selectedTaskId: null, showDoneBtn: false })
       } else if (e.key === "Escape" && state.selectedProjectId !== null) {
         updateStates({ selectedProjectId: null })
       }
@@ -83,6 +83,7 @@ function ToDoListModal() {
   }, [state.showInput, state.projectInEditModeId, state.selectedTaskId, state.selectedProjectId])
 
   async function handleCreateProject() {
+    console.log("hey create")
     const newProject = {
       id: uuid(),
       title: state.projectTitle,
@@ -108,11 +109,12 @@ function ToDoListModal() {
       showModalMenuListId: null,
     })}
     else {
-      updateStates({ showDoneBtn: false })
+      updateStates({ showDoneBtn: false, projectInEditModeId: null })
     }
   }
 
   const handleUpdateProject = async () => {
+    console.log("hey")
     // we mapping the array of projects and return new array of updated project
     const updatedProjects = state.projects.map((project) => {
       // if the id of the project we are mapping over matches with the project id in edit mode
@@ -149,6 +151,7 @@ function ToDoListModal() {
     console.log("event", event)
     const isTargetNotDoneBtn = event.target.innerText !== "Done";
     if (isTargetNotDoneBtn) {
+      console.log("Hello")
       handleRenameProject(null);
     }    
   };
@@ -250,7 +253,7 @@ function ToDoListModal() {
     closeModal();
     restart();
   };
-
+  console.log("state.selectedProjectId", state.selectedProjectId)
   return (
     <settingsContext.Provider
       value={{
@@ -263,7 +266,10 @@ function ToDoListModal() {
         <ToDoListModalContainer>
           {state.selectedProjectId ? (
             <ProjectHeader
-            {...state}
+            projects={state.projects}
+            showDoneBtn={state.showDoneBtn}
+            selectedProjectId={state.selectedProjectId}
+            selectedId={state.selectedTaskId}
             updateStates={updateStates}
             create={handleCreateTask}
             closeModal={closeModal}
@@ -271,7 +277,10 @@ function ToDoListModal() {
           />   
           ) : (
             <ProjectHeader
-            {...state}
+            projects={state.projects}
+            showDoneBtn={state.showDoneBtn}
+            selectedProjectId={state.selectedProjectId}
+            selectedId={state.projectInEditModeId}
             updateStates={updateStates}
             create={handleCreateProject}
             closeModal={closeModal}
