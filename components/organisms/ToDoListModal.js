@@ -26,7 +26,7 @@ const ToDoListModalContainer = styled.div`
 `;
 
 function ToDoListModal() {
-  const { showModal, closeModal, restart, setShowModal } =
+  const { showModal, closeModal, restart, updateStatesIndex} =
     useContext(settingsContext);
 
     const [state, setState] = useState({
@@ -64,7 +64,7 @@ function ToDoListModal() {
   useEffect(() => {
     const closeModal = (e) => {
       if (e.key === "Escape" && state.showInput === false && state.projectInEditModeId === null && state.selectedTaskId === null && state.selectedProjectId === null) {
-        setShowModal(null);
+        updateStatesIndex({showModal: null});
       }
       else if (e.key === "Escape" && state.showInput === true) {
         updateStates({ showInput: false, showDoneBtn: false })

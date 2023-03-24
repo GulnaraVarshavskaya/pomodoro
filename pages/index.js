@@ -47,94 +47,98 @@ export const settingsContext = createContext({});
 
 export default function Home() {
 
-  const [showModal, setShowModal] = useState(null)
-  // show to do list => "todoList"
-  // show settings => "settings"
-  // show nothing => null
+  const [state, setState] = useState({
+    showModal: null,
+    timeInputs: {
+      pomodoro: 25,
+      shortBreak: 5,
+      longBreak: 15,
+    },
+    selectedFont: KUMBH_SANS,
+    selectedColor: red,
+    mode: "pomodoro",
+    totalTime: 25*60,
+    timeRemaining: 25*60,
+    isActive: "pause"
+  })
+
+  function updateStatesIndex(updates) {
+    setState((state) => {
+      return {...state, ...updates}
+    })
+  }
 
   const openSettingsModal = () => {
-      setShowModal("settings")};
-  const closeSettingsModal = () => {
-      setShowModal(null)
-    }
+      updateStatesIndex({showModal: "settings"})};
 
-  const openModal = () => {
-      setShowModal("todoList")};
+  const openTodoListModal = () => {
+      updateStatesIndex({showModal: "todoList"})};
   const closeModal = () => {
-      setShowModal(null)
+      updateStatesIndex({showModal: null})
     }
 
-  const [timeInputs, setTimeInputs] = useState({
-    pomodoro: 25,
-    shortBreak: 5,
-    longBreak: 15,
-  });
+  const minutes = Math.floor(state.timeRemaining / 60)
+  const remainingSeconds = state.timeRemaining % 60
 
-  const [selectedFont, setSelectedFont] = useState(KUMBH_SANS)
-  const [selectedColor, setSelectedColor] = useState(red)
-
-  const [ mode, setMode ] = useState("pomodoro")
-
-  const [totalTime, setTotalTime] = useState(timeInputs[mode]*60)
-  const [timeRemaining, setTimeRemaining] = useState(totalTime);  
-  const [isActive, setIsActive] = useState("pause");
-
-  const minutes = Math.floor(timeRemaining / 60)
-  const remainingSeconds = timeRemaining % 60
-
-  let progress = 100 / (totalTime / timeRemaining)
+  let progress = 100 / (state.totalTime / state.timeRemaining)
   
   const toggleAction = () => {
-    if (isActive === "pause") {
-      setIsActive("start")
-    } else if (isActive === "restart") {
+    if (state.isActive === "pause") {
+      updateStatesIndex({isActive: "start"})
+    } else if (state.isActive === "restart") {
       reset()
-    } else setIsActive("pause")  
+    } else updateStatesIndex({isActive: "pause"})  
   }
 
   const reset = () => {
-    setTotalTime(timeInputs[mode] * 60)
-    setTimeRemaining(timeInputs[mode] * 60)
-    setIsActive("pause")
+    updateStatesIndex({
+      totalTime: state.timeInputs[state.mode] * 60,
+      timeRemaining: state.timeInputs[state.mode] * 60,
+      isActive: "pause"
+    })
   }
 
   const restart = () => {
-    setTotalTime(timeInputs[mode] * 60)
-    setTimeRemaining(timeInputs[mode] * 60)
-    setIsActive("start")
+    updateStatesIndex({
+      totalTime: state.timeInputs[state.mode] * 60,
+      timeRemaining: state.timeInputs[state.mode] * 60,
+      isActive: "start"
+    })
   }
 
   useEffect( () => {
     reset();
-  }, [mode])
+  }, [state.mode])
 
   useEffect(() => {
     let countdown = setInterval( () => {
-      if (isActive !== "pause") {
-        setTimeRemaining( timeRemaining - 1)
+      if (state.isActive !== "pause") {
+        updateStatesIndex({timeRemaining: state.timeRemaining - 1})
       }
     }, 1000)
-      if (timeRemaining <= 0) {
+      if (state.timeRemaining <= 0) {
         clearInterval(countdown);
-        setIsActive("restart")
+        updateStatesIndex({isActive: "restart"})
     }
     return () => clearInterval(countdown);
-  }, [isActive, timeRemaining])
+  }, [state.isActive, state.timeRemaining])
 
 
   const handleChanges = (changedColor, changedFont, changedTimeInputs ) => {
-    setSelectedColor(changedColor)
-    setSelectedFont(changedFont)
-    setTimeInputs(changedTimeInputs)
-    setTotalTime(changedTimeInputs[mode] * 60)
-    setTimeRemaining(changedTimeInputs[mode] * 60)
-    setIsActive("pause")
+    updateStatesIndex({
+      selectedColor: changedColor,
+      selectedFont: changedFont,
+      timeInputs: changedTimeInputs,
+      totalTime: changedTimeInputs[state.mode] * 60,
+      timeRemaining: changedTimeInputs[state.mode] * 60,
+      isActive: "pause"
+    })
 
-    closeSettingsModal();
+    closeModal();
   }
 
   return (
-    <settingsContext.Provider value={{ colorOptions: colorOptions, fontOptions: fontOptions, selectedColor: selectedColor, setSelectedColor: setSelectedColor, selectedFont: selectedFont, timeInputs: timeInputs, handleChanges: handleChanges, mode: mode, setMode: setMode, toggleAction:toggleAction, showModal: showModal, openSettingsModal: openSettingsModal, closeSettingsModal: closeSettingsModal, openModal: openModal, closeModal: closeModal, toggleAction: toggleAction, restart: restart, setShowModal: setShowModal }}>
+    <settingsContext.Provider value={{ ...state,updateStatesIndex, colorOptions, fontOptions, handleChanges, toggleAction, openSettingsModal, openTodoListModal, closeModal, restart }}>
       <Container>
         <HeadContainer>
           <Heading
@@ -148,15 +152,22 @@ export default function Home() {
         </HeadContainer>
         <TimerContainer>
           <ProgressBar
+          {...state}
+          updateStatesIndex={updateStatesIndex}
           seconds={remainingSeconds}
           minutes={minutes}
           progress={progress}
-          actionName={isActive}
+          actionName={state.isActive}
           />
         </TimerContainer>
         <SettingsContainer>
-          <ToDoList />
+          <ToDoList
+            {...state}
+            updateStatesIndex={updateStatesIndex}
+          />
           <Settings 
+            {...state}
+            updateStatesIndex={updateStatesIndex}
           />
         </SettingsContainer>
       </Container>

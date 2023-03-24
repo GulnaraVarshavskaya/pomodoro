@@ -41,12 +41,12 @@ const ToDoListSvg = () => (
 
 function ToDoList() {
 
-    const { openModal, showModal, closeModal } = useContext(settingsContext)
+    const { openTodoListModal, showModal, closeModal } = useContext(settingsContext)
 
     return (
         <ToDoListContainer>           
             <ToDoListButton
-            onClick={openModal}
+            onClick={openTodoListModal}
             disabled={ showModal !== null }
             >
                 <ToDoListSvg />                

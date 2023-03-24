@@ -85,7 +85,7 @@ const RadioInputText = styled.span`
 
 export default function ToggleLabel(props) {
   
-  const { mode, setMode, showModal} = useContext(settingsContext)
+  const { mode, updateStatesIndex, showModal} = useContext(settingsContext)
 
   return (
         <ToggleLabelContainer>
@@ -95,7 +95,7 @@ export default function ToggleLabel(props) {
             selectedColor={props.selectedColor}
             selectedFont={props.selectedFont}
             onChange={ (e) => {
-              setMode(e.target.value)
+              updateStatesIndex({mode: e.target.value})
             } }
             checked={mode === props.value}
             disabled={ showModal !== null }
