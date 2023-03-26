@@ -1,8 +1,10 @@
 import PlusButton from "../molecules/PlusButton";
 import styled from "styled-components";
 import { useOutsideClick } from "../../hooks/useOutsideClick";
+import Task from "./Task";
+import DisplayCompletedTask from "./DisplayCompletedTask";
 
-const Wrapper = styled.div`
+export const Wrapper = styled.div`
   display: flex;
   justify-content: space-between;
 `;
@@ -32,21 +34,21 @@ const LineUnderBtn = styled.div`
   border-bottom: 1px solid rgba(227, 225, 225, 0.7);
 `;
 
-const ProjectsTasksList = styled.div`
+export const ProjectsTasksList = styled.div`
   display: flex;
   align-items: center;
   padding: 13px 5px;
   border-bottom: 1px solid rgba(227, 225, 225, 0.7);
 `;
 
-const ListTextArrow = styled.div`
+export const ListTextArrow = styled.div`
   display: flex;
   align-items: center;
   flex: 1 auto;
   justify-content: space-between;
 `;
 
-const ProjectListText = styled.span`
+export const ProjectListText = styled.span`
   font-size: 12px;
   width: 210px;
   font-weight: 500px;
@@ -67,7 +69,7 @@ const ProjectListText = styled.span`
   } ;
 `;
 
-const ProjectInput = styled.input`
+export const ProjectInput = styled.input`
   display: block;
   padding: 0;
   width: 210px;
@@ -88,7 +90,7 @@ const ProjectInput = styled.input`
   };
 `;
 
-const Checkbox = styled.input.attrs({ type: "checkbox" })`
+export const Checkbox = styled.input.attrs({ type: "checkbox" })`
   -webkit-appearance: none;
   -moz-appearance: none;
   /* position: absolute; */
@@ -112,7 +114,7 @@ const Checkbox = styled.input.attrs({ type: "checkbox" })`
   }
 `;
 
-const PlayTimerButton = styled.button`
+export const PlayTimerButton = styled.button`
   display: grid;
   align-items: center;
   padding: 0px;
@@ -226,52 +228,18 @@ function Tasks({
             return task.completed === false;
           })
           .map((task) => {
-            if (selectedTaskId === task.id) {
-              return (
-                <ProjectsTasksList
-                ref={refTask}
-                >
-                  <ListTextArrow>
-                    <Wrapper>
-                      <Checkbox disabled={true} />
-                      <ProjectInput
-                        maxLength="100"
-                        autoFocus
-                        value={taskEditTitle}
-                        // onBlur={handleClickOutside}
-                        onChange={renameTaskEnterKey}
-                        onKeyDown={renameTaskEnterKey}
-                      />
-                    </Wrapper>
-                  </ListTextArrow>
-                </ProjectsTasksList>
-              );
-            } else {
-              return (
-                <ProjectsTasksList key={task.id}>
-                  <ListTextArrow>
-                    <Wrapper>
-                      <Checkbox
-                        checked={task.completed}
-                        onClick={() =>
-                          handleCheckboxClick(task.id, task.completed)
-                        }
-                      />
-                      <ProjectListText
-                        onClick={() => handleRenameTask(task.id, task.title)}
-                      >
-                        {task.title}
-                      </ProjectListText>
-                    </Wrapper>
-                    <PlayTimerButton
-                    onClick={startTimer}
-                    >
-                      <img src="./assets/play-timer.svg" alt="Play" />
-                    </PlayTimerButton>
-                  </ListTextArrow>
-                </ProjectsTasksList>
-              );
-            }
+            return (
+              <Task 
+                task={task}
+                selectedTaskId={selectedTaskId}
+                renameTaskEnterKey={renameTaskEnterKey}
+                refTask={refTask}
+                taskEditTitle={taskEditTitle}
+                startTimer={startTimer}
+                handleRenameTask={handleRenameTask}
+                handleCheckboxClick={handleCheckboxClick}
+              />
+            );
           })}
 
         {showInput ? (
@@ -313,24 +281,12 @@ function Tasks({
             })
             .map((task) => {
               return (
-                <ProjectsTasksList key={task.id}>
-                  <ListTextArrow>
-                    <Wrapper>
-                      <Checkbox
-                        checked={task.completed}
-                        onClick={() =>
-                          handleCheckboxClick(task.id, task.completed, completedTasksCount)
-                        }
-                      />
-                      <ProjectListText>{task.title}</ProjectListText>
-                    </Wrapper>
-                    <PlayTimerButton
-                    disabled={showCompletedTasks}
-                    >
-                      <img src="./assets/play-timer.svg" alt="Play" />
-                    </PlayTimerButton>
-                  </ListTextArrow>
-                </ProjectsTasksList>
+                <DisplayCompletedTask 
+                  task={task}
+                  handleCheckboxClick={handleCheckboxClick}
+                  completedTasksCount={completedTasksCount}
+                  showCompletedTasks={showCompletedTasks}
+                />
               );
             })}
       </ProjectsTasksUl>
@@ -341,3 +297,5 @@ function Tasks({
 }
 
 export default Tasks;
+
+

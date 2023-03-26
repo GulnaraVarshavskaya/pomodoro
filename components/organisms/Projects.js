@@ -1,5 +1,4 @@
 import PlusButton from "../molecules/PlusButton";
-import ModalMenuList from "./ModalMenuList";
 import styled from "styled-components";
 import { useOutsideClick } from "../../hooks/useOutsideClick";
 import Project from "./Project";
@@ -129,36 +128,36 @@ function Projects({
 }) {
   function handleAddProject() {
     updateStates({
-      showInput: true, showDoneBtn: true, projectTitle: "",
-    })
+      showInput: true,
+      showDoneBtn: true,
+      projectTitle: "",
+    });
   }
   function handleEnterKeyRenameProject(e) {
     // when user press Enter this function will be executed
     if (e.key === "Enter") {
       handleUpdateProject();
-    }   
-    else {
+    } else {
       //when users don't press Enter they can continue typing in the input
-      updateStates({projectEditTitle: e.target.value})
+      updateStates({ projectEditTitle: e.target.value });
     }
   }
   function createProjectEnterKey(e) {
     if (e.key === "Enter") {
       handleCreateProject();
-    } 
-    else {
-      updateStates({projectTitle: e.target.value})
+    } else {
+      updateStates({ projectTitle: e.target.value });
     }
   }
 
   const handleClickOutsideProjectsCancelCreate = (event) => {
     const isTargetNotDoneBtn = event.target.innerText !== "Done";
     if (isTargetNotDoneBtn) {
-    updateStates({
-      showModalMenuListId: null,
-      showInput: false,
-      showDoneBtn: false,
-    })
+      updateStates({
+        showModalMenuListId: null,
+        showInput: false,
+        showDoneBtn: false,
+      });
     }
   };
 
@@ -166,80 +165,23 @@ function Projects({
     handleClickOutsideProjectsCancelCreate,
     [showInput]
   );
-  
 
   return (
     <ToDoListModalBody>
       {projects.length > 0 && (
         <ProjectsTasksUl>
           {projects.map((project) => {
-            return <Project 
-            updateStates = {updateStates}
-            projectInEditModeId = {projectInEditModeId}
-            refProject = {refProject}
-            projectEditTitle = {projectEditTitle}
-            showModalMenuListId = {showModalMenuListId}
-            handleEnterKeyRenameProject = {handleEnterKeyRenameProject}
-            project = {project}
-            />
-            // if (projectInEditModeId === project.id) {
-            //   return (
-            //     <>
-            //       <ProjectsTasksList ref={refProject}>
-            //         <ProjectVerticalDots>
-            //           <img src="./assets/more-vertical.svg" alt="More" />
-            //         </ProjectVerticalDots>
-            //         <ProjectInput
-            //           maxLength="100"
-            //           autoFocus
-            //           value={projectEditTitle}
-            //           onChange={handleEnterKeyRenameProject}
-            //           onKeyDown={handleEnterKeyRenameProject}
-            //         />
-            //       </ProjectsTasksList>
-            //     </>
-            //   );
-            // } else if (showModalMenuListId === project.id) {
-            //   return (
-            //     <ProjectsTasksList key={project.id}>
-            //       {" "}
-            //       <ProjectVerticalDots
-            //         // onClick={() => setShowModalMenuListId(project.id)}
-            //         onClick={() => updateStates({showModalMenuListId: project.id})}
-            //       >
-            //         <img src="./assets/more-vertical.svg" alt="More" />
-            //       </ProjectVerticalDots>
-            //       {<ModalMenuList showModalMenuListId={showModalMenuListId} />}
-            //       <ListTextArrow>
-            //         <ProjectListText>{project.title}</ProjectListText>
-            //         <ForwardArrowSvg
-            //           onClick={() => updateStates({selectedProjectId: project.id})}
-            //         >
-            //           <img src="./assets/icon-arrow-right.svg" alt="Forward" />
-            //         </ForwardArrowSvg>
-            //       </ListTextArrow>
-            //     </ProjectsTasksList>
-            //   );
-            // } else {
-            //   return (
-            //     <ProjectsTasksList key={project.id}>
-            //       {" "}
-            //       <ProjectVerticalDots
-            //         onClick={() => updateStates({showModalMenuListId: project.id})}
-            //       >
-            //         <img src="./assets/more-vertical.svg" alt="More" />
-            //       </ProjectVerticalDots>
-            //       <ListTextArrow>
-            //         <ProjectListText>{project.title}</ProjectListText>
-            //         <ForwardArrowSvg
-            //           onClick={() => updateStates({selectedProjectId: project.id})}
-            //         >
-            //           <img src="./assets/icon-arrow-right.svg" alt="Forward" />
-            //         </ForwardArrowSvg>
-            //       </ListTextArrow>
-            //     </ProjectsTasksList>
-            //   );
-            // }
+            return (
+              <Project
+                updateStates={updateStates}
+                projectInEditModeId={projectInEditModeId}
+                refProject={refProject}
+                projectEditTitle={projectEditTitle}
+                showModalMenuListId={showModalMenuListId}
+                handleEnterKeyRenameProject={handleEnterKeyRenameProject}
+                project={project}
+              />
+            );
           })}
 
           {showInput ? (
