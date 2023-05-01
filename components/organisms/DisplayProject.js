@@ -10,9 +10,11 @@ import {
 
 function DisplayProject({ project, updateStates, showModalMenuListId }) {
   return (
-    <ProjectsTasksList key={project.id}>
+    <ProjectsTasksList 
+    key={project.id}>
       {" "}
       <ProjectVerticalDots
+        id="menuList"
         onClick={() => updateStates({ showModalMenuListId: project.id })}
       >
         <img src="./assets/more-vertical.svg" alt="More" />
@@ -23,6 +25,7 @@ function DisplayProject({ project, updateStates, showModalMenuListId }) {
       <ListTextArrow>
         <ProjectListText>{project.title}</ProjectListText>
         <ForwardArrowSvg
+          id="projectArrow"
           onClick={() => updateStates({ selectedProjectId: project.id })}
         >
           <img src="./assets/icon-arrow-right.svg" alt="Forward" />

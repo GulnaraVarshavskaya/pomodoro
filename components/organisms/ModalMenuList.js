@@ -1,6 +1,7 @@
 import React, { useContext } from "react";
 import styled from "styled-components";
 import { settingsContext } from "../../pages";
+import { useOutsideClick } from "../../hooks/useOutsideClick";
 
 const ModalContainer = styled.div`
   position: absolute;
@@ -62,12 +63,25 @@ const MenuListText = styled.span`
 function ModalMenuList() {
   const {
     showModalMenuListId,
+    updateStates,
     handleDeleteProject,
     handleRenameProject,
   } = useContext(settingsContext);
 
+  const handleClickOutsideModalMenuList = (event) => {
+    const isTargetNotDoneBtn = event.target.innerText !== "Done";
+    if (isTargetNotDoneBtn) {
+    updateStates({showModalMenuListId: false, showDoneBtn: false})
+    };
+  };
+  
+  const refModalMenuList = useOutsideClick(handleClickOutsideModalMenuList, [showModalMenuListId]);
+
   return (
-    <ModalContainer showModalMenuListId={showModalMenuListId}>
+    <ModalContainer 
+    showModalMenuListId={showModalMenuListId}
+    ref={refModalMenuList}
+    >
       <MenuUl>
         <MenuList>
           <MenuListBtn onClick={() => handleRenameProject(showModalMenuListId)}>

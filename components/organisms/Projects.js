@@ -169,7 +169,9 @@ function Projects({
   return (
     <ToDoListModalBody>
       {projects.length > 0 && (
-        <ProjectsTasksUl>
+        <ProjectsTasksUl 
+          id="projects"
+        >
           {projects.map((project) => {
             return (
               <Project
@@ -185,7 +187,10 @@ function Projects({
           })}
 
           {showInput ? (
-            <ProjectsTasksList ref={refProjectCancel}>
+            <ProjectsTasksList 
+            ref={refProjectCancel}
+            id="input"
+            >
               <ProjectVerticalDots>
                 <img src="./assets/more-vertical.svg" alt="More" />
               </ProjectVerticalDots>

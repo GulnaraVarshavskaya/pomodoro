@@ -5,9 +5,14 @@ import { v4 as uuid } from "uuid";
 import ProjectHeader from "./ProjectHeader";
 import Projects from "./Projects";
 import Tasks from "./Tasks";
-import { createProject, renameProject, deleteProject, fetchProjects } from "../../services/projects";
-import { createTask, renameTask, fetchTasks } from "../../services/tasks"
-import { useOutsideClick } from "../../hooks/useOutsideClick"
+import {
+  createProject,
+  renameProject,
+  deleteProject,
+  fetchProjects,
+} from "../../services/projects";
+import { createTask, renameTask, fetchTasks } from "../../services/tasks";
+import { useOutsideClick } from "../../hooks/useOutsideClick";
 
 const ModalContainer = styled.div`
   display: flex;
@@ -26,64 +31,72 @@ const ToDoListModalContainer = styled.div`
 `;
 
 function ToDoListModal() {
-  const { showModal, closeModal, restart, updateStatesIndex} =
+  const { showModal, closeModal, restart, updateStatesIndex } =
     useContext(settingsContext);
 
-    const [state, setState] = useState({
-      projects: [],
-      selectedProjectId: null,
-      projectInEditModeId: null,
-      projectTitle: "",
-      projectEditTitle: "",
-      taskTitle: "",
-      taskEditTitle: "",
-      selectedTaskId: null,
-      showInput: false,
-      showDoneBtn: false,
-      showModalMenuListId: null,
-      showCompletedTasks: false,   
-    })
+  const [state, setState] = useState({
+    projects: [],
+    selectedProjectId: null,
+    projectInEditModeId: null,
+    projectTitle: "",
+    projectEditTitle: "",
+    taskTitle: "",
+    taskEditTitle: "",
+    selectedTaskId: null,
+    showInput: false,
+    showDoneBtn: false,
+    showModalMenuListId: null,
+    showCompletedTasks: false,
+  });
 
-    function updateStates(updates) {
-      setState((oldState) => {
-        return {...oldState, ...updates}
-      })
-    }
-
+  function updateStates(updates) {
+    setState((oldState) => {
+      return { ...oldState, ...updates };
+    });
+  }
 
   async function handleFetchProjects() {
     const data = await fetchProjects();
-    updateStates({projects: data.projects})
+    updateStates({ projects: data.projects });
   }
 
   useEffect(() => {
     handleFetchProjects();
   }, []);
 
-
   useEffect(() => {
     const closeModal = (e) => {
-      if (e.key === "Escape" && state.showInput === false && state.projectInEditModeId === null && state.selectedTaskId === null && state.selectedProjectId === null) {
-        updateStatesIndex({showModal: null});
-      }
-      else if (e.key === "Escape" && state.showInput === true) {
-        updateStates({ showInput: false, showDoneBtn: false })
+      if (
+        e.key === "Escape" &&
+        state.showInput === false &&
+        state.projectInEditModeId === null &&
+        state.selectedTaskId === null &&
+        state.selectedProjectId === null
+      ) {
+        updateStatesIndex({ showModal: null });
+      } else if (e.key === "Escape" && state.showInput === true) {
+        updateStates({ showInput: false, showDoneBtn: false });
       } else if (e.key === "Escape" && state.projectInEditModeId !== null) {
-        updateStates({ projectInEditModeId: null, showDoneBtn: false })
-      }  else if (e.key === "Escape" && state.selectedTaskId !== null) {
-        updateStates({ selectedTaskId: null, showDoneBtn: false })
+        updateStates({ projectInEditModeId: null, showDoneBtn: false });
+      } else if (e.key === "Escape" && state.selectedTaskId !== null) {
+        updateStates({ selectedTaskId: null, showDoneBtn: false });
       } else if (e.key === "Escape" && state.selectedProjectId !== null) {
-        updateStates({ selectedProjectId: null })
+        updateStates({ selectedProjectId: null });
       }
-    }
-    window.addEventListener("keydown", closeModal)
+    };
+    window.addEventListener("keydown", closeModal);
     return () => {
-      window.removeEventListener("keydown", closeModal)
-    }
-  }, [state.showInput, state.projectInEditModeId, state.selectedTaskId, state.selectedProjectId])
+      window.removeEventListener("keydown", closeModal);
+    };
+  }, [
+    state.showInput,
+    state.projectInEditModeId,
+    state.selectedTaskId,
+    state.selectedProjectId,
+  ]);
 
   async function handleCreateProject() {
-    console.log("hey create")
+    console.log("hey create");
     const newProject = {
       id: uuid(),
       title: state.projectTitle,
@@ -91,30 +104,33 @@ function ToDoListModal() {
     const updatedProjects = [...state.projects, newProject];
 
     updateStates({
-      projects: updatedProjects, showInput: false, showDoneBtn: false,
-    })
+      projects: updatedProjects,
+      showInput: false,
+      showDoneBtn: false,
+    });
 
     await createProject(newProject);
   }
 
   function handleRenameProject(projectId) {
-    if (projectId !== null) {  
-    const updatedProject = state.projects.find((project) => {
-      return project.id === projectId;
-    });
-    updateStates({
-      projectInEditModeId: projectId,
-      projectEditTitle: updatedProject.title,
-      showDoneBtn: true,
-      showModalMenuListId: null,
-    })}
-    else {
-      updateStates({ showDoneBtn: false, projectInEditModeId: null })
+    console.log("Rename project");
+    if (projectId !== null) {
+      const updatedProject = state.projects.find((project) => {
+        return project.id === projectId;
+      });
+      updateStates({
+        projectInEditModeId: projectId,
+        projectEditTitle: updatedProject.title,
+        showDoneBtn: true,
+        showModalMenuListId: null,
+      });
+    } else {
+      updateStates({ showDoneBtn: false, projectInEditModeId: null });
     }
   }
 
   const handleUpdateProject = async () => {
-    console.log("hey")
+    console.log("hey");
     // we mapping the array of projects and return new array of updated project
     const updatedProjects = state.projects.map((project) => {
       // if the id of the project we are mapping over matches with the project id in edit mode
@@ -133,7 +149,11 @@ function ToDoListModal() {
 
     // we're calling the setter and triggering rerender (update state)
     // by setting this state to null, all projects are displayed normally (no input field anywhere). Close the input
-    updateStates({projects: updatedProjects, showDoneBtn: false, projectInEditModeId: null})
+    updateStates({
+      projects: updatedProjects,
+      showDoneBtn: false,
+      projectInEditModeId: null,
+    });
 
     await renameProject(state.projectInEditModeId, state.projectEditTitle);
   };
@@ -142,18 +162,18 @@ function ToDoListModal() {
     const deletedProject = state.projects.filter((project) => {
       return project.id !== projectId;
     });
-    updateStates({ projects: deletedProject })
+    updateStates({ projects: deletedProject });
 
     await deleteProject(projectId);
   }
-  
+
   const handleClickOutsideProjects = (event) => {
-    console.log("event", event)
+    console.log("event", event);
     const isTargetNotDoneBtn = event.target.innerText !== "Done";
     if (isTargetNotDoneBtn) {
-      console.log("Hello")
+      console.log("Hello");
       handleRenameProject(null);
-    }    
+    }
   };
 
   const refProject = useOutsideClick(handleClickOutsideProjects, [
@@ -162,7 +182,7 @@ function ToDoListModal() {
 
   async function handleCheckboxClick(id, completed, completedTasksCount) {
     if (completed === true && completedTasksCount === 1) {
-      updateStates({showCompletedTasks: false})
+      updateStates({ showCompletedTasks: false });
     }
     // when user clicks checkbox this function will be executed
     // id - id of task,
@@ -200,7 +220,7 @@ function ToDoListModal() {
     });
 
     // we're calling the setter and triggering rerender
-    updateStates({projects: updatedProjects})
+    updateStates({ projects: updatedProjects });
 
     // optimistic update
     await fetchTasks(id, completed);
@@ -222,7 +242,11 @@ function ToDoListModal() {
       }
       return project;
     });
-    updateStates({projects: updatedProjects, showInput: false, showDoneBtn: false})
+    updateStates({
+      projects: updatedProjects,
+      showInput: false,
+      showDoneBtn: false,
+    });
 
     await createTask(state.selectedProjectId, newTask);
   }
@@ -244,7 +268,11 @@ function ToDoListModal() {
       }
       return project;
     });
-    updateStates({projects: updatedProjects, showDoneBtn: false, selectedTaskId: null})
+    updateStates({
+      projects: updatedProjects,
+      showDoneBtn: false,
+      selectedTaskId: null,
+    });
 
     await renameTask(state.selectedTaskId, state.taskEditTitle);
   }
@@ -253,11 +281,13 @@ function ToDoListModal() {
     closeModal();
     restart();
   };
-  console.log("state.selectedProjectId", state.selectedProjectId)
+  console.log("state.selectedProjectId", state.selectedProjectId);
+  console.log("state.projectInEditModeId", state.projectInEditModeId);
   return (
     <settingsContext.Provider
       value={{
         showModalMenuListId: state.showModalMenuListId,
+        updateStates,
         handleDeleteProject,
         handleRenameProject,
       }}
@@ -266,28 +296,21 @@ function ToDoListModal() {
         <ToDoListModalContainer>
           {state.selectedProjectId ? (
             <ProjectHeader
-            projects={state.projects}
-            showDoneBtn={state.showDoneBtn}
-            selectedProjectId={state.selectedProjectId}
-            selectedId={state.selectedTaskId}
-            updateStates={updateStates}
-            create={handleCreateTask}
-            closeModal={closeModal}
-            rename={handleUpdateTask}
-          />   
+              {...state}
+              updateStates={updateStates}
+              create={handleCreateTask}
+              closeModal={closeModal}
+              rename={handleUpdateTask}
+            />
           ) : (
             <ProjectHeader
-            projects={state.projects}
-            showDoneBtn={state.showDoneBtn}
-            selectedProjectId={state.selectedProjectId}
-            selectedId={state.projectInEditModeId}
-            updateStates={updateStates}
-            create={handleCreateProject}
-            closeModal={closeModal}
-            rename={handleUpdateProject}
-          />
-          )
-          }
+              {...state}
+              updateStates={updateStates}
+              create={handleCreateProject}
+              closeModal={closeModal}
+              rename={handleUpdateProject}
+            />
+          )}
 
           {state.selectedProjectId ? (
             <Tasks
@@ -314,5 +337,3 @@ function ToDoListModal() {
 }
 
 export default ToDoListModal;
-
-

@@ -27,7 +27,7 @@ const ToDoListButton = styled.button`
 `
 
 const ToDoListSvg = () => (
-    <svg width="30" height="28" viewBox="0 0 30 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg id="openToDo" width="30" height="28" viewBox="0 0 30 28" fill="none" xmlns="http://www.w3.org/2000/svg">
     <g opacity="1">
     <path d="M9.3335 5.5H27.7502" stroke="#D7E0FF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
     <path d="M9.3335 14H27.7502" stroke="#D7E0FF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>

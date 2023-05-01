@@ -70,11 +70,11 @@ function ProjectHeader({
   showDoneBtn,
   create,
   closeModal,
-  selectedId,
   rename,
-  updateStates
+  updateStates,
+  projectInEditModeId,
+  selectedTaskId
 }) {
-
   const selectedProject = projects.find((project) => {
     return project.id === selectedProjectId;
   });
@@ -82,7 +82,9 @@ function ProjectHeader({
     <ToDoListModalHeader>
       <Wrapper>
         {selectedProjectId && (
-          <BackArrowSvg onClick={() => updateStates({selectedProjectId: null})}>
+          <BackArrowSvg
+            onClick={() => updateStates({ selectedProjectId: null })}
+          >
             <img src="./assets/icon-arrow-left.svg" alt="Back" />
           </BackArrowSvg>
         )}
@@ -91,15 +93,18 @@ function ProjectHeader({
         </Heading>
       </Wrapper>
       <>
-      {showDoneBtn ? (
-        <DoneBtn onClick={selectedId == null ? create : rename}>
-          <TextDoneBtn>Done</TextDoneBtn>
-        </DoneBtn>
-      ) : (
-        <CloseButton onClick={closeModal}>
-          <img src="./assets/icon-close.svg" alt="Close modal" />
-        </CloseButton>
-      )}
+        {showDoneBtn ? (
+          <DoneBtn
+            id="done"
+            onClick={projectInEditModeId === null && selectedTaskId === null ? create : rename}
+          >
+            <TextDoneBtn>Done</TextDoneBtn>
+          </DoneBtn>
+        ) : (
+          <CloseButton id="closeModal" onClick={closeModal}>
+            <img src="./assets/icon-close.svg" alt="Close modal" />
+          </CloseButton>
+        )}
       </>
     </ToDoListModalHeader>
   );
