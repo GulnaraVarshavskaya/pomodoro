@@ -100,6 +100,7 @@ function ToDoListModal() {
     const newProject = {
       id: uuid(),
       title: state.projectTitle,
+      tasks: [],
     };
     const updatedProjects = [...state.projects, newProject];
 

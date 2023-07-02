@@ -88,7 +88,7 @@ function ProjectHeader({
             <img src="./assets/icon-arrow-left.svg" alt="Back" />
           </BackArrowSvg>
         )}
-        <Heading size="headingM" color="dark">
+        <Heading size="headingM" color="dark" letter="letterSpaceNormal">
           {selectedProjectId ? selectedProject.title : "Projects"}
         </Heading>
       </Wrapper>

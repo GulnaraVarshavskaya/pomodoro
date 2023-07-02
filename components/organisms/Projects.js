@@ -7,7 +7,7 @@ const ToDoListModalBody = styled.div`
   padding: 0 24px 50px;
   @media only screen and (min-width: 768px) {
     padding: 0 40px 50px;
-  } ;
+  }
 `;
 
 const ProjectsTasksUl = styled.div`
@@ -22,7 +22,7 @@ const ProjectsTasksUl = styled.div`
   }
   @media only screen and (min-width: 768px) {
     height: 255px;
-  } ;
+  }
 `;
 
 export const ProjectsTasksList = styled.div`
@@ -74,7 +74,7 @@ export const ProjectListText = styled.span`
     font-size: 14px;
     margin-left: 10px;
     width: 380px;
-  } ;
+  }
 `;
 
 export const ProjectInput = styled.input`
@@ -95,7 +95,7 @@ export const ProjectInput = styled.input`
     font-size: 14px;
     margin-left: 10px;
     width: 380px;
-  } ;
+  }
 `;
 
 export const ForwardArrowSvg = styled.button`
@@ -168,10 +168,8 @@ function Projects({
 
   return (
     <ToDoListModalBody>
-      {projects.length > 0 && (
-        <ProjectsTasksUl 
-          id="projects"
-        >
+      {projects.length >= 0 && (
+        <ProjectsTasksUl id="projects">
           {projects.map((project) => {
             return (
               <Project
@@ -187,10 +185,7 @@ function Projects({
           })}
 
           {showInput ? (
-            <ProjectsTasksList 
-            ref={refProjectCancel}
-            id="input"
-            >
+            <ProjectsTasksList ref={refProjectCancel} id="input">
               <ProjectVerticalDots>
                 <img src="./assets/more-vertical.svg" alt="More" />
               </ProjectVerticalDots>
@@ -207,7 +202,7 @@ function Projects({
           )}
         </ProjectsTasksUl>
       )}
-      <PlusButton onClick={() => handleAddProject()}>Add a project</PlusButton>
+      <PlusButton onClick={handleAddProject}>Add a project</PlusButton>
     </ToDoListModalBody>
   );
 }

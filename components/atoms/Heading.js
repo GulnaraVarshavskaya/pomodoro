@@ -16,11 +16,13 @@ const sizesMobile = {
 const letterSpacingDesktop = {
     letterSpaceBig: "15px",
     letterSpaceSmall: "5px",
+    letterSpaceNormal: "0 px",
 }
 
 const letterSpacingMobile = {
     letterSpaceBig: "13.13px",
     letterSpaceSmall: "4.23px",
+    letterSpaceNormal: "0 px",
 }
 
 const colorFont = {
@@ -53,5 +55,5 @@ export default Heading;
 
 Heading.propTypes = {
     size: PropTypes.oneOf(["headingXl", "headingL", "headingM", "headingS"]).isRequired,
-    letter: PropTypes.oneOf(["letterSpaceBig", "letterSpaceSmall"]).isRequired,
+    letter: PropTypes.oneOf(["letterSpaceBig", "letterSpaceSmall", "letterSpaceNormal"]).isRequired,
 }
