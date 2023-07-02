@@ -83,6 +83,7 @@ export const ProjectInput = styled.input`
   font-family: "Kumbh Sans";
   font-weight: 500;
   line-height: 18px;
+  background-color: transparent;
   @media only screen and (min-width: 768px) {
     font-size: 14px;
     margin-left: 10px;
