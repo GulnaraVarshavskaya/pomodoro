@@ -87,6 +87,7 @@ export const ProjectInput = styled.input`
     outline: 0;
   }
   color: rgba(22, 25, 50, 1);
+  background-color: transparent;
   font-size: 12px;
   font-family: "Kumbh Sans";
   font-weight: 500;
