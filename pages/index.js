@@ -160,19 +160,11 @@ export default function Home() {
             property="og:image"
             content="https://pomodoro-mu-eight.vercel.app"
           /> */}
-          {/* <meta
-            property="og:image"
-            content="https://pomodoro-mu-eight.vercel.app/public/assets/desktop-opengraph.jpg"
-          /> */}
           <meta
             property="og:image"
-            content="${require('./desktop-opengraph.jpg')}"
+            content="https://pomodoro-mu-eight.vercel.app/assets/opengraph-image.jpg"
           />
-          <meta property="og:type" content="image&infos" />
-          {/* <meta
-              property="og:image:type"
-              content="https://pomodoro-mu-eight.vercel.app/svg+xml"
-            /> */}
+          {/* <meta property="og:type" content="image&infos" /> */}
           <meta
             property="og:site_name"
             content="https://pomodoro-mu-eight.vercel.app"
