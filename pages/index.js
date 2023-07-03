@@ -158,9 +158,13 @@ export default function Home() {
           <meta property="og:title" content="Pomodoro" />
           <meta
             property="og:image"
-            content="https://pomodoro-mu-eight.vercel.app/"
+            content="https://pomodoro-mu-eight.vercel.app"
           />
           <meta property="og:type" content="image&infos" />
+          <meta
+              property="og:image:type"
+              content="https://pomodoro-mu-eight.vercel.app/svg+xml"
+            />
           <meta
             property="og:site_name"
             content="https://pomodoro-mu-eight.vercel.app"
