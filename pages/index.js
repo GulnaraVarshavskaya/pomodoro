@@ -4,7 +4,6 @@ import ProgressBar from "../components/organisms/ProgressBar";
 import Settings from "../components/molecules/Settings";
 import ToDoList from "../components/molecules/ToDoList";
 import Head from "next/head";
-import Image from "./../public/assets/desktop-opengraph.jpg"
 
 import { useState, useEffect, createContext } from "react";
 import styled from "styled-components";
@@ -161,15 +160,19 @@ export default function Home() {
             property="og:image"
             content="https://pomodoro-mu-eight.vercel.app"
           /> */}
-          <meta
+          {/* <meta
             property="og:image"
             content="https://pomodoro-mu-eight.vercel.app/public/assets/desktop-opengraph.jpg"
+          /> */}
+          <meta
+            property="og:image"
+            content="%PUBLIC_URL%/desktop-opengraph.jpg"
           />
           <meta property="og:type" content="image&infos" />
-          {/* <meta
+          <meta
               property="og:image:type"
               content="https://pomodoro-mu-eight.vercel.app/svg+xml"
-            /> */}
+            />
           <meta
             property="og:site_name"
             content="https://pomodoro-mu-eight.vercel.app"
