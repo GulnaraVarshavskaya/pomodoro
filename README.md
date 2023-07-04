@@ -14,3 +14,5 @@ Pomodoro is an application that helps you stay focused by working a set amount o
 
 designs came from frontendmentor.io, built by Gulnara Varshavskaya
 
+## [See the deployed version here](https://pomodoro-mu-eight.vercel.app/)
+
